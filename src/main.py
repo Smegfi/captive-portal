@@ -30,16 +30,14 @@ def test():
 def tosDownload():
      return send_file("static/document/TOS.docx")
 
-
 if __name__ == "__main__":
      try:
           result = checkEnvironment()
           if result == RunMode.DEBUG:
                app.run(debug=True)
           elif result == RunMode.PRODUCTION:
-               app.run(host="0.0.0.0", port="5050", debug=False)
+               app.run(host="0.0.0.0", port="5000", debug=True)
      except:
           exit(1)
      finally:
           exit(0)
-     

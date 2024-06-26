@@ -11,7 +11,7 @@ COPY src/. .
 
 EXPOSE 5000
 
-ENV RUN=Debug
+ENV RUN=Production
 
 ENTRYPOINT [ "python" ]
 CMD ["main.py"]
