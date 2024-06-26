@@ -34,10 +34,8 @@ if __name__ == "__main__":
      try:
           result = checkEnvironment()
           if result == RunMode.DEBUG:
-               app.run(debug=True)
+               app.run(port="5432",debug=True)
           elif result == RunMode.PRODUCTION:
-               app.run(host="0.0.0.0", port="5000", debug=True)
+               app.run(host="0.0.0.0", port="5000", debug=False)
      except:
           exit(1)
-     finally:
-          exit(0)
