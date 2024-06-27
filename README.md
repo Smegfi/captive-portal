@@ -1,5 +1,5 @@
 # Captive Portal
-==============
+
 Captive portal for ÚMČ Praha 10.
 
 ## INSTALATION
