@@ -53,6 +53,7 @@ def index():
         "userip": userip,
         "post": post
     }
+
     return render_template("test.html", data=options)
 
 @bp.route("/auth", methods=["POST"])
