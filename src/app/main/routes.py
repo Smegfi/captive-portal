@@ -1,13 +1,16 @@
+from crypt import methods
 from uuid import uuid4
-from flask import render_template, request
+from flask import render_template, request, redirect
 from app.main import bp
 from app.extensions import db
+from app.models import user
 from app.models.user import User
 from datetime import datetime
+import requests
 
 
 @bp.route('/test', methods=["GET", "POST"])
-def index():
+def test():
     if request.method == "POST":
         email = request.form.get("email")
         mac = request.form.get("mac-address")
@@ -34,8 +37,9 @@ def index():
     
     return render_template('index.html', data=data)
 
-@bp.route("/")
-def test():
+@bp.route("/", methods=["GET"])
+def index():
+
     magic = request.args.get("magic")
     usermac = request.args.get("usermac")
     ssid = request.args.get("ssid")
@@ -49,5 +53,30 @@ def test():
         "userip": userip,
         "post": post
     }
-
     return render_template("test.html", data=options)
+
+@bp.route("/auth", methods=["POST"])
+def authenticate():
+    magic = request.form.get("magic")
+    usermac = request.form.get("usermac")
+    ssid = request.form.get("ssid")
+    userip = request.form.get("userip")
+    post = request.form.get("post")
+    email = request.form.get("email")
+
+    u = User(str(uuid4()), email, True, str(datetime.now()), usermac)
+    db.session.add(u)
+    db.session.commit()
+
+    data = {
+        "magic": magic,
+        "username": usermac,
+        "password": usermac
+    }
+
+    x = requests.post(f"{post}", data = data)
+
+    if x.ok:
+        return "OK"
+    else:
+        return "Bad"
