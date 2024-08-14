@@ -82,3 +82,18 @@ def authenticate():
         return "OK"
     else:
         return "Bad"
+    
+@bp.route("/send")
+def send():
+    data = {
+        "magic": request.args.get("magic"),
+        "username": config.USERNAME,
+        "password": config.PASSWORD
+    }
+
+    x = requests.post(f"http://192.168.100.1:1000/fgauth", data = data)
+
+    if x.ok:
+        return "OK"
+    else:
+        return "Bad"
