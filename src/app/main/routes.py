@@ -91,7 +91,9 @@ def send():
         "password": config.PASSWORD
     }
 
-    x = requests.post(f"http://192.168.100.1:1000/fgauth", data = data)
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    session = requests.Session()
+    x = session.post('http://192.168.100.1:1000/fgauth',headers=headers,data=data)
 
     if x.ok:
         return "OK"
