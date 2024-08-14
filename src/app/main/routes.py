@@ -6,6 +6,7 @@ from app.extensions import db
 from app.models import user
 from app.models.user import User
 from datetime import datetime
+import config
 import requests
 
 
@@ -71,8 +72,8 @@ def authenticate():
 
     data = {
         "magic": magic,
-        "username": usermac,
-        "password": usermac
+        "username": config.USERNAME,
+        "password": config.PASSWOR0D
     }
 
     x = requests.post(f"{post}", data = data)
