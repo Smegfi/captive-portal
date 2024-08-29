@@ -1,14 +1,26 @@
 import os
 from dotenv import load_dotenv
+from app.logger import set_logger
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+logger = set_logger(__name__)
+loaded = load_dotenv()
 
-load_dotenv()
+if loaded:
+    logger.info(".env loaded")
+else:
+    logger.warning(".env not found")
 
-USERNAME=os.getenv("USERNAME")
-PASSWORD=os.getenv("PASSWORD")
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI') or "postgresql://postgres:123456Ab@10.41.172.109:5432/captive-portal"
+    ENV=os.getenv("ENVIRONMENT")
+    PORT=os.getenv("PORT")
+
+    USERNAME=os.getenv("USERNAME")
+    PASSWORD=os.getenv("PASSWORD")
+    
+    API_TOKEN=os.getenv("API_TOKEN")
+    API_URL=os.getenv("API_URL")
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
