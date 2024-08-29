@@ -1,101 +1,39 @@
-from crypt import methods
-from uuid import uuid4
-from flask import render_template, request, redirect
+import uuid
+from flask import render_template, request
 from app.main import bp
-from app.extensions import db
-from app.models import user
-from app.models.user import User
+from app.logger import set_logger
+from app.main.api.user import post_user
 from datetime import datetime
-import config
-import requests
+from app.main.repositories.modal import parse_form, parse_args
+import requests as req
+from config import Config
 
 
-@bp.route('/test', methods=["GET", "POST"])
-def test():
-    if request.method == "POST":
-        email = request.form.get("email")
-        mac = request.form.get("mac-address")
-        if request.form.get("marketing"): marketing = True
-        else: marketing = False
-        user = User(str(uuid4()), email, marketing, str(datetime.now()), mac)
+logger = set_logger(__name__)
 
-        db.session.add(user)
-        db.session.commit()
-
-    if request.method == "GET":
-        magic = request.args.get("magic")
-        usermac = request.args.get("usermac")
-        ssid = request.args.get("ssid")
-        userip = request.args.get("userip")
-        post = request.args.get("post")
-        
-
-    data={
-        "email": "test",
-        "marketing": "on"
-        
-    }
-    
-    return render_template('index.html', data=data)
-
-@bp.route("/", methods=["GET"])
+@bp.route('/', methods=["GET", "POST"])
 def index():
+    if request.method == "POST":
+        data = parse_form(request=request)
 
-    magic = request.args.get("magic")
-    usermac = request.args.get("usermac")
-    ssid = request.args.get("ssid")
-    userip = request.args.get("userip")
-    post = request.args.get("post")
+        result = post_user(data["email"], data["mac_address"], datetime.now())
+        print(result.json())
+
+        logger.info(data)
+        return f"data {data}"
     
-    options = {
-        "magic": magic,
-        "usermac": usermac,
-        "ssid": ssid,
-        "userip": userip,
-        "post": post
-    }
-
-    return render_template("test.html", data=options)
-
-@bp.route("/auth", methods=["POST"])
-def authenticate():
-    magic = request.form.get("magic")
-    usermac = request.form.get("usermac")
-    ssid = request.form.get("ssid")
-    userip = request.form.get("userip")
-    post = request.form.get("post")
-    email = request.form.get("email")
-
-    u = User(str(uuid4()), email, True, str(datetime.now()), usermac)
-    db.session.add(u)
-    db.session.commit()
-
-    data = {
-        "magic": magic,
-        "username": config.USERNAME,
-        "password": config.PASSWOR0D
-    }
-
-    x = requests.post(f"{post}", data = data)
-
-    if x.ok:
-        return "OK"
     else:
-        return "Bad"
+        # Fortigate request example
+        # https://192.168.30.47/portal/?post=http://192.168.30.1:1000/fgtauth&magic=040d028c9aaae999&usermac=60:03:08:8f:5e:b6&apmac=08:5b:0e:08:d4:ee&apip=192.168.30.41&ssid=test&apname=FWF60D4613003326&bssid=00:00:00:00:00:00
+        data = parse_args(request=request)
+
+        return render_template('index.html', data=data)
+
+@bp.route('/create-user')
+def users():
+    email = request.args.get("email")
+    password = uuid.uuid4()
+
+    result = req.get(Config.API_URL, headers={"Authorization": f"Bearer {Config.API_TOKEN}"})
     
-@bp.route("/send")
-def send():
-    data = {
-        "magic": request.args.get("magic"),
-        "username": config.USERNAME,
-        "password": config.PASSWORD
-    }
-
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    session = requests.Session()
-    x = session.post('http://192.168.100.1:1000/fgauth',headers=headers,data=data)
-
-    if x.ok:
-        return "OK"
-    else:
-        return "Bad"
+    return result
