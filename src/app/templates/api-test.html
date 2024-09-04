@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>API-TEST</h1>
+
+<div class="w-100">
+    <form method="POST" action="{{ data['post'] if data['post'] != None else '' }}" id="form">
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="" class="form-label">Magic</label>
+                        <input type="text" name="magic" value="{{ data['magic'] if data['magic'] != None else ''}}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">Username</label>
+                        <input type="text" name="username" value="" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">Password</label>
+                        <input type="text" name="password" value="" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">SSID</label>
+                        <input type="text" name="ssid" value="{{ data['ssid'] if data['ssid'] != None else ''}}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">Mac Address</label>
+                        <input type="text" name="mac_address" id="macAddress"
+                            value="{{ data['mac_address'] if data['mac_address'] != None else ''}}"
+                            class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="emailAddress" class="form-label">Emailová adresa</label>
+                        <input type="email" id="emailAddress" aria-describedby="emailHelp" required name="email"
+                            value="{{ data['email'] if data['email'] != None else '' }}" class="form-control">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="apiPost()" type="button">TEST POST</button>
+                    <button class="btn btn-primary" onclick="apiGet()" type="button">TEST GET</button>
+                </div>
+
+                <div class="col-6">
+                    <label for="" class="form-label">API response</label>
+                    <textarea class="w-100 form-control" id="messageBox" rows="20"></textarea>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+    const msgBox = document.getElementById("messageBox")
+
+    function apiGet() {
+        fetch(`http://10.41.10.11/api-get`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            msgBox.innerText = data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        msgBox.innerText = "GET";
+    }
+
+    function apiPost() {
+        msgBox.innerText = "POST";
+    }
+</script>
+
+{% endblock %}
