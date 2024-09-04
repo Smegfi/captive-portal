@@ -11,16 +11,15 @@ if loaded:
 else:
     logger.warning(".env not found")
 
-
 class Config:
-    ENV=os.getenv("ENVIRONMENT")
-    PORT=os.getenv("PORT")
+    ENV=os.getenv("CAPTIVEP10_ENVIRONMENT")
+    PORT=os.getenv("CAPTIVEP10_PORT")
 
-    USERNAME=os.getenv("USERNAME")
-    PASSWORD=os.getenv("PASSWORD")
+    USERNAME=os.getenv("CAPTIVEP10_USERNAME")
+    PASSWORD=os.getenv("CAPTIVEP10_PASSWORD")
     
-    API_TOKEN=os.getenv("API_TOKEN")
-    API_URL=os.getenv("API_URL")
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
+    API_TOKEN=os.getenv("CAPTIVEP10_API_TOKEN")
+    API_URL=os.getenv("CAPTIVEP10_API_URL")
+    SECRET_KEY = os.getenv('CAPTIVEP10_SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.getenv('CAPTIVEP10_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False

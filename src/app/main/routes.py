@@ -8,7 +8,6 @@ from app.main.repositories.modal import parse_form, parse_args
 import requests as req
 from config import Config
 
-
 logger = set_logger(__name__)
 
 @bp.route('/', methods=["GET", "POST"])
