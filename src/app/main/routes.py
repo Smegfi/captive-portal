@@ -33,7 +33,9 @@ def users():
     email = request.args.get("email")
     mac = request.args.get("mac")
     password = uuid.uuid4()
-    expire = datetime.now()
+
+    date = datetime.now()
+    expire =  str(date).removesuffix(f".{date.microsecond}")
 
     data={
         "user-id": email,
@@ -42,7 +44,6 @@ def users():
         "expiration": expire,
         "comment": mac
     }
-
-    result = req.post(Config.API_URL, data=data, headers={"Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False)
-    logger.info(result.json)
+    result = req.post(Config.API_URL, json=data, headers={"Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False)
+    logger.info(result.json())
     return result.json()
