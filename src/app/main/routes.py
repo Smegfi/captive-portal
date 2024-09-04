@@ -31,8 +31,18 @@ def index():
 @bp.route('/create-user')
 def users():
     email = request.args.get("email")
+    mac = request.args.get("mac")
     password = uuid.uuid4()
+    expire = datetime.now()
 
-    result = req.get(Config.API_URL, headers={"Authorization": f"Bearer {Config.API_TOKEN}"})
-    
-    return result
+    data={
+        "user-id": email,
+        "email": email,
+        "password": password,
+        "expiration": expire,
+        "comment": mac
+    }
+
+    result = req.post(Config.API_URL, data=data, headers={"Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False)
+    logger.info(result.json)
+    return result.json()

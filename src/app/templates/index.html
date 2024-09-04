@@ -10,7 +10,7 @@
     <input type="hidden" name="password" value="">
     
     <input type="hidden" name="ssid" value="{{ data['ssid'] if data['ssid'] != None else ''}}">
-    <input type="hidden" name="mac_address" value="{{ data['mac_address'] if data['mac_address'] != None else ''}}">
+    <input type="hidden" name="mac_address" id="macAddress" value="{{ data['mac_address'] if data['mac_address'] != None else ''}}">
 
     <div class="mb-3">
       <label for="emailAddress" class="form-label">Emailová adresa</label>

@@ -5,8 +5,9 @@ const url = "";
 
 function callApi() {
     let email = document.getElementById("emailAddress").value;
+    let user_mac = document.getElementById("macAddress").value;
 
-    fetch("http://127.0.0.1:5000/create-user?email=" + email)
+    fetch(`http://10.41.10.11:5000/create-user?email=${email}&mac=${user_mac}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
