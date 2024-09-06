@@ -10,4 +10,5 @@ def apiGet():
 
 @bp.route("/api-post")
 def apiPost():
-    return ""
+    result = req.post(Config.API_URL, headers={"Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False)
+    return result.json()
