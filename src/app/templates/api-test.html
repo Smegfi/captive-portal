@@ -60,7 +60,17 @@
     const msgBox = document.getElementById("messageBox")
 
     function apiGet() {
-        fetch(`http://10.41.10.11/api-get`)
+        let url = `http://10.41.10.11/api-get`
+        callApi(url, msgBox)
+    }
+
+    function apiPost() {
+        let url = `http://10.41.10.11/api-post`
+        callApi(url, msgBox)
+    }
+
+    function callApi(url, msgBox) {
+        fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -68,18 +78,11 @@
             return response.json();
         })
         .then(data => {
-            console.log(data);
             msgBox.innerText = data;
         })
         .catch(error => {
             console.error('Error:', error);
         });
-
-        msgBox.innerText = "GET";
-    }
-
-    function apiPost() {
-        msgBox.innerText = "POST";
     }
 </script>
 
