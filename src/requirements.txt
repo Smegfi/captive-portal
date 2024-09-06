@@ -25,5 +25,5 @@ SQLAlchemy==2.0.31
 SQLAlchemy-Utils==0.41.2
 typing_extensions==4.12.2
 urllib3==2.2.2
-Werkzeug==3.0.3
+Werkzeug==3.0.4
 wheel==0.44.0
