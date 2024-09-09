@@ -21,7 +21,7 @@ requests==2.32.3
 setuptools==69.0.3
 six==1.16.0
 smmap==5.0.1
-SQLAlchemy==2.0.31
+SQLAlchemy==2.0.34
 SQLAlchemy-Utils==0.41.2
 typing_extensions==4.12.2
 urllib3==2.2.2
