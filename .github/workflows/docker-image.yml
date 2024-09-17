@@ -10,4 +10,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag smegfi/captive-portal
+      run: docker build . --file docker/Dockerfile --tag smegfi/captive-portal
