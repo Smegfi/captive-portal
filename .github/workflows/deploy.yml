@@ -32,7 +32,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: rpi-runner
 
     steps:
       - uses: actions/checkout@v4
