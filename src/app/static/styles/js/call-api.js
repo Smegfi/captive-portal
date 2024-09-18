@@ -1,13 +1,12 @@
-document.getElementById("testbtn").addEventListener("click", callApi);
+document.getElementById("submit-button").addEventListener("click", callApi);
 const action = document.getElementById("form").action;
-
-const url = "";
 
 function callApi() {
     let email = document.getElementById("emailAddress").value;
     let user_mac = document.getElementById("macAddress").value;
+    let urlPath = window.location.origin;
 
-    fetch(`http://10.41.10.11/create-user?email=${email}&mac=${user_mac}`)
+    fetch(`${urlPath}}/api/create-user?email=${email}&mac=${user_mac}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -15,7 +14,7 @@ function callApi() {
             return response;
         })
         .then(data => {
-            console.log(data);
+            console.log(data.json());
         })
         .catch(error => {
             console.error('Error:', error);
