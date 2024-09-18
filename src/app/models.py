@@ -41,9 +41,3 @@ class Session(db.Model):
         self.Magic = magic
         self.Date = date
         self.Ssid = ssid
-
-    # def __str__(self) -> str:
-    #     return f"{self.Magic}"
-    
-    # def __repr__(self) -> str:
-    #     return f"{self.Magic}"
