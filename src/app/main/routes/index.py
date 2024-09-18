@@ -1,7 +1,6 @@
 from app.main import bp
 from flask import request, render_template
 from app.main.repositories.modal import parse_form, parse_args
-from app.main.api.user import post_user
 from app.logger import set_logger
 from datetime import datetime
 
@@ -11,9 +10,6 @@ logger = set_logger(__name__)
 def index():
     if request.method == "POST":
         data = parse_form(request=request)
-
-        result = post_user(data["email"], data["mac_address"], datetime.now())
-        print(result.json())
 
         logger.info(data)
         return f"data {data}"
