@@ -15,6 +15,7 @@ jobs:
   test:
     name: Test
     runs-on: rpi-runner
+    needs: build
     steps:
     - name: Test 1
       run: echo Test 1 is running
@@ -26,6 +27,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: rpi-runner
+    needs: test
     steps:
       - name: Production
         run: echo deploying app on production server
