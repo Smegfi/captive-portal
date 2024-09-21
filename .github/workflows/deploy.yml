@@ -1,4 +1,4 @@
-name: Deploy
+name: Application deploy
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
 
   deploy:
     name: Deploy
-    runs-on: rpi-runner
+    runs-on: ["prod", "p10"]
     needs: test
     steps:
       - name: Production
