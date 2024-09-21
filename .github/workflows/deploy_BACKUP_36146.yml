@@ -19,12 +19,25 @@ jobs:
     steps:
     - name: Test 1
       run: echo Test 1 is running
+    - name: Test 2
+      run: echo Test 2 is running
+    - name: Test 3
+      run: echo Test 3 is running
 
   deploy:
     name: Deploy
     runs-on: ["prod", "p10"]
     needs: test
     steps:
+<<<<<<< Updated upstream
+      - name: Production
+        run: echo deploying app on production server
+      - name: Database
+        run: echo deploying database on production
+      - name: Run
+        run: echo running application
+
+=======
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -38,3 +51,4 @@ jobs:
 
     - name: Run the application
       run: python src/run.py
+>>>>>>> Stashed changes
