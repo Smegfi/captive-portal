@@ -29,9 +29,9 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Python
-      uses: actions/setup-python@v5.2.0
-      with:
-        python-version: '>=3.9'
+      run: apt update && apt upgrade -y
+      run: apt install python3 python3-pip
+      run: python3 --version
 
     - name: Install dependencies
       run: pip install -r src/requirements.txt
