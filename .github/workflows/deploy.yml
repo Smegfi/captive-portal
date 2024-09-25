@@ -9,7 +9,7 @@ jobs:
     name: Deploy
     runs-on: ["prod", "p10"]
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4    
-    - name: Test
-      run: echo test
+    - name: Test1
+      run: echo "Toto je test 1" 
+    - name: Test2
+      run: echo "Toto je test 2"
