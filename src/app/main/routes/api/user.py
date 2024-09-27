@@ -16,6 +16,8 @@ def create_user():
 
     date =  datetime.now() + timedelta(days=30)
     expire = str(date).removesuffix(f".{date.microsecond}")
+
+    ## JSON body 
     data={
         "user-id": email,
         "email": email,
@@ -34,4 +36,10 @@ def create_user():
     else:
         logger.warning(result.json())
 
-    return result.json()
+    returner = {
+        "username": email,
+        "password": password,
+        "status_code": 200
+    }
+
+    return returner
