@@ -11,7 +11,9 @@ logger = set_logger(__name__)
 @bp.route('/api/create-user')
 def create_user():
     email = request.args.get("email")
-    mac = request.args.get("mac")
+    usermac = request.args.get("usermac")
+    marketing = request.args.get("marketing")
+    ssid = request.args.get("ssid")
     password = str(uuid.uuid4())
 
     date =  datetime.now() + timedelta(days=30)
@@ -23,7 +25,7 @@ def create_user():
         "email": email,
         "password": password,
         "expiration": expire,
-        "comment": mac
+        "comment": usermac
     }
 
     ## POST request to Forti (create guest user) ##
