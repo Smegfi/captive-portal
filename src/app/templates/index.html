@@ -2,7 +2,7 @@
 {% block body %}
 <h1>CAPTIVE PORTAL</h1>
 <div>
-  <form method="POST" action="{{ data['post'] if data['post'] != None else '' }}" id="form">
+  <form method="POST" action="{{ data['post'] if data['post'] != None else '' }}" id="userForm">
     <input type="hidden" name="magic" value="{{ data['magic'] if data['magic'] != None else ''}}">
     <input type="hidden" name="username" value="" id="fortiUsername">
     <input type="hidden" name="password" value="" id="fortiPassword">

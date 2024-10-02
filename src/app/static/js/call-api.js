@@ -1,5 +1,3 @@
-const action = document.getElementById("form");
-
 async function callApi() {
     let email = document.getElementById("email").value;
     let usermac = document.getElementById("usermac").value;
@@ -16,7 +14,8 @@ async function callApi() {
         }
         const json = await response.json();
         fillInTheData(json);
-        action.submit();
+
+        sendTheForm();
     }
     catch (ex) {
         console.error(ex.message);
@@ -29,4 +28,10 @@ function fillInTheData(data) {
 
     username.value = data.username;
     password.value = data.password;
+}
+
+function sendTheForm() {
+    const form = document.getElementById("userForm");
+
+    form.submit();
 }
