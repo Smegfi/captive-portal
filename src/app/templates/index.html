@@ -1,10 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>CAPTIVE PORTAL</h1>
-
-
 <div>
-  
   <form method="POST" action="{{ data['post'] if data['post'] != None else '' }}" id="form">
     <input type="hidden" name="magic" value="{{ data['magic'] if data['magic'] != None else ''}}">
     <input type="hidden" name="username" value="" id="fortiUsername">
@@ -38,9 +35,7 @@
         data-bs-toggle="modal" data-bs-target="#tos-modal">podmínkami použítí</a> Wi-Fi
       sítě.</p>
   </div>
-
 </div>
-
 <script src="{{ url_for('static', filename='js/call-api.js') }}"></script>
 
 {% include "components/modal.html" %}
