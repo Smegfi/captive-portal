@@ -5,11 +5,25 @@ on:
     types: [opened]
 
 jobs:
-  deploy:
-    name: Deploy
-    runs-on: ["prod", "p10"]
+  build:
+    runs-on: ["smegfi","dev"]
     steps:
-    - name: Test1
-      run: echo "Toto je test 1" 
-    - name: Test2
-      run: echo "Toto je test 2"
+      - uses: actions/checkout@v4
+
+      - name: Set up Python version
+        uses: actions/setup-python@v3.0.0
+        with:
+          python-version: '3.8'
+          cache: 'pip'
+
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+
+      - name: Install dependencies
+        run: pip install -r src/requirements.txt
+
+      - name: Run the application
+        run: python src/run.py
+
