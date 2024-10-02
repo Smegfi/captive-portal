@@ -13,7 +13,7 @@ env:
   CAPTIVEP10_API_URL: ${{ vars.CAPTIVEP10_API_URL }}
 
   CAPTIVEP10_SECRET_KEY: 'test'
-  CAPTIVEP10_DATABASE_URI: ${{ vars.CAPTIVEP10_DATABASE_URI }}
+  CAPTIVEP10_DATABASE_URI: 'postgresql+psycopg2://user:password@hostname/database_name'
 
 jobs:
   build:
