@@ -1,22 +1,33 @@
 from app.main import bp
 from flask import request, render_template
-from app.main.repositories.modal import parse_form, parse_args
 from app.logger import set_logger
 from datetime import datetime
 
 logger = set_logger(__name__)
 
-@bp.route('/', methods=["GET", "POST"])
+
+# Tuto cestu volá Fortigate pomocí HTTP 301 redirectu
+# Fortigate request example
+# https://srv-captive/?
+# post=http://192.168.30.1:1000/fgtauth&
+# magic=040d028c9aaae999&
+# usermac=60:03:08:8f:5e:b6&
+# apmac=08:5b:0e:08:d4:ee&
+# apip=192.168.30.41&
+# ssid=test&
+# apname=FWF60D4613003326&
+# bssid=00:00:00:00:00:00
+@bp.route('/')
 def index():
-    if request.method == "POST":
-        data = parse_form(request=request)
+    post = request.args.get("post")
+    magic = request.args.get("magic")
+    usermac = request.args.get("usermac")
+    ssid = request.args.get("ssid")
 
-        logger.info(data)
-        return f"data {data}"
-    
-    else:
-        # Fortigate request example
-        # https://192.168.30.47/portal/?post=http://192.168.30.1:1000/fgtauth&magic=040d028c9aaae999&usermac=60:03:08:8f:5e:b6&apmac=08:5b:0e:08:d4:ee&apip=192.168.30.41&ssid=test&apname=FWF60D4613003326&bssid=00:00:00:00:00:00
-        data = parse_args(request=request)
-
-        return render_template('index.html', data=data)
+    data = {
+        "post": post,
+        "magic":magic,
+        "usermac": usermac,
+        "ssid": ssid
+    }
+    return render_template('index.html', data=data)
