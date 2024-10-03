@@ -18,7 +18,7 @@ jobs:
     runs-on: ["prod", "p10"]
     steps:
       - name: Env
-        run: echo "ENV $CAPTIVEP10_ENVIRONMENT
+        run: echo "ENV $CAPTIVEP10_ENVIRONMENT"
       - name: Environment
         run: echo "ENV ${{ vars.CAPTIVEP10_ENVIRONMENT }}"
       - name: API
