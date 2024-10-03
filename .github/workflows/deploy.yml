@@ -8,33 +8,39 @@ env:
   CAPTIVEP10_ENVIRONMENT: ${{ vars.CAPTIVEP10_ENVIRONMENT }}
   CAPTIVEP10_PORT: ${{ vars.CAPTIVEP10_PORT }} 
   CAPTIVEP10_HOST: ${{ vars.CAPTIVEP10_HOST }}
-
   CAPTIVEP10_API_TOKEN: ${{ secrets.CAPTIVEP10_API_TOKEN }}
   CAPTIVEP10_API_URL: ${{ vars.CAPTIVEP10_API_URL }}
-
   CAPTIVEP10_SECRET_KEY: 'test'
-  CAPTIVEP10_DATABASE_URI: 'postgresql+psycopg2://user:password@hostname/database_name'
+  CAPTIVEP10_DATABASE_URI: ${{ vars.CAPTIVEP10_DATABASE_URI }}
 
 jobs:
   build:
-    runs-on: ["smegfi","dev"]
+    runs-on: ["prod", "p10"]
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python version
-        uses: actions/setup-python@v3.0.0
-        with:
-          python-version: '3.8'
-          cache: 'pip'
-
-      - name: Create and start virtual environment
+      - name: Testing evironments
         run: |
-          python -m venv venv
-          source venv/bin/activate
+          echo " ENV: $CAPTIVEP10_ENVIRONMENT"
+          echo " ENV: ${{ vars.CAPTIVEP10_ENVIRONMENT }}"
+          echo " API_URL: $CAPTIVEP10_API_URL"
+          echo: "API_URL: ${{ vars.CAPTIVEP10_API_URL }}"
+    # runs-on: ["smegfi","dev"]
+    # steps:
+    #   - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: pip install -r src/requirements.txt
+    #   - name: Set up Python version
+    #     uses: actions/setup-python@v3.0.0
+    #     with:
+    #       python-version: '3.8'
+    #       cache: 'pip'
 
-      - name: Run the application
-        run: python src/run.py
+    #   - name: Create and start virtual environment
+    #     run: |
+    #       python -m venv venv
+    #       source venv/bin/activate
+
+    #   - name: Install dependencies
+    #     run: pip install -r src/requirements.txt
+
+    #   - name: Run the application
+    #     run: python src/run.py
 
