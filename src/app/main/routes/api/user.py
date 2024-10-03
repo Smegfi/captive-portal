@@ -33,15 +33,17 @@ def create_user():
     logger.info(result.json())
 
     if result.status_code == 200:
-        logger.info(result.json())
-        return data
+        returner = {
+            "username": email,
+            "password": password,
+            "statusCode": 200
+        }
+
+        return returner
     else:
-        logger.warning(result.json())
-
-    returner = {
-        "username": email,
-        "password": password,
-        "status_code": 200
-    }
-
-    return returner
+        returner = {
+            "username": "failed",
+            "password": "failed",
+            "statusCode": 500
+        }
+        return returner
