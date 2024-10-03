@@ -13,8 +13,8 @@ async function callApi() {
             throw new Error(`Response status: ${response.status}`);
         }
         const json = await response.json();
+        
         fillInTheData(json);
-
         sendTheForm();
     }
     catch (ex) {
