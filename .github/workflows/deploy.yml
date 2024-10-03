@@ -17,9 +17,13 @@ jobs:
   build:
     runs-on: ["prod", "p10"]
     steps:
+      - name: Env
       - run: echo "ENV: $CAPTIVEP10_ENVIRONMENT"  
+      - name: Environment
       - run: echo "ENV: ${{ vars.CAPTIVEP10_ENVIRONMENT }}"
+      - name: API
       - run: echo "API_URL: $CAPTIVEP10_API_URL"
+      - name: API URL
       - run: echo "API_URL: ${{ vars.CAPTIVEP10_API_URL }}"
     # runs-on: ["smegfi","dev"]
     # steps:
