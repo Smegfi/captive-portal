@@ -29,3 +29,12 @@ services:
 
 ## DOCUMENTATION
 
+### ENV Variables
+| Název                   | Typ     | Popis           |
+|-------------------------|---------|-----------------|
+| CAPTIVEP10_DB_PATH      | text    | Absolutní cesta k souboru databáze|
+| CAPTIVEP10_ENVIRONMENT  | text    | Nastavení prostředí |
+| CAPTIVEP10_PORT         | text    | Port aplikace (5000) |
+| CAPTIVEP10_HOST         | text    | Aplikace naslouchá na (0.0.0.0) |
+| CAPTIVEP10_API_URL      | text    | Url na FG API |
+| CAPTIVEP10_API_TOKEN    | text    | Token pro komunikaci s FG API|
