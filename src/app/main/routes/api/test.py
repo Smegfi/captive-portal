@@ -1,5 +1,6 @@
 from app.main import bp
 from flask import render_template, request
+from app.main.models import User,Device
 
 @bp.route("/api-test")
 def apiTest():
@@ -21,3 +22,20 @@ def apiTest():
     }
 
     return render_template("api-test.html", data=data)
+
+@bp.route("/test")
+def test():
+    users = User.query.all()
+    devices = Device.query.all()
+
+    data = Model(users=users, devices=devices)
+    print(data)
+    return render_template("test.html", data=data)
+
+class Model():
+    users = list()
+    devices = list()
+
+    def __init__(self, users, devices) -> None:
+        self.users = users
+        self.devices = devices

@@ -5,6 +5,8 @@ from app.logger import set_logger
 from datetime import datetime, timedelta
 import requests as req
 from config import Config
+from app.main.models import User, Session, Device
+from app.extensions import db
 
 logger = set_logger(__name__)
 
@@ -19,6 +21,11 @@ def create_user():
     date =  datetime.now() + timedelta(days=30)
     expire = str(date).removesuffix(f".{date.microsecond}")
 
+    usr = User(Id=password, Email=email, Password=password, MarketingApproved=True if marketing == "true" else False, LastLogin=datetime.now(), CreatedAt=datetime.now())
+    session = Device(Id=str(uuid.uuid4()), UserId=password, MacAddress=usermac, ConnectedNetwork=ssid, LastConnection=datetime.now())
+    db.session.add(usr)
+    db.session.add(session)
+    db.session.commit()
     ## JSON body 
     data={
         "user-id": email,

@@ -2,39 +2,49 @@
 {% block body %}
 <h1>Test Portal</h1>
 
-<div>
-    <div class="mb-3">
-      <label for="emailAddress" class="form-label">Magic</label>
-      <input 
-        type="text" 
-        class="form-control" 
-        value="{{ data['magic'] if data['magic'] != None else '' }}"
-        name="magic"
-      />
-    </div>
+<div class="w-100">
+  <h3>Uživatelé</h3>
+  <table class="table table-striped w-100">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Id</th>
+        <th scope="col">Email</th>
+        <th scope="col">Heslo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in data.users %}
+      <tr>
+        <th scope="row">User</th>
+        <td>{{ item.Id }}</td>
+        <td>{{ item.Email }}</td>
+        <td>{{ item.Password }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-    <div class="mb-3">
-      <label for="emailAddress" class="form-label">Username</label>
-      <input 
-        type="text" 
-        class="form-control" 
-        value="{{ data['usermac'] if data['usermac'] != None else '' }}"
-        name="username"
-      />
-    </div>
-
-    <div class="mb-3">
-      <label for="emailAddress" class="form-label">Password</label>
-      <input 
-        type="text" 
-        class="form-control"
-        value="{{ data['usermac'] if data['usermac'] != None else '' }}"
-        name="password"
-      />
-    </div>
-
-    <div class="d-flex w-100 justify-content-center align-items-center">
-      <a type="submit" class="btn btn-primary mb-4 p-3 px-4" href="/send?magic={{ data['magic'] }}">Připojit se</a>
-    </div>
+  <h3>Zařízení</h3>
+  <table class="table table-striped w-100">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Id</th>
+        <th scope="col">Mac Adresa</th>
+        <th scope="col">Připojeno k síti</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for gitem in data.devices %}
+      <tr>
+        <th scope="row">1</th>
+        <td>{{ gitem.Id }}</td>
+        <td>{{ gitem.MacAddress }}</td>
+        <td>{{ gitem.ConnectedNetwork }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}
