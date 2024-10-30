@@ -38,3 +38,14 @@ services:
 | ✅       | CAPTIVEP10_HOST         | text    | Aplikace naslouchá na (0.0.0.0) |
 | ✅       | CAPTIVEP10_API_URL      | text    | Url na FG API |
 | ✅       | CAPTIVEP10_API_TOKEN    | text    | Token pro komunikaci s FG API|
+
+
+### PATHS
+
+1. / - formulář pro uživatele
+1. /health - zobrazuje informace o prostředí
+1. /api-test - formálář pro testování loginu
+1. /db-dump - zobrazí celou db
+1. /api/create-user - vytvoří uživatele na FG
+1. /api-post - testovací stránka API
+1. /api-get - testovací stránka API

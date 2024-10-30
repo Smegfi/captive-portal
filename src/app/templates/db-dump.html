@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Test Portal</h1>
+
+<div class="w-100">
+  <h3>Uživatelé</h3>
+  <table class="table table-striped w-100">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Id</th>
+        <th scope="col">Email</th>
+        <th scope="col">Heslo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in data.users %}
+      <tr>
+        <th scope="row">User</th>
+        <td>{{ item.Id }}</td>
+        <td>{{ item.Email }}</td>
+        <td>{{ item.Password }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Zařízení</h3>
+  <table class="table table-striped w-100">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Id</th>
+        <th scope="col">Mac Adresa</th>
+        <th scope="col">Připojeno k síti</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for gitem in data.devices %}
+      <tr>
+        <th scope="row">1</th>
+        <td>{{ gitem.Id }}</td>
+        <td>{{ gitem.MacAddress }}</td>
+        <td>{{ gitem.ConnectedNetwork }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
