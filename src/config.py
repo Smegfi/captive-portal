@@ -27,11 +27,6 @@ class Config:
         raise EnvironmentError("Systémová proměnná CAPTIVEP10_API_URL nebyla nalezena.")
     if not API_TOKEN:
         raise EnvironmentError("Systémová proměnná CAPTIVEP10_API_TOKEN nebyla nalezena.")
-    if not os.path.exists(DB_PATH):
-        logger.error(f"Soubor {DB_PATH} nebyl nalezen.")
-        logger.info(f"Vytvářím soubor {DB_PATH}")
-        f = open(f"{DB_PATH}", "x")
-        f.close()
     
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{DB_PATH}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
