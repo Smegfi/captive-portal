@@ -40,6 +40,7 @@ services:
 | ✅       | CAPTIVEP10_HOST         | text    | Aplikace naslouchá na (0.0.0.0) |
 | ✅       | CAPTIVEP10_API_URL      | text    | Url na FG API |
 | ✅       | CAPTIVEP10_API_TOKEN    | text    | Token pro komunikaci s FG API|
+| ✅       | CAPTIVEP10_LOG_PATH     | text    | Token pro komunikaci s FG API|
 
 
 ### PATHS
