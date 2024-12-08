@@ -7,34 +7,35 @@
     <input type="hidden" name="username" value="" id="fortiUsername">
     <input type="hidden" name="password" value="" id="fortiPassword">
   </form>
-  
+
   <!-- Temporary properties -->
   <input type="hidden" id="usermac" value="{{ data['usermac'] if data['usermac'] != None else '' }}">
   <input type="hidden" id="ssid" value="{{ data['ssid'] if data['ssid'] != None else '' }}">
   <!-- -->
+  <form onsubmit="callApi(); return false;">
+    <div class="mb-3">
+      <label for="email" class="form-label">Emailová adresa</label>
+      <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required name="email" />
+      <div id="emailHelp" class="form-text">Emailová adresa bude sloužit pro identifikaci připojeného uživatele</div>
+    </div>
 
-  <div class="mb-3">
-    <label for="email" class="form-label">Emailová adresa</label>
-    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required name="email" />
-    <div id="emailHelp" class="form-text">Emailová adresa bude sloužit pro identifikaci připojeného uživatele</div>
-  </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="marketing" name="marketing">
+      <label class="form-check-label" for="marketing">Souhlasím s použitím emailové adresy pro marketingové a
+        informativní účely Městské části Praha 10</label>
+    </div>
 
-  <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="marketing" name="marketing">
-    <label class="form-check-label" for="marketing">Souhlasím s použitím emailové adresy pro marketingové a
-      informativní účely Městské části Praha 10</label>
-  </div>
+    <div class="d-flex w-100 justify-content-center align-items-center">
+      <button type="submit" class="btn btn-primary mb-4 p-3 px-4" id="submit-button">Připojit
+        se</button>
+    </div>
 
-  <div class="d-flex w-100 justify-content-center align-items-center">
-    <button type="button" class="btn btn-primary mb-4 p-3 px-4" id="submit-button" onclick="callApi()">Připojit
-      se</button>
-  </div>
-
-  <div class="mb-3 text-muted text-center">
-    <p>Kliknutím na tlačítko <span class="text-primary">Připojit se</span> souhlasíte s <a class="link-primary"
-        data-bs-toggle="modal" data-bs-target="#tos-modal">podmínkami použítí</a> Wi-Fi
-      sítě.</p>
-  </div>
+    <div class="mb-3 text-muted text-center">
+      <p>Kliknutím na tlačítko <span class="text-primary">Připojit se</span> souhlasíte s <a class="link-primary"
+          data-bs-toggle="modal" data-bs-target="#tos-modal">podmínkami použítí</a> Wi-Fi
+        sítě.</p>
+    </div>
+  </form>
 </div>
 <script src="{{ url_for('static', filename='js/call-api.js') }}"></script>
 
