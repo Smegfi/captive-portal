@@ -26,7 +26,7 @@ def index():
 
     data = {
         "post": post,
-        "magic":magic,
+        "magic": magic,
         "usermac": usermac,
         "ssid": ssid
     }
