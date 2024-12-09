@@ -12,7 +12,7 @@
   <input type="hidden" id="usermac" value="{{ data['usermac'] if data['usermac'] != None else '' }}">
   <input type="hidden" id="ssid" value="{{ data['ssid'] if data['ssid'] != None else '' }}">
   <!-- -->
-  <form onsubmit="callApi(); return false;">
+  <form onsubmit="callApi(); return false;" id="userForm">
     <div class="mb-3">
       <label for="email" class="form-label">Emailová adresa</label>
       <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required name="email" />
