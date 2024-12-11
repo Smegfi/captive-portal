@@ -19,8 +19,8 @@ async function callApi() {
         else{
             console.log("OK");
             console.log(jsonResult);
-            //fillInTheData(json);
-            //sendTheForm();
+            fillInTheData(json);
+            sendTheForm();
         }
     }
     catch (ex) {
