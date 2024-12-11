@@ -3,19 +3,25 @@ async function callApi() {
     let usermac = document.getElementById("usermac").value;
     let ssid = document.getElementById("ssid").value;
     let marketing = document.getElementById("marketing").checked || false;
+    let errorMessages = document.getElementById("error-messages");
 
     let urlPath = window.location.origin;
     const url = `${urlPath}/api/create-user?email=${email}&usermac=${usermac}&marketing=${marketing}&ssid=${ssid}`;
 
     try {
         const response = await fetch(url);
-        if (!response.ok) {
+        const jsonResult = await response.json();
+        
+        if (jsonResult.statusCode == 500) {
+            errorMessages.innerHTML += '<p class="text-danger">'+ jsonResult.errorMessage +'</div>';
             throw new Error(`Response status: ${response.status}`);
         }
-        const json = await response.json();
-        
-        fillInTheData(json);
-        sendTheForm();
+        else{
+            console.log("OK");
+            console.log(jsonResult);
+            //fillInTheData(json);
+            //sendTheForm();
+        }
     }
     catch (ex) {
         console.error(ex.message);
