@@ -17,9 +17,8 @@ async function callApi() {
             throw new Error(`Response status: ${response.status}`);
         }
         else{
-            console.log("OK");
             console.log(jsonResult);
-            fillInTheData(json);
+            fillInTheData(jsonResult);
             sendTheForm();
         }
     }
