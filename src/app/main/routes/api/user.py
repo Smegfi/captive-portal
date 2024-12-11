@@ -50,24 +50,29 @@ def create_user():
             "expiration": expire,
             "comment": usermac
         }
+        try:
+            ## POST request to Forti (create guest user) ##
+            result = req.post(Config.API_URL, json=data, headers={
+                "Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False, timeout=3)
+            logger.info(result.json())
 
-        ## POST request to Forti (create guest user) ##
-        result = req.post(Config.API_URL, json=data, headers={
-            "Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False)
-        logger.info(result.json())
+            if result.status_code == 200:
+                returner = {
+                    "username": email,
+                    "password": password,
+                    "statusCode": 200
+                }
 
-        if result.status_code == 200:
+                return returner
+            else:
+                returner = {
+                    "errorMessage": "Tento email je již registován.",
+                    "statusCode": 500
+                }
+                return returner
+        except:
             returner = {
-                "username": email,
-                "password": password,
-                "statusCode": 200
-            }
-
-            return returner
-        else:
-            returner = {
-                "username": "failed",
-                "password": "failed",
-                "statusCode": 500
-            }
+                    "errorMessage": "Nepodařilo se připojit k této síti, opakujte akci později.",
+                    "statusCode": 500
+                }
             return returner
