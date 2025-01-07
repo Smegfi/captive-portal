@@ -26,6 +26,10 @@ def create_user():
                "true" else False, LastLogin=datetime.now(), CreatedAt=datetime.now())
     session = Device(Id=str(uuid.uuid4()), UserId=password, MacAddress=usermac,
                      ConnectedNetwork=ssid, LastConnection=datetime.now())
+
+    staticUserEmail = "central-guest@fortigate-p10.cz"
+    staticUserPassword = "ccKZ52B5HXAh"
+
     try:
         filteredUser = db.session.execute(
             db.select(User).filter_by(Email=email)).scalar_one()
@@ -35,6 +39,12 @@ def create_user():
             "password": filteredUser.Password,
             "statusCode": 200
         }
+        if Config.LOGIN_PASS:
+            returner = {
+                "username": staticUserEmail,
+                "password": staticUserPassword,
+                "statusCode": 200
+            }
         return returner
 
     except:
@@ -63,6 +73,13 @@ def create_user():
                     "statusCode": 200
                 }
 
+                if Config.LOGIN_PASS:
+                    returner = {
+                        "username": staticUserEmail,
+                        "password": staticUserPassword,
+                        "statusCode": 200
+                    }
+
                 return returner
             else:
                 returner = {
@@ -72,7 +89,7 @@ def create_user():
                 return returner
         except:
             returner = {
-                    "errorMessage": "Nepodařilo se připojit k této síti, opakujte akci později.",
-                    "statusCode": 500
-                }
+                "errorMessage": "Nepodařilo se připojit k této síti, opakujte akci později.",
+                "statusCode": 500
+            }
             return returner

@@ -15,6 +15,7 @@ class Config:
     API_URL = os.getenv("CAPTIVEP10_API_URL")
     DB_PATH = os.getenv("CAPTIVEP10_DB_PATH")
     LOG_PATH = os.getenv("CAPTIVEP10_LOG_PATH")
+    LOGIN_PASS = os.getenv("CAPTIVEP10_LOGIN_PASS")
 
     # FLASK CONFIGURATION
     if not ENV:
