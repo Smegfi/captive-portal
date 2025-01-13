@@ -26,6 +26,10 @@ def create_user():
                "true" else False, LastLogin=datetime.now(), CreatedAt=datetime.now())
     session = Device(Id=str(uuid.uuid4()), UserId=password, MacAddress=usermac,
                      ConnectedNetwork=ssid, LastConnection=datetime.now())
+
+    staticUserEmail = "central-guest@fortigate-p10.cz"
+    staticUserPassword = "ccKZ52B5HXAh"
+
     try:
         filteredUser = db.session.execute(
             db.select(User).filter_by(Email=email)).scalar_one()
@@ -35,6 +39,12 @@ def create_user():
             "password": filteredUser.Password,
             "statusCode": 200
         }
+        if Config.LOGIN_PASS:
+            returner = {
+                "username": staticUserEmail,
+                "password": staticUserPassword,
+                "statusCode": 200
+            }
         return returner
 
     except:
@@ -50,24 +60,36 @@ def create_user():
             "expiration": expire,
             "comment": usermac
         }
+        try:
+            ## POST request to Forti (create guest user) ##
+            result = req.post(Config.API_URL, json=data, headers={
+                "Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False, timeout=3)
+            logger.info(result.json())
 
-        ## POST request to Forti (create guest user) ##
-        result = req.post(Config.API_URL, json=data, headers={
-            "Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False)
-        logger.info(result.json())
+            if result.status_code == 200:
+                returner = {
+                    "username": email,
+                    "password": password,
+                    "statusCode": 200
+                }
 
-        if result.status_code == 200:
+                if Config.LOGIN_PASS:
+                    returner = {
+                        "username": staticUserEmail,
+                        "password": staticUserPassword,
+                        "statusCode": 200
+                    }
+
+                return returner
+            else:
+                returner = {
+                    "errorMessage": "Tento email je již registován.",
+                    "statusCode": 500
+                }
+                return returner
+        except:
             returner = {
-                "username": email,
-                "password": password,
-                "statusCode": 200
-            }
-
-            return returner
-        else:
-            returner = {
-                "username": "failed",
-                "password": "failed",
+                "errorMessage": "Nepodařilo se připojit k této síti, opakujte akci později.",
                 "statusCode": 500
             }
             return returner
