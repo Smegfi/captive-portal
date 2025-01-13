@@ -1,5 +1,5 @@
 from app.main import bp
-from flask import request, render_template
+from flask import request, render_template, send_file
 from app.logger import set_logger
 from datetime import datetime
 
@@ -31,3 +31,8 @@ def index():
         "ssid": ssid
     }
     return render_template('index.html', data=data)
+
+
+@bp.route("/tos-download")
+def download_document():
+    return send_file("static/document/TOS.pdf", as_attachment=True, download_name='podmínky-použití.pdf')
