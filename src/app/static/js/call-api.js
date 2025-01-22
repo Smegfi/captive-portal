@@ -11,13 +11,12 @@ async function callApi() {
     try {
         const response = await fetch(url);
         const jsonResult = await response.json();
-        
-        if (jsonResult.statusCode == 500) {
-            errorMessages.innerHTML += '<p class="text-danger">'+ jsonResult.errorMessage +'</div>';
-            throw new Error(`Response status: ${response.status}`);
+
+        if (jsonResult.status == 500) {
+            errorMessages.innerHTML += '<p class="text-danger">' + jsonResult.message + '</div>';
+            throw new Error(jsonResult.message);
         }
-        else{
-            console.log(jsonResult);
+        else {
             fillInTheData(jsonResult);
             sendTheForm();
         }
@@ -27,16 +26,14 @@ async function callApi() {
     }
 }
 
-function fillInTheData(data) {
+function fillInTheData(response) {
     let username = document.getElementById("fortiUsername");
     let password = document.getElementById("fortiPassword");
-
-    username.value = data.username;
-    password.value = data.password;
+    username.value = response.data.username;
+    password.value = response.data.password;
 }
 
 function sendTheForm() {
     const form = document.getElementById("userForm");
-
     form.submit();
 }

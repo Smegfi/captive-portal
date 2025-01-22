@@ -31,26 +31,28 @@ def create_user():
     staticUserPassword = "ccKZ52B5HXAh"
 
     try:
+        # Najdeme uživatele v DB pokud neexisutje vyhodí se Error
         filteredUser = db.session.execute(
             db.select(User).filter_by(Email=email)).scalar_one()
-        print(f"{filteredUser.Id} {filteredUser.Email}")
-        returner = {
-            "username": filteredUser.Email,
-            "password": filteredUser.Password,
-            "statusCode": 200
-        }
+
+        # Pokud uživatel existuje tak zkontrolujeme zda není nastavený login pass, případně zašleme staticky nastavený účet
         if Config.LOGIN_PASS:
-            returner = {
-                "username": staticUserEmail,
-                "password": staticUserPassword,
-                "statusCode": 200
-            }
-        return returner
+            return return_value(200, "LOGIN_PASS Zapnutý - používám statické hodnoty", username=staticUserEmail, password=staticUserPassword)
+
+        print(f"{filteredUser.Id} {filteredUser.Email}")
+
+        return return_value(200, "Uživatel byl úspěšně načtený s databáze.", username=filteredUser.Email, password=filteredUser.Password)
 
     except:
+        # Pokud uživatel v DB neexistuje program pokračuje zde
+        # Vytvoříme nejdříve uživatele a k němu poté session
         db.session.add(usr)
         db.session.add(session)
         db.session.commit()
+
+        # Pokud je nastavený login pass tak vracíme staticky uložené údaje
+        if Config.LOGIN_PASS:
+            return return_value(200, "LOGIN_PASS Zapnutý - používám statické hodnoty", username=staticUserEmail, password=staticUserPassword)
 
         # JSON body
         data = {
@@ -64,32 +66,25 @@ def create_user():
             ## POST request to Forti (create guest user) ##
             result = req.post(Config.API_URL, json=data, headers={
                 "Authorization": f"Bearer {Config.API_TOKEN}"}, verify=False, timeout=3)
+
             logger.info(result.json())
 
             if result.status_code == 200:
-                returner = {
-                    "username": email,
-                    "password": password,
-                    "statusCode": 200
-                }
+                return return_value(200, "Uživatel úšpěšně vytvořený ve FG", username=email, password=password)
 
-                if Config.LOGIN_PASS:
-                    returner = {
-                        "username": staticUserEmail,
-                        "password": staticUserPassword,
-                        "statusCode": 200
-                    }
-
-                return returner
             else:
-                returner = {
-                    "errorMessage": "Tento email je již registován.",
-                    "statusCode": 500
-                }
-                return returner
+                return return_value(500, "Nebylo možné vytvořit uživatele na síti, prosíme opakujte akci později.")
         except:
-            returner = {
-                "errorMessage": "Nepodařilo se připojit k této síti, opakujte akci později.",
-                "statusCode": 500
-            }
-            return returner
+            return return_value(500, "Nebylo možné se spojit s FG, prosíme opakujte akci později.")
+
+
+def return_value(statusCode: int, message: str, **user) -> dict:
+    result = {
+        "status": statusCode,
+        "message": message,
+        "data": {
+            "username": user["username"],
+            "password": user["password"]
+        }
+    }
+    return result
