@@ -12,7 +12,7 @@ import {
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function ModeToggle() {
+export function ThemeSwitchPopover() {
    const { setTheme } = useTheme();
 
    return (
@@ -25,16 +25,27 @@ export function ModeToggle() {
             </Button>
          </DropdownMenuTrigger>
          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setTheme("light")}>
-               Light
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("dark")}>
-               Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>
-               System
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
          </DropdownMenuContent>
       </DropdownMenu>
    );
+}
+
+export function ThemeSwitch() {
+   const { theme, setTheme } = useTheme();
+   if (theme === "dark") {
+      return (
+         <Button variant="ghost" size="icon" onClick={() => setTheme("light")}>
+            <Sun className="h-4 w-4" />
+         </Button>
+      );
+   } else {
+      return (
+         <Button variant="ghost" size="icon" onClick={() => setTheme("dark")}>
+            <Moon className="h-4 w-4" />
+         </Button>
+      );
+   }
 }
