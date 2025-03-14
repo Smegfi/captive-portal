@@ -8,5 +8,6 @@
    "semi": true,
    "singleAttributePerLine": false,
    "bracketSameLine": true,
-   "objectWrap": "collapse"
+   "objectWrap": "collapse",
+   "endOfLine": "lf"
 }
