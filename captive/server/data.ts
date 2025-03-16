@@ -12,3 +12,12 @@ export const FortigateRequest = z.object({
 })
 
 export type FortigateRequestType = z.infer<typeof FortigateRequest>
+
+export const device = z.object({
+   deviceName: z.string(),
+   ip: z.string(),
+   mac: z.string(),
+   createdAt: z.string().datetime(),  
+})
+
+export type DeviceType = z.infer<typeof device>
