@@ -14,10 +14,22 @@ export const FortigateRequest = z.object({
 export type FortigateRequestType = z.infer<typeof FortigateRequest>
 
 export const device = z.object({
-   deviceName: z.string(),
-   ip: z.string(),
    mac: z.string(),
    createdAt: z.string().datetime(),  
 })
 
 export type DeviceType = z.infer<typeof device>
+
+export const devices: DeviceType[] = [];
+
+export const session = z.object({
+   id: z.string(),
+   userId: z.string(),
+   networkId: z.string(),
+   deviceId: z.string(),
+   loginTime: z.string().datetime(),
+   magic: z.string(),
+   createdAt: z.string().datetime(),
+})
+
+export type SessionType = z.infer<typeof session>
