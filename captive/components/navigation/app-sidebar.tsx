@@ -50,7 +50,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
    return (
-      <Sidebar collapsible="icon" {...props}>
+      <Sidebar {...props}>
          <SidebarHeader>
             <SidebarMenu>
                <SidebarMenuItem>
@@ -72,7 +72,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <NavMain items={data.navMain} />
          </SidebarContent>
          <SidebarFooter>
-            <NavUser user={data.user} />
+            {/* <NavUser user={data.user} /> */}
          </SidebarFooter>
          <SidebarRail />
       </Sidebar>

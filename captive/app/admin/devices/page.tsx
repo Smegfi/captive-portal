@@ -7,7 +7,7 @@ export default async function Page() {
          <h3 className="text-2xl font-semibold tracking-tight">Zařízení</h3>
 
          <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableCaption>Seznam zařízení</TableCaption>
             <TableHeader>
                <TableRow>
                   <TableHead className="w-[100px]">Název zařízení</TableHead>
