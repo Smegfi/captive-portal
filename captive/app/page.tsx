@@ -63,7 +63,7 @@ export default async function Page() {
                         <Dialog>
                            <DialogTrigger asChild>
                               <label className="text-sm text-muted-foreground mt-8">
-                                 Kliknutím na tlačítko <Badge variant="default">Připojit se</Badge> souhlasíte{" "}
+                                 Kliknutím na tlačítko <strong className="text-foreground">Připojit se</strong> souhlasíte{" "}
                                  <span className="underline text-foreground">s podmínkami použítí Wi-Fi sítě.</span>
                               </label>
                            </DialogTrigger>
