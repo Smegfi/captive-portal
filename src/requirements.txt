@@ -20,7 +20,7 @@ psycopg2-binary==2.9.10
 py-healthcheck==1.10.1
 python-dotenv==1.1.0
 requests==2.32.3
-setuptools==78.1.0
+setuptools==80.0.0
 six==1.17.0
 smmap==5.0.2
 SQLAlchemy==2.0.40
