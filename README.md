@@ -52,3 +52,14 @@ services:
 1. /api/create-user - vytvoří uživatele na FG
 1. /api-post - testovací stránka API
 1. /api-get - testovací stránka API
+
+
+## Application Roles
+
+Základní rozdělení uživatelských rolí v rámci captive-portál apliakce
+
+| Název | Popis | Key |
+| ----- | ----- | --- |
+| Admin | Plné práva v systému ke všem činnostem | `admin` |
+| Viewer  | Uživatel má právo zobrazovat všechny tabulky a provádět export, avšak nemá oprávnění měnit data v tabulkách | `viewer` |
+| User | Uživatel, kteří přistupuje k veřejné wifi síti, má právo pouze zobrazit vstupní formulář | `user` |
