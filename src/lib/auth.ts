@@ -23,9 +23,7 @@ export const auth = betterAuth({
             role: {
                 type: "string",
                 required: true,
-                default: "user",
-                input: false,
-                options: ["admin", "viewer", "user"],
+                default: "user"
             },            
         },
     },
