@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { VscAzure } from "react-icons/vsc";
 import { authClient } from "@/lib/auth-client"
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"form">) {
+  const params = useSearchParams();
+  const redirectTo = params.get("redirectTo");
 
   async function handleRegister() {
     await authClient.signUp.email({
@@ -25,7 +27,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"form">)
       email: "tomas.jedno@praha10.cz",
       password: "123456Ab",
     });
-    redirect("/dashboard");
+    redirect(redirectTo || "/dashboard");
   }
 
   return (
