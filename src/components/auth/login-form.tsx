@@ -12,22 +12,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"form">)
   const params = useSearchParams();
   const redirectTo = params.get("redirectTo");
 
-  async function handleRegister() {
-    await authClient.signUp.email({
-      name: "Tomáš Jedno",
-      email: "tomas.jedno@praha10.cz",
-      password: "123456Ab",
-      image: "https://github.com/shadcn.png",
-      role: "admin"
-    });
-  }
-
   async function handleLogin() {
     await authClient.signIn.email({
       email: "tomas.jedno@praha10.cz",
       password: "123456Ab",
     });
-    redirect(redirectTo || "/dashboard");
+    redirect(redirectTo || "/admin/dashboard");
   }
 
   return (
@@ -49,7 +39,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"form">)
               <Label htmlFor="password">Heslo</Label>
               <a
                 href="#"
-                className="ml-auto text-sm underline-offset-4 hover:underline"
+                className="ml-auto text-sm underline-offset-4 hover:underline text-muted-foreground"
               >
                 Zapomněli jste heslo?
               </a>
@@ -74,7 +64,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"form">)
           Přihlásit se s Azure
         </Button>
 
-        <Button variant="outline" className="w-full" type="button" onClick={handleRegister}>
+        <Button variant="outline" className="w-full" type="button" onClick={() => redirect("/register")}>
           Registrovat
         </Button>
       </div>
