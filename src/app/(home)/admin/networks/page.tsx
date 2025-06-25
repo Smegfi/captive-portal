@@ -1,3 +1,3 @@
 export default function Page() {
-    return <div>Sessions</div>;
+   return <div>Networks</div>;
 }
