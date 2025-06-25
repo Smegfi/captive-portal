@@ -1,5 +1,6 @@
 import { LoginForm } from "@/components/auth/login-form";
 import { AuthHeader } from "@/components/auth/auth-header";
+import { Suspense } from "react";
 
 export default function Page() {
    return (
@@ -8,7 +9,9 @@ export default function Page() {
             <AuthHeader />
             <div className="flex flex-1 items-center justify-center">
                <div className="w-full max-w-xs">
-                  <LoginForm />
+                  <Suspense fallback={<div>Loading...</div>}>
+                     <LoginForm />
+                  </Suspense>
                </div>
             </div>
          </div>
