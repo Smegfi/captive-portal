@@ -2,9 +2,9 @@
 
 import { db } from "@/db/db";
 import { actionClient } from "@/lib/safe-action";
-import { guestLoginSchema } from "@/server/actions-scheme/guest-user/schema";
+import { guestLoginSchema, listGuestSchema } from "@/server/actions-scheme/guest-user/schema";
 import { guestUser } from "@/db/schema/guest-user";
-import { eq } from "drizzle-orm";
+import { eq, ilike } from "drizzle-orm";
 import { returnValidationErrors } from "next-safe-action";
 
 export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved } }) => {
@@ -29,4 +29,16 @@ export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).actio
       .returning();
 
    return guestLogin[0];
+});
+
+export const listGuestUserAction = actionClient.inputSchema(listGuestSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
+   const offset = (page - 1) * itemsPerPage;
+
+   const guestUsers = await db.query.guestUser.findMany({
+      limit: itemsPerPage,
+      offset,
+      where: ilike(guestUser.email, `%${search}%`),
+   });
+
+   return guestUsers;
 });
