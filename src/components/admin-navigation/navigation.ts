@@ -1,4 +1,4 @@
-import { LayoutDashboard, Monitor, Network, Settings, Users } from "lucide-react";
+import { LayoutDashboard, Monitor, Network, Radio, Settings, Users } from "lucide-react";
 
 export const data = {
    user: {
@@ -11,6 +11,11 @@ export const data = {
          title: "Dashboard",
          url: "/admin",
          icon: LayoutDashboard,
+      },
+      {
+         title: "Připojení",
+         url: "/admin/connection",
+         icon: Radio,
       },
       {
          title: "Sítě",

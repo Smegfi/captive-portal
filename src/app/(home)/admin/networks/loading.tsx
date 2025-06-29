@@ -1,5 +1,5 @@
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Wifi } from "lucide-react";
+import { Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewNetwork from "@/components/admin/networks/new-network";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ export default function NetworksLoading() {
                      <Skeleton className="h-4 w-1/2" />
                   </CardDescription>
                   <CardAction>
-                     <Wifi />
+                     <Skeleton className="h-8 w-8" />
                   </CardAction>
                </CardHeader>
                <CardFooter className="flex gap-2 items-center justify-end">
