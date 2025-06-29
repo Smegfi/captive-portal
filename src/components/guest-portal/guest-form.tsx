@@ -13,18 +13,20 @@ export function GuestForm() {
    const [loading, setLoading] = useState(false);
 
    return (
-      <Card>
+      <Card className="bg-transparent backdrop-blur-md border-white/20">
          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">Veřejná WiFi</CardTitle>
-            <CardDescription className="text-center">Pro připojení k bezplatné Wi-Fi zadejte svou emailovou adresu</CardDescription>
+            <CardTitle className="text-2xl font-bold text-center text-white lg:text-primary">Veřejná WiFi</CardTitle>
+            <CardDescription className="text-center text-white/70 lg:text-muted-foreground">
+               Pro připojení k bezplatné Wi-Fi zadejte svou emailovou adresu
+            </CardDescription>
          </CardHeader>
          <CardContent className="space-y-6">
             <div className="flex flex-col gap-2">
-               <Label>Email</Label>
-               <Input type="email" placeholder="email@example.com" className="w-full" />
+               <Label className="text-white">Email</Label>
+               <Input type="email" placeholder="email@example.com" className="w-full bg-background" />
             </div>
             <div className="flex flex-col gap-2">
-               <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
+               <Label className="bg-background hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
                   <Checkbox className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700" />
                   <div className="grid gap-1.5 font-normal">
                      <p className="text-sm leading-none font-medium">Přijímat emailové upozornění</p>
@@ -36,7 +38,11 @@ export function GuestForm() {
             </div>
          </CardContent>
          <CardFooter>
-            <Button className="w-1/2 mx-auto" disabled={loading} onClick={() => setLoading(true)}>
+            <Button
+               className="w-1/2 mx-auto bg-background text-primary lg:bg-primary lg:text-primary-foreground"
+               disabled={loading}
+               onClick={() => setLoading(true)}
+            >
                {loading ? (
                   <>
                      <Loader2 className="animate-spin" />
