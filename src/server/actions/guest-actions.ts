@@ -1,21 +1,18 @@
 "use server";
 
 import { db } from "@/db/db";
+import { guestUser } from "@/db/schema/guest-user";
 import { actionClient } from "@/lib/safe-action";
 import { guestLoginSchema, listGuestSchema } from "@/server/actions-scheme/guest-user/schema";
-import { guestUser } from "@/db/schema/guest-user";
 import { eq, ilike } from "drizzle-orm";
-import { returnValidationErrors } from "next-safe-action";
 
 export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved } }) => {
    const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
 
+   console.log("SERVER ACTION IS EXECUTING");
+
    if (existingGuest.length > 0) {
-      returnValidationErrors(guestLoginSchema, {
-         email: {
-            _errors: ["Tento email již existuje."],
-         },
-      });
+      return existingGuest[0];
    }
 
    const guestLogin = await db
