@@ -1,5 +1,6 @@
 import { pgTable, text, timestamp, serial, integer } from "drizzle-orm/pg-core";
 import { guestUser } from "@/db/schema/guest-user";
+import { relations } from "drizzle-orm";
 
 export const device = pgTable("device", {
    id: serial("id").primaryKey(),
@@ -7,3 +8,7 @@ export const device = pgTable("device", {
    macAddress: text("mac_address").notNull().unique(),
    firstSeenAt: timestamp("first_seen").notNull(),
 });
+
+export const deviceRelations = relations(device, ({ one }) => ({
+   guestUser: one(guestUser, { fields: [device.userId], references: [guestUser.id] }),
+}));

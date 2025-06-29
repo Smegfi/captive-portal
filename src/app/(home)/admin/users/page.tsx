@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { listGuestUserAction } from "@/server/actions/guest-actions";
 import Filter from "@/components/admin/users/filter";
+import { Badge } from "@/components/ui/badge";
 
 interface PageProps {
    searchParams: Promise<{
@@ -43,6 +44,7 @@ export default async function Page({ searchParams }: PageProps) {
                   <TableHead className="w-[150px]">Marketing</TableHead>
                   <TableHead className="w-[200px]">Vytvořen</TableHead>
                   <TableHead className="w-[200px]">Upraven</TableHead>
+                  <TableHead className="w-[100px]">Zařízení</TableHead>
                </TableRow>
             </TableHeader>
             <TableBody>
@@ -55,6 +57,9 @@ export default async function Page({ searchParams }: PageProps) {
                      </TableCell>
                      <TableCell>{guestUser.createdAt.toLocaleString("cs-CZ")}</TableCell>
                      <TableCell>{guestUser.updatedAt.toLocaleString("cs-CZ")}</TableCell>
+                     <TableCell>
+                        <Badge>{guestUser.devices.length}</Badge>
+                     </TableCell>
                   </TableRow>
                ))}
             </TableBody>

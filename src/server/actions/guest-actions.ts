@@ -38,6 +38,13 @@ export const listGuestUserAction = actionClient.inputSchema(listGuestSchema).act
       limit: itemsPerPage,
       offset,
       where: ilike(guestUser.email, `%${search}%`),
+      with: {
+         devices: {
+            columns: {
+               id: true,
+            },
+         },
+      },
    });
 
    return guestUsers;
