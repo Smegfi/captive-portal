@@ -1,5 +1,6 @@
 import { RegisterForm } from "@/components/auth/register-form";
 import { AuthHeader } from "@/components/auth/auth-header";
+import Image from "next/image";
 
 export default function Page() {
    return (
@@ -13,7 +14,7 @@ export default function Page() {
             </div>
          </div>
          <div className="bg-muted relative hidden lg:block">
-            <img src="/login-background.webp" alt="Image" className="absolute inset-0 h-full w-full object-cover brightness-75 grayscale" />
+            <Image src="/login-background.webp" alt="Image" className="absolute inset-0 h-full w-full object-cover brightness-75 grayscale" fill />
          </div>
       </div>
    );
