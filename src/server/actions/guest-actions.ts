@@ -9,8 +9,6 @@ import { eq, ilike } from "drizzle-orm";
 export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved } }) => {
    const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
 
-   console.log("SERVER ACTION IS EXECUTING");
-
    if (existingGuest.length > 0) {
       return existingGuest[0];
    }

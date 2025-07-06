@@ -14,7 +14,7 @@ export default function Page() {
             </div>
          </div>
          <div className="bg-muted relative hidden lg:block">
-            <Image src="/login-background.webp" alt="Image" className="absolute inset-0 h-full w-full object-cover brightness-75 grayscale" fill />
+            <Image src="/login-background.webp" alt="Image" className="absolute inset-0 h-full w-full object-cover" fill />
          </div>
       </div>
    );

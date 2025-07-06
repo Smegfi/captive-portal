@@ -5,4 +5,4 @@ export { verification } from "@/db/schema/verification";
 export { guestUser, guestUserRelations } from "@/db/schema/guest-user";
 export { device, deviceRelations } from "@/db/schema/device";
 export { network } from "@/db/schema/network";
-export { connection } from "@/db/schema/connection";
+export { connection, connectionRelations } from "@/db/schema/connection";

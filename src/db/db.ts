@@ -10,10 +10,6 @@ if (!connectionString) {
    throw new Error("DATABASE_URL is not set");
 }
 
-if (!connectionString.startsWith("postgres://")) {
-   throw new Error("DATABASE_URL is not a valid connection string");
-}
-
 // Disable prefetch as it is not supported for "Transaction" pool mode
 export const client = postgres(connectionString, { prepare: false });
 export const db = drizzle(client, { schema });

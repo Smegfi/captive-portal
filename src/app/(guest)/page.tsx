@@ -14,7 +14,7 @@ export default async function Page() {
             </div>
          </div>
          <div className="bg-muted relative hidden lg:block">
-            <Image src="/guest-bg.webp" alt="Image" className="absolute inset-0 h-full w-full object-cover brightness-75 grayscale" fill />
+            <Image src="/guest-bg.webp" alt="Image" className="absolute inset-0 h-full w-full object-cover" fill />
          </div>
       </div>
    );

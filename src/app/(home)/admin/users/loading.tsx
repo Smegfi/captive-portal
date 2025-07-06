@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
+import { Filter, FileDown } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -10,6 +10,11 @@ export default function Loading() {
          <div>
             <div className="flex gap-4">
                <Skeleton className="w-full h-10 rounded-lg" />
+
+               <Button>
+                  <Filter />
+                  <span>Filtrovat</span>
+               </Button>
 
                <Button>
                   <FileDown />
