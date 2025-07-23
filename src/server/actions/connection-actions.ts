@@ -2,23 +2,26 @@
 
 import { db } from "@/db/db";
 import { connection } from "@/db/schema/connection";
-import { actionClient } from "@/lib/safe-action";
+import { authActionClient } from "@/lib/safe-action";
 import { listConnectionSchema } from "@/server/actions-scheme/connection/schema";
 import { ilike } from "drizzle-orm";
 
-export const listConnectionAction = actionClient.inputSchema(listConnectionSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
-   const offset = (page - 1) * itemsPerPage;
+export const listConnectionAction = authActionClient
+   .metadata({ role: "admin" })
+   .inputSchema(listConnectionSchema)
+   .action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
+      const offset = (page - 1) * itemsPerPage;
 
-   const connections = await db.query.connection.findMany({
-      limit: itemsPerPage,
-      offset,
-      where: ilike(connection.clientIp, `%${search}%`),
+      const connections = await db.query.connection.findMany({
+         limit: itemsPerPage,
+         offset,
+         where: ilike(connection.clientIp, `%${search}%`),
+      });
+
+      return connections;
    });
 
-   return connections;
-});
-
-export const getLatestConnectionsAction = actionClient.action(async () => {
+export const getLatestConnectionsAction = authActionClient.metadata({ role: "admin" }).action(async () => {
    const connections = await db.query.connection.findMany({
       with: {
          device: {
@@ -28,6 +31,7 @@ export const getLatestConnectionsAction = actionClient.action(async () => {
          },
          network: true,
       },
+      limit: 20,
    });
 
    return connections;

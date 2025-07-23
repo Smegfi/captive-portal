@@ -1,6 +1,6 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import Link from "next/link";
 import { LucideIcon } from "lucide-react";
+import Link from "next/link";
 
 interface NavMainProps {
    items: {

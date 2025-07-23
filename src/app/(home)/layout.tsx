@@ -1,20 +1,20 @@
-import type { Metadata } from "next";
-import "@public/globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { SiteHeader } from "@/components/admin-navigation/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/admin-navigation/app-sidebar";
+import { SiteHeader } from "@/components/admin-navigation/site-header";
+import { ThemeProvider } from "@/components/theme-provider";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import "@public/globals.css";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
    title: "Praha 10 - Captive Portal",
    description: "Praha 10 - Captive Portal",
 };
 
-export default function RootLayout({
-   children,
-}: Readonly<{
+interface RootLayoutProps {
    children: React.ReactNode;
-}>) {
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
    return (
       <>
          <html lang="en" suppressHydrationWarning>

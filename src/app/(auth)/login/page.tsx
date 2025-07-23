@@ -1,18 +1,26 @@
-import { LoginForm } from "@/components/auth/login-form";
 import { AuthHeader } from "@/components/auth/auth-header";
-import { Suspense } from "react";
+import { LoginForm } from "@/components/auth/login-form";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+export default async function Page() {
+   const session = await auth.api.getSession({
+      headers: await headers(),
+   });
+
+   if (session !== null) {
+      redirect("/admin");
+   }
+
    return (
       <div className="grid min-h-svh lg:grid-cols-2">
          <div className="flex flex-col gap-4 p-6 md:p-10">
             <AuthHeader />
             <div className="flex flex-1 items-center justify-center">
                <div className="w-full max-w-xs">
-                  <Suspense fallback={<div>Loading...</div>}>
-                     <LoginForm />
-                  </Suspense>
+                  <LoginForm />
                </div>
             </div>
          </div>

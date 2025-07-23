@@ -1,12 +1,12 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { VscAzure } from "react-icons/vsc";
 import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
 import { redirect, useSearchParams } from "next/navigation";
+import { VscAzure } from "react-icons/vsc";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"form">) {
    const params = useSearchParams();
@@ -14,10 +14,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"form">)
 
    async function handleLogin() {
       await authClient.signIn.email({
-         email: "tomas.jedno@praha10.cz",
-         password: "123456Ab",
+         email: "tomas@jedno.cz",
+         password: "Heslo.01",
       });
-      redirect(redirectTo || "/admin/dashboard");
+      redirect(redirectTo || "/admin");
    }
 
    return (
