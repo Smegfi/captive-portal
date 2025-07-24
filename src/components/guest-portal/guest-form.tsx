@@ -3,19 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormControl, FormLabel, FormItem, FormField, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { guestLoginAction } from "@/server/actions/guest-actions";
 import { guestLoginSchema } from "@/server/actions-scheme/guest-user/schema";
+import { guestLoginAction } from "@/server/actions/guest-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export function GuestForm() {
    const [loading, setLoading] = useState(false);
+
    const form = useForm<z.infer<typeof guestLoginSchema>>({
       resolver: zodResolver(guestLoginSchema),
       defaultValues: {
@@ -29,10 +30,6 @@ export function GuestForm() {
       await guestLoginAction(data);
       setLoading(false);
    }
-
-   useEffect(() => {
-      console.log(form.formState.errors);
-   }, [form.formState.errors]);
 
    return (
       <Card>
