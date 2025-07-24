@@ -1,9 +1,14 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import CurrentStatus from "@/components/admin/connection/current-status";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getLatestConnectionsAction } from "@/server/actions/connection-actions";
 
 export default async function Page() {
    const connections = await getLatestConnectionsAction();
+
+   if (connections.serverError) {
+      return <div>Error: {connections.serverError.message}</div>;
+   }
+
    return (
       <div className="space-y-4">
          <h1 className="text-3xl font-bold flex items-center gap-4">Připojení</h1>

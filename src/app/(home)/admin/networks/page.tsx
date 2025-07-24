@@ -10,6 +10,10 @@ import { Search, Wifi, WifiOff } from "lucide-react";
 export default async function Page() {
    const networks = await listNetworkAction({ itemsPerPage: 10, page: 1, search: "" });
 
+   if (networks.serverError) {
+      return <div>Error: {networks.serverError.message}</div>;
+   }
+
    return (
       <div className="space-y-4">
          <h1 className="text-3xl font-bold">Sítě</h1>

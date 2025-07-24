@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Filter from "@/components/admin/devices/filter";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { listDeviceAction } from "@/server/actions/device-actions";
+import { FileDown } from "lucide-react";
 
 interface PageProps {
    searchParams: Promise<{
@@ -19,6 +19,10 @@ export default async function Page({ searchParams }: PageProps) {
    const querySearch = search || "";
 
    const devices = await listDeviceAction({ itemsPerPage, page: queryPage, search: querySearch });
+
+   if (devices.serverError) {
+      return <div>Error: {devices.serverError.message}</div>;
+   }
 
    return (
       <div className="space-y-4">

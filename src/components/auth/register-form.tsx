@@ -1,16 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { redirect } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { authClient } from "@/lib/auth-client";
 import { RegisterSchema, RegisterSchemaType } from "@/server/actions-scheme/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export function RegisterForm() {
    const [isLoading, setIsLoading] = useState(false);
@@ -97,7 +98,7 @@ export function RegisterForm() {
                   <FormItem>
                      <FormLabel>Heslo</FormLabel>
                      <FormControl>
-                        <Input {...field} />
+                        <Input {...field} type="password" />
                      </FormControl>
                      <FormMessage />
                   </FormItem>
@@ -123,8 +124,8 @@ export function RegisterForm() {
             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                <span className="bg-background text-muted-foreground relative z-10 px-2">Máte jit účet?</span>
             </div>
-            <Button variant="outline" className="w-full" onClick={() => redirect("/login")}>
-               Přihlásit se
+            <Button variant="outline" className="w-full" asChild>
+               <Link href="/login">Přihlásit se</Link>
             </Button>
          </div>
       </Form>

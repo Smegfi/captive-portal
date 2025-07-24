@@ -1,8 +1,10 @@
 import { db } from "@/db/db";
-import { ForbiddenError, UnauthorizedError } from "@/lib/safe-action";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { headers } from "next/headers";
+
+const timeSettings = {
+   oneDay: 60 * 60 * 24, // = 86 400 seconds (one day)
+};
 
 export const auth = betterAuth({
    database: drizzleAdapter(db, {
@@ -28,25 +30,11 @@ export const auth = betterAuth({
          },
       },
    },
+
+   session: {
+      expiresIn: timeSettings.oneDay,
+      disableSessionRefresh: true,
+   },
 });
 
 export type Session = typeof auth.$Infer.Session;
-
-/**
- * Zkontroluje, zda má uživatel oprávnění k danému obsahu
- * @param role - Role, kterou chceme zkontrolovat
- * @throws Error pokud uživatel nemá oprávnění
- */
-export async function checkUserRole(role: string) {
-   const session = await auth.api.getSession({
-      headers: await headers(),
-   });
-
-   if (session === null) {
-      throw new UnauthorizedError("Není příhlášen žádný uživatel");
-   }
-
-   if (session.user.role !== role) {
-      throw new ForbiddenError("Nemáte oprávnění k tomuto obsahu");
-   }
-}

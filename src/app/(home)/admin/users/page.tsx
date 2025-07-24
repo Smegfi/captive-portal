@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { listGuestUserAction } from "@/server/actions/guest-actions";
 import Filter from "@/components/admin/users/filter";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { listGuestUserAction } from "@/server/actions/guest-actions";
+import { FileDown } from "lucide-react";
 
 interface PageProps {
    searchParams: Promise<{
@@ -21,6 +21,10 @@ export default async function Page({ searchParams }: PageProps) {
    const querySearch = search || "";
 
    const guestUsers = await listGuestUserAction({ itemsPerPage, page: queryPage, search: querySearch });
+
+   if (guestUsers.serverError) {
+      return <div>Error: {guestUsers.serverError.message}</div>;
+   }
 
    return (
       <div className="space-y-4">

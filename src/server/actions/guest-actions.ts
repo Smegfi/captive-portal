@@ -2,11 +2,11 @@
 
 import { db } from "@/db/db";
 import { guestUser } from "@/db/schema/guest-user";
-import { actionClient } from "@/lib/safe-action";
+import { authActionClient } from "@/lib/safe-action";
 import { guestLoginSchema, listGuestSchema } from "@/server/actions-scheme/guest-user/schema";
 import { eq, ilike } from "drizzle-orm";
 
-export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved } }) => {
+export const guestLoginAction = authActionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved } }) => {
    const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
 
    if (existingGuest.length > 0) {
@@ -26,7 +26,7 @@ export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).actio
    return guestLogin[0];
 });
 
-export const listGuestUserAction = actionClient.inputSchema(listGuestSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
+export const listGuestUserAction = authActionClient.inputSchema(listGuestSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
    const offset = (page - 1) * itemsPerPage;
 
    const guestUsers = await db.query.guestUser.findMany({
