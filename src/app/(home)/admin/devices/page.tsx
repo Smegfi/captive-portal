@@ -44,6 +44,7 @@ export default async function Page({ searchParams }: PageProps) {
                   <TableHead className="w-[100px]">ID</TableHead>
                   <TableHead>MAC</TableHead>
                   <TableHead>Uživatel</TableHead>
+                  <TableHead>Zařízení</TableHead>
                   <TableHead className="w-[250px]">Naposled přihlášeno</TableHead>
                </TableRow>
             </TableHeader>
@@ -53,6 +54,9 @@ export default async function Page({ searchParams }: PageProps) {
                      <TableCell>{device.id}</TableCell>
                      <TableCell>{device.macAddress}</TableCell>
                      <TableCell>{device.guestUser?.email}</TableCell>
+                     <TableCell>
+                        <pre className="text-xs">{JSON.stringify(device.device, null, 2)}</pre>
+                     </TableCell>
                      <TableCell>{device.firstSeenAt?.toLocaleString("cs-CZ")}</TableCell>
                   </TableRow>
                ))}

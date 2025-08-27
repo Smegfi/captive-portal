@@ -3,6 +3,65 @@ import { z } from "zod";
 export const guestLoginSchema = z.object({
    email: z.string().email().nonempty(),
    marketingApproved: z.boolean().optional(),
+   device: z
+      .object({
+         userAgent: z.string().optional(),
+         browser: z.object({
+            name: z.string().optional(),
+            version: z.string().optional(),
+            major: z.string().optional(),
+            type: z.string().optional(),
+         }),
+         device: z.object({
+            type: z.string().optional(),
+            model: z.string().optional(),
+            vendor: z.string().optional(),
+         }),
+         os: z.object({
+            name: z.string().optional(),
+            version: z.string().optional(),
+         }),
+         cpu: z.object({
+            architecture: z.string().optional(),
+         }),
+         engine: z.object({
+            name: z.string().optional(),
+            version: z.string().optional(),
+         }),
+      })
+      .optional(),
+});
+
+export const createDeviceSchema = z.object({
+   userId: z.number().nonnegative().optional(),
+   device: z
+      .object({
+         userAgent: z.string().optional(),
+         browser: z.object({
+            name: z.string().optional(),
+            version: z.string().optional(),
+            major: z.string().optional(),
+            type: z.string().optional(),
+         }),
+         device: z.object({
+            type: z.string().optional(),
+            model: z.string().optional(),
+            vendor: z.string().optional(),
+         }),
+         os: z.object({
+            name: z.string().optional(),
+            version: z.string().optional(),
+         }),
+         cpu: z.object({
+            architecture: z.string().optional(),
+         }),
+         engine: z.object({
+            name: z.string().optional(),
+            version: z.string().optional(),
+         }),
+      })
+      .optional(),
+   macAddress: z.string().optional(),
 });
 
 export const listGuestSchema = z.object({

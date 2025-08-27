@@ -1,12 +1,14 @@
 "use server";
 
 import { db } from "@/db/db";
+import { device as deviceTable } from "@/db/schema/device";
 import { guestUser } from "@/db/schema/guest-user";
 import { authActionClient } from "@/lib/safe-action";
-import { guestLoginSchema, listGuestSchema } from "@/server/actions-scheme/guest-user/schema";
+import { createDeviceSchema, guestLoginSchema, listGuestSchema } from "@/server/actions-scheme/guest-user/schema";
 import { eq, ilike } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
-export const guestLoginAction = authActionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved } }) => {
+export const guestLoginAction = authActionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved, device } }) => {
    const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
 
    if (existingGuest.length > 0) {
@@ -22,6 +24,15 @@ export const guestLoginAction = authActionClient.inputSchema(guestLoginSchema).a
          updatedAt: new Date(),
       })
       .returning();
+
+   await createDeviceAction({
+      device: device,
+      macAddress: "00:00:00:00:00:00",
+      userId: guestLogin[0].id,
+   });
+
+   revalidatePath("/admin/devices");
+   revalidatePath("/admin/users");
 
    return guestLogin[0];
 });
@@ -43,6 +54,17 @@ export const listGuestUserAction = authActionClient.inputSchema(listGuestSchema)
    });
 
    return guestUsers;
+});
+
+export const createDeviceAction = authActionClient.inputSchema(createDeviceSchema).action(async ({ parsedInput: { device, macAddress, userId } }) => {
+   const result = await db.insert(deviceTable).values({
+      userId: userId,
+      macAddress: macAddress ?? "",
+      device: device ?? {},
+      firstSeenAt: new Date(),
+   });
+
+   return result;
 });
 
 /**

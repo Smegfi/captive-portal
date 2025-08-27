@@ -16,7 +16,7 @@ interface PageProps {
 
 export default async function Page({ searchParams }: PageProps) {
    const { items, page, search } = await searchParams;
-   const itemsPerPage = parseInt(items || "10");
+   const itemsPerPage = parseInt(items || "20");
    const queryPage = parseInt(page || "1");
    const querySearch = search || "";
 
