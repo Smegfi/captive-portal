@@ -1,5 +1,4 @@
 import { AuthHeader } from "@/components/auth/auth-header";
-import { DeviceLoader } from "@/components/guest-portal/device-loader";
 import { GuestForm } from "@/components/guest-portal/guest-form";
 import Image from "next/image";
 
@@ -21,7 +20,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
          <div className="bg-muted relative hidden lg:block">
             <Image src="/guest-bg.webp" alt="Image" className="absolute inset-0 h-full w-full object-cover" fill />
          </div>
-         <DeviceLoader />
       </div>
    );
 }

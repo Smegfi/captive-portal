@@ -1,5 +1,6 @@
 "use client";
 
+import { FortiLoader } from "@/components/guest-portal/forti-loader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -31,6 +32,16 @@ export function GuestForm() {
             os: os,
             cpu: cpu,
             engine: engine,
+         },
+         connection: {
+            post: "",
+            magic: "",
+            usermac: "",
+            apmac: "",
+            apip: "",
+            ssid: "",
+            apname: "",
+            bssid: "",
          },
       },
    });
@@ -91,6 +102,7 @@ export function GuestForm() {
                         )}
                      />
                   </div>
+                  <FortiLoader />
                </form>
             </Form>
          </CardContent>

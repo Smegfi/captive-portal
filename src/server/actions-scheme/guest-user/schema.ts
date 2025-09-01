@@ -30,6 +30,18 @@ export const guestLoginSchema = z.object({
          }),
       })
       .optional(),
+   connection: z
+      .object({
+         post: z.string().nonempty(),
+         magic: z.string().nonempty(),
+         usermac: z.string().nonempty(),
+         apmac: z.string().nonempty(),
+         apip: z.string().nonempty(),
+         ssid: z.string().nonempty(),
+         apname: z.string().nonempty(),
+         bssid: z.string().nonempty(),
+      })
+      .optional(),
 });
 
 export const createDeviceSchema = z.object({
@@ -68,6 +80,21 @@ export const listGuestSchema = z.object({
    itemsPerPage: z.number(),
    page: z.number(),
    search: z.string(),
+});
+
+export const createConnectionSchema = z.object({
+   deviceId: z.number().nonnegative(),
+   networkId: z.number().nonnegative(),
+   connection: z.object({
+      post: z.string().nonempty(),
+      magic: z.string().nonempty(),
+      usermac: z.string().nonempty(),
+      apmac: z.string().nonempty(),
+      apip: z.string().nonempty(),
+      ssid: z.string().nonempty(),
+      apname: z.string().nonempty(),
+      bssid: z.string().nonempty(),
+   }),
 });
 
 /**

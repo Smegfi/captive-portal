@@ -1,13 +1,13 @@
-import { pgTable, text, serial, integer } from "drizzle-orm/pg-core";
 import { device } from "@/db/schema/device";
 import { network } from "@/db/schema/network";
 import { relations } from "drizzle-orm";
+import { integer, jsonb, pgTable, serial } from "drizzle-orm/pg-core";
 
 export const connection = pgTable("connection", {
    id: serial("id").primaryKey(),
    deviceId: integer("device_id").references(() => device.id),
    networkId: integer("network_id").references(() => network.id),
-   clientIp: text("client_ip").notNull(),
+   connection: jsonb("connection").notNull(),
 });
 
 export const connectionRelations = relations(connection, ({ one }) => ({
