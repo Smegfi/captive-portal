@@ -20,7 +20,6 @@ export default async function Page() {
                   <TableHead>ID</TableHead>
                   <TableHead>Zařízení</TableHead>
                   <TableHead>Síť</TableHead>
-                  <TableHead>IP Adresa</TableHead>
                   <TableHead>Vytvořeno</TableHead>
                </TableRow>
             </TableHeader>
@@ -30,7 +29,6 @@ export default async function Page() {
                      <TableCell>{connection.id}</TableCell>
                      <TableCell>{connection.device?.macAddress}</TableCell>
                      <TableCell>{connection.network?.name}</TableCell>
-                     <TableCell>{connection.clientIp}</TableCell>
                      <TableCell>{connection.device?.guestUser?.updatedAt.toLocaleString("cs-CZ")}</TableCell>
                   </TableRow>
                ))}
