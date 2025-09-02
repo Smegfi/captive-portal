@@ -3,45 +3,41 @@ import { z } from "zod";
 export const guestLoginSchema = z.object({
    email: z.string().email().nonempty(),
    marketingApproved: z.boolean().optional(),
-   device: z
-      .object({
-         userAgent: z.string().optional(),
-         browser: z.object({
-            name: z.string().optional(),
-            version: z.string().optional(),
-            major: z.string().optional(),
-            type: z.string().optional(),
-         }),
-         device: z.object({
-            type: z.string().optional(),
-            model: z.string().optional(),
-            vendor: z.string().optional(),
-         }),
-         os: z.object({
-            name: z.string().optional(),
-            version: z.string().optional(),
-         }),
-         cpu: z.object({
-            architecture: z.string().optional(),
-         }),
-         engine: z.object({
-            name: z.string().optional(),
-            version: z.string().optional(),
-         }),
-      })
-      .optional(),
-   connection: z
-      .object({
-         post: z.string().nonempty(),
-         magic: z.string().nonempty(),
-         usermac: z.string().nonempty(),
-         apmac: z.string().nonempty(),
-         apip: z.string().nonempty(),
-         ssid: z.string().nonempty(),
-         apname: z.string().nonempty(),
-         bssid: z.string().nonempty(),
-      })
-      .optional(),
+   device: z.object({
+      userAgent: z.string().optional(),
+      browser: z.object({
+         name: z.string().optional(),
+         version: z.string().optional(),
+         major: z.string().optional(),
+         type: z.string().optional(),
+      }),
+      device: z.object({
+         type: z.string().optional(),
+         model: z.string().optional(),
+         vendor: z.string().optional(),
+      }),
+      os: z.object({
+         name: z.string().optional(),
+         version: z.string().optional(),
+      }),
+      cpu: z.object({
+         architecture: z.string().optional(),
+      }),
+      engine: z.object({
+         name: z.string().optional(),
+         version: z.string().optional(),
+      }),
+   }),
+   connection: z.object({
+      post: z.string().nonempty(),
+      magic: z.string().nonempty(),
+      usermac: z.string().nonempty(),
+      apmac: z.string().nonempty(),
+      apip: z.string().nonempty(),
+      ssid: z.string().nonempty(),
+      apname: z.string().nonempty(),
+      bssid: z.string().nonempty(),
+   }),
 });
 
 export const createDeviceSchema = z.object({
@@ -115,3 +111,31 @@ export const guestPortalSchema = z.object({
 });
 
 export type GuestPortalSchema = z.infer<typeof guestPortalSchema>;
+
+export const deviceSchema = z.object({
+   userAgent: z.string().optional(),
+   browser: z.object({
+      name: z.string().optional(),
+      version: z.string().optional(),
+      major: z.string().optional(),
+      type: z.string().optional(),
+   }),
+   device: z.object({
+      type: z.string().optional(),
+      model: z.string().optional(),
+      vendor: z.string().optional(),
+   }),
+   os: z.object({
+      name: z.string().optional(),
+      version: z.string().optional(),
+   }),
+   cpu: z.object({
+      architecture: z.string().optional(),
+   }),
+   engine: z.object({
+      name: z.string().optional(),
+      version: z.string().optional(),
+   }),
+});
+
+export type DeviceSchema = z.infer<typeof deviceSchema>;
