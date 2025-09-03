@@ -60,8 +60,8 @@ export default async function Page({ searchParams }: PageProps) {
                      <TableCell>{device.guestUser?.email}</TableCell>
                      <TableCell>
                         <div className="flex gap-2">
-                           <OsIcon os={JSON.parse(device.device as unknown as string).os.name} />
-                           <BrowserIcons browser={JSON.parse(device.device as unknown as string).browser.name} />
+                           <OsIcon os={device.device.os.name || ""} />
+                           <BrowserIcons browser={device.device.browser.name || ""} />
                         </div>
                      </TableCell>
                      <TableCell>

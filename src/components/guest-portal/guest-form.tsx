@@ -48,7 +48,21 @@ export function GuestForm() {
 
    async function onSubmit(data: z.infer<typeof guestLoginSchema>) {
       setLoading(true);
-      await guestLoginAction(data);
+      const result = await guestLoginAction(data);
+      if (result.data) {
+         const formData = new FormData();
+         formData.append("magic", result.data?.magic);
+         formData.append("username", result.data?.username || "");
+         formData.append("password", result.data?.password || "");
+
+         fetch(data.connection.post, {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: formData,
+         });
+      }
       setLoading(false);
    }
 

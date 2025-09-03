@@ -194,7 +194,7 @@ export async function returnPassthroughUser(post: string, magic: string) {
    return {
       postUrl: post,
       magic: magic,
-      email: process.env.FORTINET_USER,
+      username: process.env.FORTINET_USER,
       password: process.env.FORTINET_PASSWORD,
    };
 }
