@@ -10,56 +10,19 @@ import { DeviceSchema, createConnectionSchema, guestLoginSchema, listGuestSchema
 import { and, eq, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-export const guestLoginAction = actionClient
-   .inputSchema(guestLoginSchema)
-   .action(async ({ parsedInput: { email, marketingApproved, device, connection } }) => {
-      const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
+export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved, device, connection } }) => {
+   const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
 
-      const networkResult = await findNetworkBySSID(connection.ssid);
+   const networkResult = await findNetworkBySSID(connection.ssid);
 
-      if (existingGuest.length > 0) {
-         const deviceResult = await findOrCreateDevice(existingGuest[0].id!, connection.usermac, device);
-
-         await createConnectionAction({
-            deviceId: deviceResult.id,
-            networkId: networkResult.id,
-            connection: connection,
-         });
-
-         if (await isPassthroughModeEnabled()) {
-            return returnPassthroughUser(connection.post, connection.magic);
-         }
-
-         return {
-            postUrl: connection.post,
-            magic: connection.magic,
-            username: existingGuest[0].email,
-            password: "", // TODO: Generate password
-         };
-      }
-
-      // Uživatel nebyl nalezen, vytvoříme nového
-      const guestLogin = await db
-         .insert(guestUser)
-         .values({
-            email,
-            marketingApproved,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-         })
-         .returning();
-
-      // Vytvoříme nové zařízení pro uživatele
-      const deviceResult = await findOrCreateDevice(guestLogin[0].id, connection.usermac, device);
+   if (existingGuest.length > 0) {
+      const deviceResult = await findOrCreateDevice(existingGuest[0].id!, connection.usermac, device);
 
       await createConnectionAction({
          deviceId: deviceResult.id,
          networkId: networkResult.id,
          connection: connection,
       });
-
-      revalidatePath("/admin/devices");
-      revalidatePath("/admin/users");
 
       if (await isPassthroughModeEnabled()) {
          return returnPassthroughUser(connection.post, connection.magic);
@@ -68,10 +31,45 @@ export const guestLoginAction = actionClient
       return {
          postUrl: connection.post,
          magic: connection.magic,
-         username: guestLogin[0].email,
+         username: existingGuest[0].email,
          password: "", // TODO: Generate password
       };
+   }
+
+   // Uživatel nebyl nalezen, vytvoříme nového
+   const guestLogin = await db
+      .insert(guestUser)
+      .values({
+         email,
+         marketingApproved,
+         createdAt: new Date(),
+         updatedAt: new Date(),
+      })
+      .returning();
+
+   // Vytvoříme nové zařízení pro uživatele
+   const deviceResult = await findOrCreateDevice(guestLogin[0].id, connection.usermac, device);
+
+   await createConnectionAction({
+      deviceId: deviceResult.id,
+      networkId: networkResult.id,
+      connection: connection,
    });
+
+   revalidatePath("/admin/devices");
+   revalidatePath("/admin/users");
+
+   if (await isPassthroughModeEnabled()) {
+      return returnPassthroughUser(connection.post, connection.magic);
+   }
+
+   return {
+      postUrl: connection.post,
+      magic: connection.magic,
+      username: guestLogin[0].email,
+      password: "", // TODO: Generate password
+   };
+});
 
 export const listGuestUserAction = authActionClient.inputSchema(listGuestSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
    const offset = (page - 1) * itemsPerPage;
