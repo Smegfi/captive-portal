@@ -5,12 +5,12 @@ import { network } from "@/db/schema";
 import { connection as connectionTable } from "@/db/schema/connection";
 import { device } from "@/db/schema/device";
 import { guestUser } from "@/db/schema/guest-user";
-import { authActionClient } from "@/lib/safe-action";
+import { authActionClient, actionClient } from "@/lib/safe-action";
 import { DeviceSchema, createConnectionSchema, guestLoginSchema, listGuestSchema } from "@/server/actions-scheme/guest-user/schema";
 import { and, eq, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-export const guestLoginAction = authActionClient
+export const guestLoginAction = actionClient
    .inputSchema(guestLoginSchema)
    .action(async ({ parsedInput: { email, marketingApproved, device, connection } }) => {
       const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
