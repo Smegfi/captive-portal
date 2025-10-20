@@ -28,8 +28,6 @@ export function FortiLoader() {
          form.setValue("connection.apname", apname);
          form.setValue("connection.bssid", bssid);
       }
-
-      console.log("connection", form.getValues("connection"));
    }, [searchParams, form]);
 
    return null;
