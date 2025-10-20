@@ -5,7 +5,7 @@ import { network } from "@/db/schema";
 import { connection as connectionTable } from "@/db/schema/connection";
 import { device } from "@/db/schema/device";
 import { guestUser } from "@/db/schema/guest-user";
-import { authActionClient, actionClient } from "@/lib/safe-action";
+import { actionClient, authActionClient } from "@/lib/safe-action";
 import { DeviceSchema, createConnectionSchema, guestLoginSchema, listGuestSchema } from "@/server/actions-scheme/guest-user/schema";
 import { and, eq, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -93,17 +93,15 @@ export const listGuestUserAction = authActionClient.inputSchema(listGuestSchema)
 /**
  * Vytvoří nové připojení mezi zařízením a sítí
  */
-export const createConnectionAction = authActionClient
-   .inputSchema(createConnectionSchema)
-   .action(async ({ parsedInput: { deviceId, networkId, connection } }) => {
-      const result = await db.insert(connectionTable).values({
-         deviceId: deviceId,
-         networkId: networkId,
-         connection: connection,
-      });
-
-      return result[0];
+export const createConnectionAction = actionClient.inputSchema(createConnectionSchema).action(async ({ parsedInput: { deviceId, networkId, connection } }) => {
+   const result = await db.insert(connectionTable).values({
+      deviceId: deviceId,
+      networkId: networkId,
+      connection: connection,
    });
+
+   return result[0];
+});
 
 /**
  * Tuto cestu volá Fortigate pomocí HTTP 301 redirectu
@@ -179,7 +177,7 @@ async function findOrCreateDevice(userId: number, macAddress: string, deviceInfo
  * @returns true if passthrough mode is enabled, false otherwise
  */
 export async function isPassthroughModeEnabled() {
-   return process.env.PASS_THROUGH_MODE === "TRUE";
+   return process.env.PASS_THROUGH_MODE?.toUpperCase() === "TRUE";
 }
 
 /**
