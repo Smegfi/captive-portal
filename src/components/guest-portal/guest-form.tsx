@@ -12,13 +12,15 @@ import { guestLoginSchema } from "@/server/actions-scheme/guest-user/schema";
 import { guestLoginAction } from "@/server/actions/guest-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export function GuestForm() {
    const [loading, setLoading] = useState(false);
    const { ua, browser, cpu, device, engine, os } = useDevice();
+   const router = useRouter();
 
    const form = useForm<z.infer<typeof guestLoginSchema>>({
       resolver: zodResolver(guestLoginSchema),
@@ -48,6 +50,7 @@ export function GuestForm() {
 
    async function onSubmit(data: z.infer<typeof guestLoginSchema>) {
       setLoading(true);
+
       const result = await guestLoginAction(data);
       if (result.data) {
          const formData = new FormData();
@@ -55,16 +58,15 @@ export function GuestForm() {
          formData.append("username", result.data?.username || "");
          formData.append("password", result.data?.password || "");
 
-         fetch(data.connection.post, {
+         await fetch(result.data.postUrl, {
             method: "POST",
             mode: "no-cors",
-            headers: {
-               "Content-Type": "application/x-www-form-urlencoded",
-            },
             body: formData,
          });
+
+         router.push("https://praha10.cz");
+         setLoading(false);
       }
-      setLoading(false);
    }
 
    return (
@@ -117,7 +119,9 @@ export function GuestForm() {
                         )}
                      />
                   </div>
-                  <FortiLoader />
+                  <Suspense>
+                     <FortiLoader />
+                  </Suspense>
                </form>
             </Form>
          </CardContent>
