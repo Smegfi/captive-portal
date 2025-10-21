@@ -7,7 +7,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useDevice } from "@/lib/device-hook";
 import { guestLoginSchema } from "@/server/actions-scheme/guest-user/schema";
 import { guestLoginAction } from "@/server/actions/guest-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,11 +14,12 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
+import { UAParser } from "ua-parser-js";
 import { z } from "zod";
 
 export function GuestForm() {
    const [loading, setLoading] = useState(false);
-   const { ua, browser, cpu, device, engine, os } = useDevice();
+   const { ua, browser, cpu, device, engine, os } = UAParser(navigator.userAgent);
    const router = useRouter();
 
    const form = useForm<z.infer<typeof guestLoginSchema>>({
