@@ -1,7 +1,9 @@
+"use client";
+
 import { UAParser } from "ua-parser-js";
 
 const getDeviceInfo = () => {
-   const { ua, browser, cpu, device, engine, os } = UAParser(window.navigator.userAgent);
+   const { ua, browser, cpu, device, engine, os } = UAParser(navigator.userAgent);
 
    return { ua, browser, cpu, device, engine, os };
 };
