@@ -11,6 +11,7 @@ import { guestLoginSchema } from "@/server/actions-scheme/guest-user/schema";
 import { guestLoginAction } from "@/server/actions/guest-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -140,3 +141,7 @@ export function GuestForm() {
       </Card>
    );
 }
+
+export const GuestFormDynamic = dynamic(() => import("./guest-form").then((mod) => mod.GuestForm), {
+   ssr: false,
+});
