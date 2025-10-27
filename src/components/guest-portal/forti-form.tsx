@@ -36,8 +36,10 @@ export default function FortiForm({ postUrl, username, password, magic }: FortiF
       setValue("password", password);
       setValue("magic", magic);
 
-      if (button.current) {
-         button.current.click();
+      if (fortiLoginSchema.safeParse({ postUrl, username, password, magic }).success) {
+         if (button.current) {
+            button.current.click();
+         }
       }
    }, [postUrl, username, password, magic, setValue]);
 
