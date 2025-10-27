@@ -12,7 +12,7 @@ import { guestLoginAction } from "@/server/actions/guest-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { UAParser } from "ua-parser-js";
 import { z } from "zod";
@@ -22,7 +22,6 @@ export function GuestForm() {
    const [loading, setLoading] = useState(false);
    const { ua, browser, cpu, device, engine, os } = UAParser(navigator.userAgent);
    const [data, setData] = useState<{ postUrl: string; username: string | undefined; password: string | undefined; magic: string } | null>(null);
-   const fortiButton = useRef<HTMLButtonElement>(document.getElementById("forti-login-button") as HTMLButtonElement);
 
    const form = useForm<z.infer<typeof guestLoginSchema>>({
       resolver: zodResolver(guestLoginSchema),
@@ -56,9 +55,6 @@ export function GuestForm() {
       const result = await guestLoginAction(data);
       if (result.data) {
          setData(result.data);
-         if (fortiButton.current) {
-            fortiButton.current.click();
-         }
       }
 
       setLoading(false);
