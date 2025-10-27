@@ -54,6 +54,7 @@ export function GuestForm() {
 
       const result = await guestLoginAction(data);
       if (result.data) {
+         console.log("Submitting form:", result.data);
          setData(result.data);
       }
 

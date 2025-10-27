@@ -4,7 +4,6 @@ import { z } from "zod";
 import { useEffect, useRef } from "react";
 
 const fortiLoginSchema = z.object({
-   postUrl: z.string().nonempty(),
    username: z.string().nonempty(),
    password: z.string().nonempty(),
    magic: z.string().nonempty(),
@@ -20,10 +19,9 @@ interface FortiFormProps {
 export default function FortiForm({ postUrl, username, password, magic }: FortiFormProps) {
    const button = useRef<HTMLButtonElement>(null);
 
-   const { register, watch, setValue } = useForm<z.infer<typeof fortiLoginSchema>>({
+   const { register, setValue } = useForm<z.infer<typeof fortiLoginSchema>>({
       resolver: zodResolver(fortiLoginSchema),
       defaultValues: {
-         postUrl,
          username,
          password,
          magic,
@@ -31,12 +29,11 @@ export default function FortiForm({ postUrl, username, password, magic }: FortiF
    });
 
    useEffect(() => {
-      setValue("postUrl", postUrl);
       setValue("username", username);
       setValue("password", password);
       setValue("magic", magic);
 
-      if (fortiLoginSchema.safeParse({ postUrl, username, password, magic }).success) {
+      if (fortiLoginSchema.safeParse({ username, password, magic }).success) {
          if (button.current) {
             button.current.click();
          }
@@ -44,7 +41,7 @@ export default function FortiForm({ postUrl, username, password, magic }: FortiF
    }, [postUrl, username, password, magic, setValue]);
 
    return (
-      <form action={watch("postUrl")} method="POST">
+      <form action={postUrl} method="POST">
          <input type="hidden" {...register("username")} />
          <input type="hidden" {...register("password")} />
          <input type="hidden" {...register("magic")} />
