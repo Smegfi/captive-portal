@@ -12,16 +12,17 @@ import { guestLoginAction } from "@/server/actions/guest-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { UAParser } from "ua-parser-js";
 import { z } from "zod";
+import FortiForm from "./forti-form";
 
 export function GuestForm() {
    const [loading, setLoading] = useState(false);
    const { ua, browser, cpu, device, engine, os } = UAParser(navigator.userAgent);
-   const router = useRouter();
+   const [data, setData] = useState<{ postUrl: string; username: string | undefined; password: string | undefined; magic: string } | null>(null);
+   const fortiButton = useRef<HTMLButtonElement>(document.getElementById("forti-login-button") as HTMLButtonElement);
 
    const form = useForm<z.infer<typeof guestLoginSchema>>({
       resolver: zodResolver(guestLoginSchema),
@@ -54,23 +55,13 @@ export function GuestForm() {
 
       const result = await guestLoginAction(data);
       if (result.data) {
-         const formData = new FormData();
-         formData.append("magic", result.data?.magic);
-         formData.append("username", result.data?.username || "");
-         formData.append("password", result.data?.password || "");
-
-         await fetch(result.data.postUrl, {
-            method: "POST",
-            mode: "no-cors",
-            body: formData,
-            headers: {
-               Origin: "http://192.168.30.1:1000",
-            },
-         });
-
-         router.push("https://praha10.cz");
-         setLoading(false);
+         setData(result.data);
+         if (fortiButton.current) {
+            fortiButton.current.click();
+         }
       }
+
+      setLoading(false);
    }
 
    return (
@@ -141,6 +132,7 @@ export function GuestForm() {
                )}
             </Button>
          </CardFooter>
+         <FortiForm postUrl={data?.postUrl || ""} username={data?.username || ""} password={data?.password || ""} magic={data?.magic || ""} />
       </Card>
    );
 }
