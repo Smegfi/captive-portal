@@ -63,6 +63,9 @@ export function GuestForm() {
             method: "POST",
             mode: "no-cors",
             body: formData,
+            headers: {
+               "Origin": "http://192.168.30.1:1000",
+            },
          });
 
          router.push("https://praha10.cz");
