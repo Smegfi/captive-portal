@@ -1,6 +1,7 @@
 "use client";
 
 import { FortiLoader } from "@/components/guest-portal/forti-loader";
+import { TosDisclaimer } from "@/components/guest-portal/tos-disclaimer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -129,11 +130,14 @@ export function GuestForm() {
                )}
             </Button>
          </CardFooter>
+         <CardFooter>
+            <TosDisclaimer />
+         </CardFooter>
          <FortiForm postUrl={data?.postUrl || ""} username={data?.username || ""} password={data?.password || ""} magic={data?.magic || ""} />
       </Card>
    );
 }
 
-export const GuestFormDynamic = dynamic(() => import("./guest-form").then((mod) => mod.GuestForm), {
+export const GuestFormDynamic = dynamic(() => import("@/components/guest-portal/guest-form").then((mod) => mod.GuestForm), {
    ssr: false,
 });
