@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function TosDisclaimer() {
    return (
@@ -8,15 +9,18 @@ export function TosDisclaimer() {
             <DialogTrigger asChild>
                <span className="text-primary underline cursor-pointer">podmínkami použítí Wi-Fi</span>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-4xl">
+            <DialogContent className="max-w-4xl px-0 sm:px-4">
                <DialogHeader>
                   <DialogTitle>Podmínky použítí Wi-Fi</DialogTitle>
                </DialogHeader>
-               <div className="h-[80vh] w-full">
-                  <object data="TOS.pdf" type="application/pdf" width="100%" height="100%">
-                     <iframe src="TOS.pdf" width="100%" height="100%" className="border-none h-full w-full" style={{ border: "none" }}></iframe>
-                  </object>
-               </div>
+               <ScrollArea className="h-[80vh] w-full">
+                  <div className="flex flex-col gap-4 p-0 sm:p-2 sm:pr-4 bg-secondary">
+                     <img src="TOS/TOS-1.png" alt="Podmínky použítí Wi-Fi" className="w-full h-auto" />
+                     <img src="TOS/TOS-2.png" alt="Podmínky použítí Wi-Fi" className="w-full h-auto" />
+                     <img src="TOS/TOS-3.png" alt="Podmínky použítí Wi-Fi" className="w-full h-auto" />
+                     <img src="TOS/TOS-4.png" alt="Podmínky použítí Wi-Fi" className="w-full h-auto" />
+                  </div>
+               </ScrollArea>
             </DialogContent>
          </Dialog>
       </p>
