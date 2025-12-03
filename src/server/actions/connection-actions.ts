@@ -1,8 +1,8 @@
 "use server";
 
-import { db } from "@/db/db";
 import { authActionClient } from "@/lib/safe-action";
 import { listConnectionSchema } from "@/server/actions-scheme/connection/schema";
+import { db } from "@/server/db/db";
 
 export const listConnectionAction = authActionClient.inputSchema(listConnectionSchema).action(async ({ parsedInput: { itemsPerPage, page } }) => {
    const offset = (page - 1) * itemsPerPage;

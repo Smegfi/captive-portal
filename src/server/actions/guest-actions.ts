@@ -1,12 +1,12 @@
 "use server";
 
-import { db } from "@/db/db";
-import { network } from "@/db/schema";
-import { connection as connectionTable } from "@/db/schema/connection";
-import { device } from "@/db/schema/device";
-import { guestUser } from "@/db/schema/guest-user";
 import { actionClient, authActionClient } from "@/lib/safe-action";
 import { DeviceSchema, createConnectionSchema, guestLoginSchema, listGuestSchema } from "@/server/actions-scheme/guest-user/schema";
+import { db } from "@/server/db/db";
+import { connection as connectionTable } from "@/server/db/schema/connection";
+import { device } from "@/server/db/schema/device";
+import { guestUser } from "@/server/db/schema/guest-user";
+import { network } from "@/server/db/schema/network";
 import { and, eq, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 

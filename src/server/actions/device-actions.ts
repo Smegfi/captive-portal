@@ -1,9 +1,9 @@
 "use server";
 
-import { db } from "@/db/db";
-import { device } from "@/db/schema/device";
 import { authActionClient } from "@/lib/safe-action";
 import { listDeviceSchema } from "@/server/actions-scheme/device/schema";
+import { db } from "@/server/db/db";
+import { device } from "@/server/db/schema/device";
 import { ilike } from "drizzle-orm";
 
 export const listDeviceAction = authActionClient.inputSchema(listDeviceSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {

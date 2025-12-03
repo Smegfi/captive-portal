@@ -1,9 +1,9 @@
 "use server";
 
-import { db } from "@/db/db";
-import { network } from "@/db/schema/network";
 import { authActionClient } from "@/lib/safe-action";
 import { getNetworkSchema, listNetworkSchema, newNetworkSchema, removeNetworkSchema, updateNetworkSchema } from "@/server/actions-scheme/network/schema";
+import { db } from "@/server/db/db";
+import { network } from "@/server/db/schema/network";
 import { eq, ilike, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
