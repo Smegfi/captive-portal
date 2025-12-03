@@ -1,4 +1,4 @@
-import { LayoutDashboard, Monitor, Network, Radio, Settings, Users } from "lucide-react";
+import { FileText, LayoutDashboard, Monitor, Network, Radio, Settings, Users } from "lucide-react";
 
 export const data = {
    navMain: [
@@ -26,6 +26,11 @@ export const data = {
          title: "Zařízení",
          url: "/admin/devices",
          icon: Monitor,
+      },
+      {
+         title: "TOS",
+         url: "/admin/tos",
+         icon: FileText,
       },
       {
          title: "Nastavení",

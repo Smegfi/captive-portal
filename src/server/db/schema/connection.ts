@@ -1,5 +1,5 @@
-import { device } from "@/db/schema/device";
-import { network } from "@/db/schema/network";
+import { device } from "@/server/db/schema/device";
+import { network } from "@/server/db/schema/network";
 import { relations } from "drizzle-orm";
 import { integer, jsonb, pgTable, serial } from "drizzle-orm/pg-core";
 

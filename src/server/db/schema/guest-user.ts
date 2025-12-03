@@ -1,6 +1,6 @@
+import { device } from "@/server/db/schema/device";
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, serial } from "drizzle-orm/pg-core";
-import { device } from "@/db/schema/device";
+import { boolean, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 export const guestUser = pgTable("guest_user", {
    id: serial("id").primaryKey(),
