@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, Upload } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
-import { ControllerRenderProps, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 export default function UploadTos() {
    const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function UploadTos() {
          setIsOpen(false);
       },
       onError: (error) => {
-         setError(error.error?.serverError?.message ?? "Chyba při nahrávání dokumentu");
+         setError(error.error?.validationErrors?._errors?.join(", ") ?? "Chyba při nahrávání dokumentu");
       },
    });
 
@@ -35,6 +35,7 @@ export default function UploadTos() {
       resolver: zodResolver(uploadTosSchema),
       defaultValues: {
          name: "",
+         uploadedAt: new Date(),
       },
    });
 
@@ -43,13 +44,16 @@ export default function UploadTos() {
          setError("Prosím vyberte soubor");
          return;
       }
-      execute({ ...values, fileName: file.name, fileSize: file.size, uploadedAt: new Date() });
+      execute({ ...values, fileName: file.name, fileSize: file.size, file: file, uploadedAt: new Date() });
    }
 
    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
       const selectedFile = e.target.files?.[0];
       if (selectedFile) {
          setFile(selectedFile);
+         form.setValue("file", selectedFile);
+         form.setValue("fileName", selectedFile.name);
+         form.setValue("fileSize", selectedFile.size);
       }
    }
 
@@ -71,7 +75,7 @@ export default function UploadTos() {
                   <FormField
                      control={form.control}
                      name="name"
-                     render={({ field }: { field: ControllerRenderProps<uploadTosSchemaType, "name"> }) => (
+                     render={({ field }) => (
                         <FormItem>
                            <FormLabel>Název dokumentu</FormLabel>
                            <FormControl>
@@ -81,18 +85,20 @@ export default function UploadTos() {
                         </FormItem>
                      )}
                   />
-                  <div className="space-y-2">
-                     <FormLabel>Soubor</FormLabel>
-                     <div className="flex flex-col items-center gap-4">
-                        <Input type="file" accept=".pdf" onChange={handleFileChange} className="cursor-pointer" />
-                     </div>
-                     <p className="text-xs text-muted-foreground">Podporované formáty: PDF</p>
-                     {file && (
-                        <span className="text-sm text-muted-foreground">
-                           {file.name} ({(file.size / 1024).toFixed(2)} KB)
-                        </span>
+                  <FormField
+                     control={form.control}
+                     name="file"
+                     render={() => (
+                        <FormItem>
+                           <FormLabel>Soubor</FormLabel>
+                           <FormControl>
+                              <Input type="file" accept=".pdf" className="cursor-pointer" onChange={handleFileChange} />
+                           </FormControl>
+                           <span className="text-sm text-muted-foreground">Povolené formáty: .pdf</span>
+                           <FormMessage />
+                        </FormItem>
                      )}
-                  </div>
+                  />
                </form>
             </Form>
             {error && <p className="text-sm text-red-500">{error}</p>}

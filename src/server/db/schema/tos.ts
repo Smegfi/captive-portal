@@ -5,5 +5,6 @@ export const tos = pgTable("tos", {
    name: text("name").notNull(),
    fileName: text("file").notNull(),
    fileSize: integer("file_size").notNull(),
+   fileUrl: text("file_url").notNull(),
    uploadedAt: timestamp("uploaded_at").notNull(),
 });

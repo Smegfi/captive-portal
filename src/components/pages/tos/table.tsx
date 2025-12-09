@@ -39,8 +39,10 @@ export async function TosTable() {
                   <TableCell>{tos.uploadedAt.toLocaleDateString("cs-CZ")}</TableCell>
                   <TableCell>
                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                           <Download className="h-4 w-4" />
+                        <Button variant="outline" size="sm" asChild>
+                           <a href={`${tos.fileUrl}`} download>
+                              <Download className="h-4 w-4" />
+                           </a>
                         </Button>
                      </div>
                   </TableCell>

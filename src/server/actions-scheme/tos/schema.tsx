@@ -10,6 +10,7 @@ export const uploadTosSchema = z.object({
    name: z.string().nonempty(),
    fileName: z.string().nonempty(),
    fileSize: z.number().int().positive(),
+   file: z.instanceof(File),
    uploadedAt: z.date(),
 });
 
