@@ -3,7 +3,9 @@ import Filter from "@/components/admin/devices/filter";
 import { OsIcon } from "@/components/admin/devices/os-icon";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "@/lib/constants";
 import { listDeviceAction } from "@/server/actions/device-actions";
 import { FileDown } from "lucide-react";
 
@@ -17,15 +19,19 @@ interface PageProps {
 
 export default async function Page({ searchParams }: PageProps) {
    const { items, page, search } = await searchParams;
-   const itemsPerPage = parseInt(items || "10");
-   const queryPage = parseInt(page || "1");
+   const itemsPerPage = parseInt(items || DEFAULT_ITEMS_PER_PAGE.toString());
+   const queryPage = parseInt(page || DEFAULT_PAGE.toString());
    const querySearch = search || "";
 
-   const devices = await listDeviceAction({ itemsPerPage, page: queryPage, search: querySearch });
+   const { data: devices, serverError } = await listDeviceAction({ itemsPerPage, page: queryPage, search: querySearch });
 
-   if (devices.serverError) {
-      return <div>Error: {devices.serverError.message}</div>;
+   if (serverError) {
+      return <div>Error: {serverError.message}</div>;
    }
+
+   const totalPages = devices?.totalPages || 0;
+   const nextPage = queryPage + 1 > totalPages ? totalPages : queryPage + 1;
+   const previousPage = queryPage - 1 < 1 ? 1 : queryPage - 1;
 
    return (
       <div className="space-y-4">
@@ -53,7 +59,7 @@ export default async function Page({ searchParams }: PageProps) {
                </TableRow>
             </TableHeader>
             <TableBody>
-               {devices.data?.map((device) => (
+               {devices?.data?.map((device) => (
                   <TableRow key={device.id}>
                      <TableCell>{device.id}</TableCell>
                      <TableCell>{device.macAddress}</TableCell>
@@ -80,6 +86,21 @@ export default async function Page({ searchParams }: PageProps) {
                ))}
             </TableBody>
          </Table>
+         <Pagination>
+            <PaginationContent>
+               <PaginationItem>
+                  <PaginationPrevious href={`/admin/devices?page=${previousPage}`} />
+               </PaginationItem>
+               {Array.from({ length: totalPages }).map((_, index) => (
+                  <PaginationItem key={index}>
+                     <PaginationLink href={`/admin/devices?page=${index + 1}`}>{index + 1}</PaginationLink>
+                  </PaginationItem>
+               ))}
+               <PaginationItem>
+                  <PaginationNext href={`/admin/devices?page=${nextPage}`} />
+               </PaginationItem>
+            </PaginationContent>
+         </Pagination>
       </div>
    );
 }

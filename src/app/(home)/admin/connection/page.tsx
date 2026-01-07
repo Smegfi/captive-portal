@@ -2,6 +2,7 @@ import CurrentStatus from "@/components/admin/connection/current-status";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getLatestConnectionsAction } from "@/server/actions/connection-actions";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "@/lib/constants";
 
 interface PageProps {
    searchParams: Promise<{
@@ -13,8 +14,8 @@ interface PageProps {
 
 export default async function Page({ searchParams }: PageProps) {
    const { items, page, search } = await searchParams;
-   const itemsPerPage = parseInt(items || "10");
-   const queryPage = parseInt(page || "1");
+   const itemsPerPage = parseInt(items || DEFAULT_ITEMS_PER_PAGE.toString());
+   const queryPage = parseInt(page || DEFAULT_PAGE.toString());
    const querySearch = search || "";
 
    const { data: connections, serverError } = await getLatestConnectionsAction({ itemsPerPage, page: queryPage, search: querySearch });

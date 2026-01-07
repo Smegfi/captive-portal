@@ -7,8 +7,9 @@ import { connection as connectionTable } from "@/server/db/schema/connection";
 import { device } from "@/server/db/schema/device";
 import { guestUser } from "@/server/db/schema/guest-user";
 import { network } from "@/server/db/schema/network";
-import { and, eq, ilike } from "drizzle-orm";
+import { and, count, eq, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { actionResultSchema } from "../actions-scheme/action-result";
 
 export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved, device, connection } }) => {
    const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
@@ -71,24 +72,32 @@ export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).actio
    };
 });
 
-export const listGuestUserAction = authActionClient.inputSchema(listGuestSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
-   const offset = (page - 1) * itemsPerPage;
+export const listGuestUserAction = authActionClient
+   .inputSchema(listGuestSchema)
+   .outputSchema(actionResultSchema)
+   .action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
+      const offset = (page - 1) * itemsPerPage;
 
-   const guestUsers = await db.query.guestUser.findMany({
-      limit: itemsPerPage,
-      offset,
-      where: ilike(guestUser.email, `%${search}%`),
-      with: {
-         devices: {
-            columns: {
-               id: true,
+      const guestUsers = await db.query.guestUser.findMany({
+         limit: itemsPerPage,
+         offset,
+         where: ilike(guestUser.email, `%${search}%`),
+         with: {
+            devices: {
+               columns: {
+                  id: true,
+               },
             },
          },
-      },
-   });
+      });
 
-   return guestUsers;
-});
+      const total = await db.select({ value: count() }).from(guestUser);
+
+      return {
+         data: guestUsers,
+         totalPages: Math.ceil(total[0].value / itemsPerPage),
+      };
+   });
 
 /**
  * Vytvoří nové připojení mezi zařízením a sítí
