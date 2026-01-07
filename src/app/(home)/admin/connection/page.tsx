@@ -1,13 +1,30 @@
 import CurrentStatus from "@/components/admin/connection/current-status";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getLatestConnectionsAction } from "@/server/actions/connection-actions";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
-export default async function Page() {
-   const connections = await getLatestConnectionsAction();
+interface PageProps {
+   searchParams: Promise<{
+      items?: string;
+      page?: string;
+      search?: string;
+   }>;
+}
 
-   if (connections.serverError) {
-      return <div>Error: {connections.serverError.message}</div>;
+export default async function Page({ searchParams }: PageProps) {
+   const { items, page, search } = await searchParams;
+   const itemsPerPage = parseInt(items || "10");
+   const queryPage = parseInt(page || "1");
+   const querySearch = search || "";
+
+   const { data: connections, serverError } = await getLatestConnectionsAction({ itemsPerPage, page: queryPage, search: querySearch });
+   if (serverError) {
+      return <div>Error: {serverError.message}</div>;
    }
+
+   const totalPages = connections?.totalPages || 0;
+   const nextPage = queryPage + 1 > totalPages ? totalPages : queryPage + 1;
+   const previousPage = queryPage - 1 < 1 ? 1 : queryPage - 1;
 
    return (
       <div className="space-y-4">
@@ -24,7 +41,7 @@ export default async function Page() {
                </TableRow>
             </TableHeader>
             <TableBody>
-               {connections.data?.map((connection) => (
+               {connections?.data?.map((connection) => (
                   <TableRow key={connection.id}>
                      <TableCell>{connection.id}</TableCell>
                      <TableCell>{connection.device?.macAddress}</TableCell>
@@ -34,6 +51,21 @@ export default async function Page() {
                ))}
             </TableBody>
          </Table>
+         <Pagination>
+            <PaginationContent>
+               <PaginationItem>
+                  <PaginationPrevious href={`/admin/connection?page=${previousPage}`} />
+               </PaginationItem>
+               {Array.from({ length: totalPages }).map((_, index) => (
+                  <PaginationItem key={index}>
+                     <PaginationLink href={`/admin/connection?page=${index + 1}`}>{index + 1}</PaginationLink>
+                  </PaginationItem>
+               ))}
+               <PaginationItem>
+                  <PaginationNext href={`/admin/connection?page=${nextPage}`} />
+               </PaginationItem>
+            </PaginationContent>
+         </Pagination>
       </div>
    );
 }
