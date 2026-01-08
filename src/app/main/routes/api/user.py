@@ -28,7 +28,7 @@ def create_user():
                      ConnectedNetwork=ssid, LastConnection=datetime.now())
 
     staticUserEmail = "central-guest@fortigate-p10.cz"
-    staticUserPassword = "ccKZ52B5HXAh"
+    staticUserPassword = "w{wBTYq7oWge{5.8Z48E+>"
 
     try:
         # Najdeme uživatele v DB pokud neexisutje vyhodí se Error
