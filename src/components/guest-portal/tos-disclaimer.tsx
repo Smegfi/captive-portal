@@ -1,5 +1,4 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Download } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "../ui/button";
@@ -16,7 +15,7 @@ export function TosDisclaimer() {
                <DialogHeader>
                   <DialogTitle>Podmínky použítí Wi-Fi</DialogTitle>
                </DialogHeader>
-               <ScrollArea className="h-[80dvh] w-full">
+               <div className="h-[80dvh] w-full overflow-y-auto">
                   <center>Městská část Praha 10</center>
                   <center>Vinohradská 3218/169</center>
                   <center>100 00 Praha 10</center>
@@ -298,7 +297,7 @@ export function TosDisclaimer() {
                         </TableRow>
                      </TableBody>
                   </Table>
-               </ScrollArea>
+               </div>
                <Button variant="outline" className="mx-2" asChild>
                   <a href="TOS.pdf" download>
                      <Download className="w-4 h-4" />
