@@ -123,10 +123,10 @@ export function GuestForm() {
                {loading ? (
                   <>
                      <Loader2 className="animate-spin" />
-                     <span>Přihlašuji...</span>
+                     <span>Připojuji...</span>
                   </>
                ) : (
-                  "Přihlásit se"
+                  "Připojit se"
                )}
             </Button>
          </CardFooter>
