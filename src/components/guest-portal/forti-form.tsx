@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 
 const fortiLoginSchema = z.object({
    username: z.string().nonempty(),
@@ -10,14 +11,17 @@ const fortiLoginSchema = z.object({
 });
 
 interface FortiFormProps {
-   postUrl: string;
    username: string;
    password: string;
    magic: string;
 }
 
-export default function FortiForm({ postUrl, username, password, magic }: FortiFormProps) {
+export default function FortiForm({ username, password, magic }: FortiFormProps) {
    const button = useRef<HTMLButtonElement>(null);
+   const params = useSearchParams();
+   const post = params.get("post");
+
+   console.log("post", post);
 
    const { register, setValue } = useForm<z.infer<typeof fortiLoginSchema>>({
       resolver: zodResolver(fortiLoginSchema),
@@ -38,10 +42,11 @@ export default function FortiForm({ postUrl, username, password, magic }: FortiF
             button.current.click();
          }
       }
-   }, [postUrl, username, password, magic, setValue]);
+      console.log("Values changed:", { username, password, magic, post });
+   }, [post, username, password, magic, setValue]);
 
    return (
-      <form action={postUrl} method="POST">
+      <form action={post ?? ""} method="POST">
          <input type="hidden" {...register("username")} />
          <input type="hidden" {...register("password")} />
          <input type="hidden" {...register("magic")} />

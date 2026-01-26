@@ -133,7 +133,7 @@ export function GuestForm() {
          <CardFooter>
             <TosDisclaimer />
          </CardFooter>
-         <FortiForm postUrl={data?.postUrl || ""} username={data?.username || ""} password={data?.password || ""} magic={data?.magic || ""} />
+         <FortiForm username={data?.username || ""} password={data?.password || ""} magic={data?.magic || ""} />
       </Card>
    );
 }
