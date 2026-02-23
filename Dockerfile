@@ -6,22 +6,14 @@ COPY package.json package-lock.json ./
 
 RUN npm ci
 
-FROM node:lts-alpine AS build
-
-WORKDIR /app
-
-COPY --from=install-dependencies /app/node_modules ./node_modules
-
-COPY . .
-
-RUN npm run build
-
 FROM node:lts-alpine AS production
 
 WORKDIR /app
 
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/* ./
+COPY --from=install-dependencies /app/node_modules ./node_modules
+COPY . .
+
+RUN npm run build
 
 EXPOSE 3000
 
