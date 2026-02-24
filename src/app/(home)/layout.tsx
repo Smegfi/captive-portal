@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import "@public/globals.css";
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
    title: "Praha 10 - Captive Portal",
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                         <div className="p-4">{children}</div>
                      </SidebarInset>
                   </SidebarProvider>
+                  <Toaster richColors />
                </ThemeProvider>
             </body>
          </html>

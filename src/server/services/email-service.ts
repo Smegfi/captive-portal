@@ -23,7 +23,7 @@ export class EmailService {
          console.log("Email service is ready to send emails");
 
          await this.transporter.sendMail({
-            from: this.smtpConfiguration.auth.user,
+            from: this.smtpConfiguration.from,
             to,
             subject,
             html,
@@ -31,5 +31,10 @@ export class EmailService {
       } catch (error) {
          throw new Error("Failed to send email");
       }
+   }
+
+   async verifyConnection() {
+      var result = await this.transporter.verify();
+      return result;
    }
 }
