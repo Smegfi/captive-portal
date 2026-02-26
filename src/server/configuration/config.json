@@ -2,7 +2,7 @@
   "smtp": {
     "host": "smtp.gmail.com",
     "port": 587,
-    "secure": true,
+    "secure": false,
     "from": "test@email.com",
     "auth": {
       "user": "fila.smehyl@gmail.com",

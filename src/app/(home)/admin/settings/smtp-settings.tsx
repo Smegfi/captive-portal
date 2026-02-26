@@ -75,17 +75,6 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
                      )}
                   />
                   <Controller
-                     name="from"
-                     control={form.control}
-                     render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                           <FieldLabel htmlFor={field.name}>Adresa odesílatele</FieldLabel>
-                           <Input {...field} id={field.name} placeholder="your-email@example.com" />
-                           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                        </Field>
-                     )}
-                  />
-                  <Controller
                      name="port"
                      control={form.control}
                      render={({ field, fieldState }) => (
@@ -112,7 +101,7 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
                      control={form.control}
                      render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                           <FieldLabel htmlFor={field.name}>Uživatelské jméno</FieldLabel>
+                           <FieldLabel htmlFor={field.name}>SMTP email</FieldLabel>
                            <Input {...field} id={field.name} placeholder="your-email@example.com" type="email" />
                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
@@ -123,8 +112,20 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
                      control={form.control}
                      render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                           <FieldLabel htmlFor={field.name}>Heslo</FieldLabel>
+                           <FieldLabel htmlFor={field.name}>SMTP heslo</FieldLabel>
                            <Input {...field} id={field.name} placeholder="********" type="password" />
+                           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                     )}
+                  />
+
+                  <Controller
+                     name="from"
+                     control={form.control}
+                     render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                           <FieldLabel htmlFor={field.name}>Adresa odesílatele</FieldLabel>
+                           <Input {...field} id={field.name} placeholder="your-email@example.com" />
                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
                      )}
@@ -133,7 +134,7 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
             </form>
          </CardContent>
          <CardFooter className="justify-end">
-            <Button type="submit" form="smtp-settings-form">
+            <Button type="submit" form="smtp-settings-form" disabled={isExecuting}>
                {isExecuting ? <Loader2 className="animate-spin" /> : <Save />}
                Uložit
             </Button>

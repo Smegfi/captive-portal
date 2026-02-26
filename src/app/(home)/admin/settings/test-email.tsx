@@ -49,7 +49,7 @@ export default function TestEmail() {
             </form>
          </CardContent>
          <CardFooter className="justify-end">
-            <Button type="submit" form="test-email-form">
+            <Button type="submit" form="test-email-form" disabled={isExecuting}>
                {isExecuting ? <Loader2 className="animate-spin" /> : <Send />}
                Odeslat
             </Button>
