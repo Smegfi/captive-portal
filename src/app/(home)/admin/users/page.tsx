@@ -2,11 +2,12 @@ import Filter from "@/components/admin/users/filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "@/lib/constants";
 import { listGuestUserAction } from "@/server/actions/guest-actions";
 import { FileDown } from "lucide-react";
+import PagePagination from "@/app/(home)/admin/users/pagination";
 
 interface PageProps {
    searchParams: Promise<{
@@ -29,12 +30,6 @@ export default async function Page({ searchParams }: PageProps) {
    }
 
    const totalPages = guestUsers?.totalPages || 0;
-   const nextPage = queryPage + 1 > totalPages ? totalPages : queryPage + 1;
-   const previousPage = queryPage - 1 < 1 ? 1 : queryPage - 1;
-
-   function getPageUrl(page: number) {
-      return `/admin/users?${querySearch ? `search=${querySearch}&` : ""}page=${page}`;
-   }
 
    return (
       <div className="space-y-4">
@@ -78,21 +73,7 @@ export default async function Page({ searchParams }: PageProps) {
                ))}
             </TableBody>
          </Table>
-         <Pagination>
-            <PaginationContent>
-               <PaginationItem>
-                  <PaginationPrevious href={getPageUrl(previousPage)} />
-               </PaginationItem>
-               {Array.from({ length: totalPages }).map((_, index) => (
-                  <PaginationItem key={index}>
-                     <PaginationLink href={getPageUrl(index + 1)}>{index + 1}</PaginationLink>
-                  </PaginationItem>
-               ))}
-               <PaginationItem>
-                  <PaginationNext href={getPageUrl(nextPage)} />
-               </PaginationItem>
-            </PaginationContent>
-         </Pagination>
+         <PagePagination totalPages={totalPages} />
       </div>
    );
 }
