@@ -2,24 +2,35 @@
 
 import { authActionClient } from "@/lib/safe-action";
 import { listTosSchema, uploadTosSchema } from "@/server/actions-scheme/tos/schema";
+import { actionResultSchema } from "@/server/actions-scheme/action-result";
 import { db } from "@/server/db/db";
 import { tos } from "@/server/db/schema/tos";
 import { randomUUID } from "crypto";
-import { ilike, or } from "drizzle-orm";
+import { count, ilike, or } from "drizzle-orm";
 import fs from "fs";
 import { returnValidationErrors } from "next-safe-action";
 import { revalidatePath } from "next/cache";
 import path from "path";
 
-export const listTosAction = authActionClient.inputSchema(listTosSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
-   const result = await db.query.tos.findMany({
-      limit: itemsPerPage,
-      offset: (page - 1) * itemsPerPage,
-      where: search ? or(ilike(tos.name, `%${search}%`), ilike(tos.fileName, `%${search}%`)) : undefined,
-   });
+export const listTosAction = authActionClient
+   .inputSchema(listTosSchema)
+   .outputSchema(actionResultSchema)
+   .action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
+      const whereCondition = search ? or(ilike(tos.name, `%${search}%`), ilike(tos.fileName, `%${search}%`)) : undefined;
 
-   return result;
-});
+      const result = await db.query.tos.findMany({
+         limit: itemsPerPage,
+         offset: (page - 1) * itemsPerPage,
+         where: whereCondition,
+      });
+
+      const total = await db.select({ value: count() }).from(tos).where(whereCondition);
+
+      return {
+         data: result,
+         totalPages: Math.ceil(total[0].value / itemsPerPage),
+      };
+   });
 
 export const uploadTosAction = authActionClient.inputSchema(uploadTosSchema).action(async ({ parsedInput: { name, fileName, fileSize, file, uploadedAt } }) => {
    try {

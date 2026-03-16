@@ -91,7 +91,7 @@ export const listGuestUserAction = reviewerActionClient
          },
       });
 
-      const total = await db.select({ value: count() }).from(guestUser);
+      const total = await db.select({ value: count() }).from(guestUser).where(ilike(guestUser.email, `%${search}%`));
 
       return {
          data: guestUsers,

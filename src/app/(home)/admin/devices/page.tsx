@@ -3,10 +3,10 @@ import Filter from "@/components/admin/devices/filter";
 import { OsIcon } from "@/components/admin/devices/os-icon";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import PagePagination from "@/components/admin/shared/page-pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "@/lib/constants";
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import { listDeviceAction } from "@/server/actions/device-actions";
 import { FileDown } from "lucide-react";
 
@@ -22,8 +22,8 @@ export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
 
    const { items, page, search } = await searchParams;
-   const itemsPerPage = parseInt(items || DEFAULT_ITEMS_PER_PAGE.toString());
-   const queryPage = parseInt(page || DEFAULT_PAGE.toString());
+   const itemsPerPage = parsePositiveInt(items, DEFAULT_ITEMS_PER_PAGE);
+   const queryPage = parsePositiveInt(page, DEFAULT_PAGE);
    const querySearch = search || "";
 
    const { data: devices, serverError } = await listDeviceAction({ itemsPerPage, page: queryPage, search: querySearch });
@@ -33,8 +33,6 @@ export default async function Page({ searchParams }: PageProps) {
    }
 
    const totalPages = devices?.totalPages || 0;
-   const nextPage = queryPage + 1 > totalPages ? totalPages : queryPage + 1;
-   const previousPage = queryPage - 1 < 1 ? 1 : queryPage - 1;
 
    return (
       <div className="space-y-4">
@@ -89,21 +87,7 @@ export default async function Page({ searchParams }: PageProps) {
                ))}
             </TableBody>
          </Table>
-         <Pagination>
-            <PaginationContent>
-               <PaginationItem>
-                  <PaginationPrevious href={`/admin/devices?page=${previousPage}`} />
-               </PaginationItem>
-               {Array.from({ length: totalPages }).map((_, index) => (
-                  <PaginationItem key={index}>
-                     <PaginationLink href={`/admin/devices?page=${index + 1}`}>{index + 1}</PaginationLink>
-                  </PaginationItem>
-               ))}
-               <PaginationItem>
-                  <PaginationNext href={`/admin/devices?page=${nextPage}`} />
-               </PaginationItem>
-            </PaginationContent>
-         </Pagination>
+         <PagePagination totalPages={totalPages} />
       </div>
    );
 }

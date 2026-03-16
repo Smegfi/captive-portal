@@ -20,7 +20,7 @@ export const listDeviceAction = authActionClient
          with: { guestUser: true },
       });
 
-      const total = await db.select({ value: count() }).from(device);
+      const total = await db.select({ value: count() }).from(device).where(ilike(device.macAddress, `%${search}%`));
 
       return {
          data: devices,

@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DEFAULT_ITEMS_PER_PAGE } from "@/lib/constants";
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface PagePaginationProps {
    totalPages: number;
@@ -15,38 +14,50 @@ interface PagePaginationProps {
 
 export default function PagePagination({ totalPages }: PagePaginationProps) {
    const router = useRouter();
+   const pathname = usePathname();
    const searchParams = useSearchParams();
 
-   const currentPage = parseInt(searchParams.get("page") || "1");
-   const itemsPerPage = parseInt(searchParams.get("items") || "25");
+   const currentPage = parsePositiveInt(searchParams.get("page") || undefined, DEFAULT_PAGE);
+   const itemsPerPage = parsePositiveInt(searchParams.get("items") || undefined, DEFAULT_ITEMS_PER_PAGE);
 
-   function nexhPage() {
-      if (currentPage < totalPages) {
-         const params = new URLSearchParams(searchParams.toString());
-         params.set("page", (currentPage + 1).toString());
-         router.push(`?${params.toString()}`);
+   const maxPage = totalPages > 0 ? totalPages : 1;
+   const normalizedPage = Math.min(Math.max(currentPage, 1), maxPage);
+   const pageLabel = totalPages > 0 ? `${normalizedPage} / ${totalPages}` : "0 / 0";
+
+   function updateSearchParams(update: (params: URLSearchParams) => void) {
+      const params = new URLSearchParams(searchParams.toString());
+      update(params);
+      router.push(`${pathname}?${params.toString()}`);
+   }
+
+   function nextPage() {
+      if (normalizedPage < maxPage) {
+         updateSearchParams((params) => {
+            params.set("page", (normalizedPage + 1).toString());
+         });
       }
    }
 
    function previousPage() {
-      if (currentPage > 1) {
-         const params = new URLSearchParams(searchParams.toString());
-         params.set("page", (currentPage - 1).toString());
-         router.push(`?${params.toString()}`);
+      if (normalizedPage > 1) {
+         updateSearchParams((params) => {
+            params.set("page", (normalizedPage - 1).toString());
+         });
       }
    }
 
-   function handleChangeItemsPerPage(value: string) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("items", value);
-      router.push(`?${params.toString()}`);
+   function handleItemsPerPageChange(value: string) {
+      updateSearchParams((params) => {
+         params.set("items", value);
+         params.set("page", DEFAULT_PAGE.toString());
+      });
    }
 
    return (
       <div className="flex items-center justify-between gap-4">
          <Field orientation="horizontal" className="w-fit">
             <FieldLabel htmlFor="select-rows-per-page">Počet záznamů na stránku</FieldLabel>
-            <Select defaultValue={itemsPerPage.toString()} onValueChange={handleChangeItemsPerPage}>
+            <Select value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
                <SelectTrigger className="w-20" id="select-rows-per-page">
                   <SelectValue />
                </SelectTrigger>
@@ -63,17 +74,17 @@ export default function PagePagination({ totalPages }: PagePaginationProps) {
          <Pagination className="mx-0 w-auto">
             <PaginationContent>
                <PaginationItem>
-                  <Button variant="outline" onClick={previousPage}>
+                  <Button variant="outline" onClick={previousPage} disabled={normalizedPage <= 1}>
                      <ChevronLeftIcon />
                   </Button>
                </PaginationItem>
                <PaginationItem>
-                  <span className="text-sm text-muted-foreground px-2">
-                     {currentPage} / {totalPages}
+                  <span className="px-2 text-sm text-muted-foreground">
+                     {pageLabel}
                   </span>
                </PaginationItem>
                <PaginationItem>
-                  <Button variant="outline" onClick={nexhPage}>
+                  <Button variant="outline" onClick={nextPage} disabled={normalizedPage >= maxPage}>
                      <ChevronRightIcon />
                   </Button>
                </PaginationItem>

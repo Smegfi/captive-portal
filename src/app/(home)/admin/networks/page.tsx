@@ -1,21 +1,38 @@
 import NewNetwork from "@/components/admin/networks/new-network";
 import RemoveNetwork from "@/components/admin/networks/remove-network";
 import UpdateNetwork from "@/components/admin/networks/update-network";
+import PagePagination from "@/components/admin/shared/page-pagination";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { requireAdminRole } from "@/lib/authorization";
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import { listNetworkAction } from "@/server/actions/network-actions";
 import { Search, Wifi, WifiOff } from "lucide-react";
 
-export default async function Page() {
+interface PageProps {
+   searchParams: Promise<{
+      items?: string;
+      page?: string;
+      search?: string;
+   }>;
+}
+
+export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
 
-   const networks = await listNetworkAction({ itemsPerPage: 10, page: 1, search: "" });
+   const { items, page, search } = await searchParams;
+   const itemsPerPage = parsePositiveInt(items, DEFAULT_ITEMS_PER_PAGE);
+   const queryPage = parsePositiveInt(page, DEFAULT_PAGE);
+   const querySearch = search || "";
+
+   const networks = await listNetworkAction({ itemsPerPage, page: queryPage, search: querySearch });
 
    if (networks.serverError) {
       return <div>Error: {networks.serverError.message}</div>;
    }
+
+   const totalPages = networks.data?.totalPages || 0;
 
    return (
       <div className="space-y-4">
@@ -33,7 +50,7 @@ export default async function Page() {
          </div>
 
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {networks.data?.map((network) => (
+            {networks.data?.data?.map((network) => (
                <Card key={network.id}>
                   <CardHeader>
                      <CardTitle>{network.name}</CardTitle>
@@ -47,6 +64,7 @@ export default async function Page() {
                </Card>
             ))}
          </div>
+         <PagePagination totalPages={totalPages} />
       </div>
    );
 }

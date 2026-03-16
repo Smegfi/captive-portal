@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "@/lib/constants";
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import { requirePortalRole } from "@/lib/authorization";
 import { listGuestUserAction } from "@/server/actions/guest-actions";
 import { FileDown } from "lucide-react";
-import PagePagination from "@/app/(home)/admin/users/pagination";
+import PagePagination from "@/components/admin/shared/page-pagination";
 import Link from "next/link";
 
 interface PageProps {
@@ -23,8 +23,8 @@ export default async function Page({ searchParams }: PageProps) {
    await requirePortalRole();
 
    const { items, page, search } = await searchParams;
-   const itemsPerPage = parseInt(items || DEFAULT_ITEMS_PER_PAGE.toString());
-   const queryPage = parseInt(page || DEFAULT_PAGE.toString());
+   const itemsPerPage = parsePositiveInt(items, DEFAULT_ITEMS_PER_PAGE);
+   const queryPage = parsePositiveInt(page, DEFAULT_PAGE);
    const querySearch = search || "";
    const exportParams = new URLSearchParams();
 

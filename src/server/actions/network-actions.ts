@@ -2,9 +2,10 @@
 
 import { authActionClient } from "@/lib/safe-action";
 import { getNetworkSchema, listNetworkSchema, newNetworkSchema, removeNetworkSchema, updateNetworkSchema } from "@/server/actions-scheme/network/schema";
+import { actionResultSchema } from "@/server/actions-scheme/action-result";
 import { db } from "@/server/db/db";
 import { network } from "@/server/db/schema/network";
-import { eq, ilike, or } from "drizzle-orm";
+import { count, eq, ilike, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const newNetworkAction = authActionClient.inputSchema(newNetworkSchema).action(async ({ parsedInput: { name, ssid, isActive } }) => {
@@ -46,12 +47,22 @@ export const getNetworkAction = authActionClient.inputSchema(getNetworkSchema).a
    return result[0];
 });
 
-export const listNetworkAction = authActionClient.inputSchema(listNetworkSchema).action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
-   const result = await db.query.network.findMany({
-      limit: itemsPerPage,
-      offset: (page - 1) * itemsPerPage,
-      where: search ? or(ilike(network.name, `%${search}%`), ilike(network.ssid, `%${search}%`)) : undefined,
-   });
+export const listNetworkAction = authActionClient
+   .inputSchema(listNetworkSchema)
+   .outputSchema(actionResultSchema)
+   .action(async ({ parsedInput: { itemsPerPage, page, search } }) => {
+      const whereCondition = search ? or(ilike(network.name, `%${search}%`), ilike(network.ssid, `%${search}%`)) : undefined;
 
-   return result;
-});
+      const result = await db.query.network.findMany({
+         limit: itemsPerPage,
+         offset: (page - 1) * itemsPerPage,
+         where: whereCondition,
+      });
+
+      const total = await db.select({ value: count() }).from(network).where(whereCondition);
+
+      return {
+         data: result,
+         totalPages: Math.ceil(total[0].value / itemsPerPage),
+      };
+   });

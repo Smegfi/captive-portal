@@ -1,9 +1,9 @@
 import CurrentStatus from "@/components/admin/connection/current-status";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getLatestConnectionsAction } from "@/server/actions/connection-actions";
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "@/lib/constants";
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import { requireAdminRole } from "@/lib/authorization";
-import PagePagination from "@/app/(home)/admin/connection/pagination";
+import PagePagination from "@/components/admin/shared/page-pagination";
 import Filtration from "@/app/(home)/admin/connection/filtration";
 
 interface PageProps {
@@ -18,8 +18,8 @@ export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
 
    const { items, page, search: searchQuery } = await searchParams;
-   const itemsPerPage = parseInt(items || DEFAULT_ITEMS_PER_PAGE.toString());
-   const pageNumber = parseInt(page || DEFAULT_PAGE.toString());
+   const itemsPerPage = parsePositiveInt(items, DEFAULT_ITEMS_PER_PAGE);
+   const pageNumber = parsePositiveInt(page, DEFAULT_PAGE);
    const search = searchQuery || "";
 
    const { data: connections, serverError } = await getLatestConnectionsAction({ itemsPerPage, page: pageNumber, search: search });
