@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { requireAdminRole } from "@/lib/authorization";
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "@/lib/constants";
 import { listDeviceAction } from "@/server/actions/device-actions";
 import { FileDown } from "lucide-react";
@@ -18,6 +19,8 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
+   await requireAdminRole();
+
    const { items, page, search } = await searchParams;
    const itemsPerPage = parseInt(items || DEFAULT_ITEMS_PER_PAGE.toString());
    const queryPage = parseInt(page || DEFAULT_PAGE.toString());

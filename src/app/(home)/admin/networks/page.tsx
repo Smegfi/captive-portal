@@ -4,10 +4,13 @@ import UpdateNetwork from "@/components/admin/networks/update-network";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { requireAdminRole } from "@/lib/authorization";
 import { listNetworkAction } from "@/server/actions/network-actions";
 import { Search, Wifi, WifiOff } from "lucide-react";
 
 export default async function Page() {
+   await requireAdminRole();
+
    const networks = await listNetworkAction({ itemsPerPage: 10, page: 1, search: "" });
 
    if (networks.serverError) {

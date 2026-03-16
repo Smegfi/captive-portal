@@ -1,5 +1,5 @@
 import { AuthHeader } from "@/components/auth/auth-header";
-import { GuestFormDynamic } from "@/components/guest-portal/guest-form";
+import { GuestFormDynamic } from "@/app/(guest)/guest-form";
 import Image from "next/image";
 
 export default function Page() {

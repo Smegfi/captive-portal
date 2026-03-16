@@ -17,7 +17,7 @@ import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { UAParser } from "ua-parser-js";
 import { z } from "zod";
-import FortiForm from "./forti-form";
+import FortiForm from "../../components/guest-portal/forti-form";
 
 export function GuestForm() {
    const [loading, setLoading] = useState(false);
@@ -77,7 +77,7 @@ export function GuestForm() {
                         name="email"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Email</FormLabel>
+                              <FormLabel>E-mail pro přihlášení k Wi-Fi</FormLabel>
                               <FormControl>
                                  <Input type="email" placeholder="email@example.com" className="w-full" {...field} />
                               </FormControl>
@@ -100,10 +100,8 @@ export function GuestForm() {
                                        onCheckedChange={field.onChange}
                                     />
                                     <div className="grid gap-1.5 font-normal">
-                                       <p className="text-sm leading-none font-medium">Přijímat emailové upozornění</p>
-                                       <p className="text-muted-foreground text-sm">
-                                          Souhlasím s použitím emailové adresy pro marketingové a informativní účely Městské části Praha 10
-                                       </p>
+                                       <p className="text-sm leading-none font-medium">Volitelné</p>
+                                       <p className="text-muted-foreground text-sm">Chci dostávat informace o novinkách a akcích MČ Praha 10 e-mailem</p>
                                     </div>
                                  </Label>
                               </FormControl>
@@ -138,6 +136,6 @@ export function GuestForm() {
    );
 }
 
-export const GuestFormDynamic = dynamic(() => import("@/components/guest-portal/guest-form").then((mod) => mod.GuestForm), {
+export const GuestFormDynamic = dynamic(() => import("@/app/(guest)/guest-form").then((mod) => mod.GuestForm), {
    ssr: false,
 });

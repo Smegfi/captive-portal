@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { isAdminRole, normalizeRole } from "@/lib/authorization";
 import { HttpStatus } from "@/lib/status-codes";
 import { createSafeActionClient } from "next-safe-action";
 import { headers } from "next/headers";
@@ -36,7 +37,7 @@ export const actionClient = createSafeActionClient({
    return next();
 });
 
-export const authActionClient = actionClient.use(async ({ next }) => {
+export const authenticatedActionClient = actionClient.use(async ({ next }) => {
    const session = await auth.api.getSession({
       headers: await headers(),
    });
@@ -45,9 +46,39 @@ export const authActionClient = actionClient.use(async ({ next }) => {
       redirect("/login");
    }
 
-   if (session.user.role !== "admin") {
+   return next();
+});
+
+export const adminActionClient = authenticatedActionClient.use(async ({ next }) => {
+   const session = await auth.api.getSession({
+      headers: await headers(),
+   });
+
+   if (session === null) {
+      redirect("/login");
+   }
+
+   if (!isAdminRole(session.user.role)) {
       throw new ForbiddenError("Nemáte oprávnění k tomuto obsahu");
    }
 
    return next();
 });
+
+export const reviewerActionClient = authenticatedActionClient.use(async ({ next }) => {
+   const session = await auth.api.getSession({
+      headers: await headers(),
+   });
+
+   if (session === null) {
+      redirect("/login");
+   }
+
+   if (normalizeRole(session.user.role) === null) {
+      throw new ForbiddenError("Nemáte oprávnění k tomuto obsahu");
+   }
+
+   return next();
+});
+
+export const authActionClient = adminActionClient;

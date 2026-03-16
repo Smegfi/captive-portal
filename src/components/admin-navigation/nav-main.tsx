@@ -7,6 +7,7 @@ interface NavMainProps {
       title: string;
       url: string;
       icon?: LucideIcon;
+      roles?: string[];
    }[];
 }
 

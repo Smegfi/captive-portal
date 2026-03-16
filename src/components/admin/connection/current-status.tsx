@@ -2,7 +2,7 @@ import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/comp
 
 export default function CurrentStatus() {
    return (
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
          <Card>
             <CardHeader>
                <CardTitle>Připojení</CardTitle>

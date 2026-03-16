@@ -5,9 +5,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "@/lib/constants";
+import { requirePortalRole } from "@/lib/authorization";
 import { listGuestUserAction } from "@/server/actions/guest-actions";
 import { FileDown } from "lucide-react";
 import PagePagination from "@/app/(home)/admin/users/pagination";
+import Link from "next/link";
 
 interface PageProps {
    searchParams: Promise<{
@@ -18,10 +20,19 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
+   await requirePortalRole();
+
    const { items, page, search } = await searchParams;
    const itemsPerPage = parseInt(items || DEFAULT_ITEMS_PER_PAGE.toString());
    const queryPage = parseInt(page || DEFAULT_PAGE.toString());
    const querySearch = search || "";
+   const exportParams = new URLSearchParams();
+
+   if (querySearch) {
+      exportParams.set("search", querySearch);
+   }
+
+   const exportUrl = exportParams.toString() ? `/api/admin/users/export?${exportParams.toString()}` : "/api/admin/users/export";
 
    const { data: guestUsers, serverError } = await listGuestUserAction({ itemsPerPage, page: queryPage, search: querySearch });
 
@@ -38,9 +49,11 @@ export default async function Page({ searchParams }: PageProps) {
             <div className="flex gap-4">
                <Filter />
 
-               <Button>
-                  <FileDown />
-                  <span>Exportovat</span>
+               <Button asChild>
+                  <Link href={exportUrl} target="_blank" rel="noopener noreferrer">
+                     <FileDown />
+                     <span>Exportovat</span>
+                  </Link>
                </Button>
             </div>
          </div>

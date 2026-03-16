@@ -1,6 +1,7 @@
 import { db } from "@/server/db/db";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
 
 const timeSettings = {
    oneDay: 60 * 60 * 24, // = 86 400 seconds (one day)
@@ -30,6 +31,12 @@ export const auth = betterAuth({
          },
       },
    },
+   plugins: [
+      admin({
+         defaultRole: "user",
+         adminRoles: ["admin"],
+      }),
+   ],
 
    session: {
       expiresIn: timeSettings.oneDay,

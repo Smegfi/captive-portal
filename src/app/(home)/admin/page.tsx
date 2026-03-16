@@ -1,6 +1,9 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { requirePortalRole } from "@/lib/authorization";
 
 export default async function Page() {
+   await requirePortalRole();
+
    return (
       <div className="space-y-4">
          <h1 className="text-3xl font-bold">Dashboard</h1>

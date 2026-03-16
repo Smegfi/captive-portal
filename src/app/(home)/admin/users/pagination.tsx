@@ -17,7 +17,7 @@ export default function PagePagination({ totalPages }: PagePaginationProps) {
    const searchParams = useSearchParams();
 
    const currentPage = parseInt(searchParams.get("page") || "1");
-   const itemsPerPage = parseInt(searchParams.get("items") || "15");
+   const itemsPerPage = parseInt(searchParams.get("items") || "25");
 
    function nexhPage() {
       if (currentPage < totalPages) {

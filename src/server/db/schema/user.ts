@@ -9,4 +9,7 @@ export const user = pgTable("user", {
    createdAt: timestamp("created_at").notNull(),
    updatedAt: timestamp("updated_at").notNull(),
    role: text("role").notNull(),
+   banned: boolean("banned"),
+   banReason: text("ban_reason"),
+   banExpires: timestamp("ban_expires"),
 });
