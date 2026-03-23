@@ -1,5 +1,5 @@
 import ApplicationLoading from "@/components/pages/loading";
 
-export default function NetworksLoading() {
+export default function TosLoading() {
    return <ApplicationLoading />;
 }

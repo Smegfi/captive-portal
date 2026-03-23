@@ -33,7 +33,7 @@ export async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                <SidebarMenuItem>
                   <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:p-1.5!">
                      <Link href="/admin" className="relative h-16 w-48">
-                        <Image src="logo.svg" alt="Logo" fill className="object-contain dark:invert" />
+                        <Image src="/logo.svg" alt="Logo" fill className="object-contain dark:invert" />
                      </Link>
                   </SidebarMenuButton>
                </SidebarMenuItem>
