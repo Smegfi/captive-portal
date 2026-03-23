@@ -40,9 +40,7 @@ function normalizeRole(role: string | null | undefined): "admin" | "reviewer" {
 
 export default function AccountManagement({ users }: AccountManagementProps) {
    const router = useRouter();
-   const [roles, setRoles] = useState<Record<string, "admin" | "reviewer">>(
-      Object.fromEntries(users.map((user) => [user.id, normalizeRole(user.role)]))
-   );
+   const [roles, setRoles] = useState<Record<string, "admin" | "reviewer">>(Object.fromEntries(users.map((user) => [user.id, normalizeRole(user.role)])));
    const [savingRoleUserId, setSavingRoleUserId] = useState<string | null>(null);
 
    const form = useForm<CreateAppUserSchemaType>({

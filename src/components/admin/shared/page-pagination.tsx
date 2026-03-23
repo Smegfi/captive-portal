@@ -79,9 +79,7 @@ export default function PagePagination({ totalPages }: PagePaginationProps) {
                   </Button>
                </PaginationItem>
                <PaginationItem>
-                  <span className="px-2 text-sm text-muted-foreground">
-                     {pageLabel}
-                  </span>
+                  <span className="px-2 text-sm text-muted-foreground">{pageLabel}</span>
                </PaginationItem>
                <PaginationItem>
                   <Button variant="outline" onClick={nextPage} disabled={normalizedPage >= maxPage}>

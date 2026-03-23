@@ -6,7 +6,7 @@ import { ilike } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 function escapeCsvValue(value: string): string {
-   const escaped = value.replace(/"/g, "\"\"");
+   const escaped = value.replace(/"/g, '""');
    return `"${escaped}"`;
 }
 

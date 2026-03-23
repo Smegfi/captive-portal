@@ -26,7 +26,11 @@ export default async function SettingsPage() {
                <TestEmail />
             </div>
          </div>
-         {usersResult.serverError ? <div className="text-red-500">{usersResult.serverError.message}</div> : <AccountManagement users={usersResult.data ?? []} />}
+         {usersResult.serverError ? (
+            <div className="text-red-500">{usersResult.serverError.message}</div>
+         ) : (
+            <AccountManagement users={usersResult.data ?? []} />
+         )}
       </div>
    );
 }
