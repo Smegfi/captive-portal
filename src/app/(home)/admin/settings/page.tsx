@@ -1,9 +1,9 @@
-import { getSmtpConfigurationAction } from "@/server/actions/config-actions";
+import AccountManagement from "@/app/(home)/admin/settings/account-management";
 import SmtpSettings from "@/app/(home)/admin/settings/smtp-settings";
 import TestEmail from "@/app/(home)/admin/settings/test-email";
-import AccountManagement from "@/app/(home)/admin/settings/account-management";
 import { requireAdminRole } from "@/lib/authorization";
 import { listAppUsersAction } from "@/server/actions/app-user-actions";
+import { getSmtpConfigurationAction } from "@/server/actions/config-actions";
 
 export default async function SettingsPage() {
    await requireAdminRole();

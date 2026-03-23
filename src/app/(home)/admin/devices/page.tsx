@@ -1,12 +1,11 @@
 import { BrowserIcons } from "@/components/admin/devices/browser-icons";
 import Filter from "@/components/admin/devices/filter";
 import { OsIcon } from "@/components/admin/devices/os-icon";
+import PagePagination from "@/components/admin/shared/page-pagination";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import PagePagination from "@/components/admin/shared/page-pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import { listDeviceAction } from "@/server/actions/device-actions";
 import { FileDown } from "lucide-react";
 
@@ -21,12 +20,13 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
 
-   const { items, page, search } = await searchParams;
-   const itemsPerPage = parsePositiveInt(items, DEFAULT_ITEMS_PER_PAGE);
-   const queryPage = parsePositiveInt(page, DEFAULT_PAGE);
-   const querySearch = search || "";
+   const { items = "25", page = "1", search = "" } = await searchParams;
 
-   const { data: devices, serverError } = await listDeviceAction({ itemsPerPage, page: queryPage, search: querySearch });
+   const { data: devices, serverError } = await listDeviceAction({
+      itemsPerPage: parseInt(items),
+      page: parseInt(page),
+      search: search,
+   });
 
    if (serverError) {
       return <div>Error: {serverError.message}</div>;

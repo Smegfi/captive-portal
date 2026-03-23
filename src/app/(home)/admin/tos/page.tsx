@@ -1,7 +1,7 @@
 import { TosTable } from "@/components/pages/tos/table";
-import { requireAdminRole } from "@/lib/authorization";
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import UploadTos from "@/components/pages/tos/upload-tos";
+import { requireAdminRole } from "@/lib/authorization";
+import { listTosAction } from "@/server/actions/tos-actions";
 
 interface PageProps {
    searchParams: Promise<{
@@ -13,11 +13,15 @@ interface PageProps {
 
 export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
-   const { items, page, search } = await searchParams;
+   const { items = "25", page = "1", search = "" } = await searchParams;
 
-   const itemsPerPage = parsePositiveInt(items, DEFAULT_ITEMS_PER_PAGE);
-   const queryPage = parsePositiveInt(page, DEFAULT_PAGE);
-   const querySearch = search || "";
+   const result = await listTosAction({ itemsPerPage: parseInt(items), page: parseInt(page), search: search });
+
+   if (result.serverError) {
+      return <div>Error: {result.serverError.message}</div>;
+   }
+
+   const totalPages = result.data?.totalPages || 0;
 
    return (
       <div className="space-y-4">
@@ -28,7 +32,7 @@ export default async function Page({ searchParams }: PageProps) {
             </div>
          </div>
 
-         <TosTable itemsPerPage={itemsPerPage} page={queryPage} search={querySearch} />
+         <TosTable itemsPerPage={parseInt(items)} page={parseInt(page)} search={search} />
       </div>
    );
 }

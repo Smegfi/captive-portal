@@ -1,14 +1,12 @@
+import PagePagination from "@/components/admin/shared/page-pagination";
 import Filter from "@/components/admin/users/filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import { requirePortalRole } from "@/lib/authorization";
 import { listGuestUserAction } from "@/server/actions/guest-actions";
 import { FileDown } from "lucide-react";
-import PagePagination from "@/components/admin/shared/page-pagination";
 import Link from "next/link";
 
 interface PageProps {
@@ -22,19 +20,18 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
    await requirePortalRole();
 
-   const { items, page, search } = await searchParams;
-   const itemsPerPage = parsePositiveInt(items, DEFAULT_ITEMS_PER_PAGE);
-   const queryPage = parsePositiveInt(page, DEFAULT_PAGE);
-   const querySearch = search || "";
+   const { items = "25", page = "1", search = "" } = await searchParams;
+   const { data: guestUsers, serverError } = await listGuestUserAction({
+      itemsPerPage: parseInt(items),
+      page: parseInt(page),
+      search: search,
+   });
+
    const exportParams = new URLSearchParams();
-
-   if (querySearch) {
-      exportParams.set("search", querySearch);
+   if (search) {
+      exportParams.set("search", search);
    }
-
    const exportUrl = exportParams.toString() ? `/api/admin/users/export?${exportParams.toString()}` : "/api/admin/users/export";
-
-   const { data: guestUsers, serverError } = await listGuestUserAction({ itemsPerPage, page: queryPage, search: querySearch });
 
    if (serverError) {
       return <div>Error: {serverError.message}</div>;

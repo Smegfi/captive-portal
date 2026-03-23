@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { requireAdminRole } from "@/lib/authorization";
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE, parsePositiveInt } from "@/lib/constants";
 import { listNetworkAction } from "@/server/actions/network-actions";
 import { Search, Wifi, WifiOff } from "lucide-react";
 
@@ -21,12 +20,13 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
 
-   const { items, page, search } = await searchParams;
-   const itemsPerPage = parsePositiveInt(items, DEFAULT_ITEMS_PER_PAGE);
-   const queryPage = parsePositiveInt(page, DEFAULT_PAGE);
-   const querySearch = search || "";
+   const { items = "25", page = "1", search = "" } = await searchParams;
 
-   const networks = await listNetworkAction({ itemsPerPage, page: queryPage, search: querySearch });
+   const networks = await listNetworkAction({
+      itemsPerPage: parseInt(items),
+      page: parseInt(page),
+      search: search,
+   });
 
    if (networks.serverError) {
       return <div>Error: {networks.serverError.message}</div>;
