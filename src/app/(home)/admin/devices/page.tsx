@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
-import { listDeviceAction } from "@/server/actions/device-actions";
+import { listDevice } from "@/server/repositories/device/list";
 import { FileDown } from "lucide-react";
 
 interface PageProps {
@@ -22,7 +22,7 @@ export default async function Page({ searchParams }: PageProps) {
 
    const { items = "25", page = "1", search = "" } = await searchParams;
 
-   const { data: devices, serverError } = await listDeviceAction({
+   const { data: devices, serverError } = await listDevice({
       itemsPerPage: parseInt(items),
       page: parseInt(page),
       search: search,

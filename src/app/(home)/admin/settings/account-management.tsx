@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createAppUserSchema, CreateAppUserSchemaType } from "@/server/actions-scheme/app-user/schema";
-import { createAppUserAction, updateAppUserRoleAction } from "@/server/actions/app-user-actions";
+import { createAppUser } from "@/server/repositories/app-user/create";
+import { createAppUserSchema, CreateAppUserSchemaType } from "@/server/repositories/app-user/schema";
+import { updateAppUserRole } from "@/server/repositories/app-user/update-role";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Save, UserPlus } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
@@ -53,7 +54,7 @@ export default function AccountManagement({ users }: AccountManagementProps) {
       },
    });
 
-   const { execute: createUser, isExecuting: isCreatingUser } = useAction(createAppUserAction, {
+   const { execute: createUser, isExecuting: isCreatingUser } = useAction(createAppUser, {
       onSuccess: () => {
          toast.success("Uživatel byl vytvořen.");
          form.reset({
@@ -69,7 +70,7 @@ export default function AccountManagement({ users }: AccountManagementProps) {
       },
    });
 
-   const { executeAsync: updateRole } = useAction(updateAppUserRoleAction, {
+   const { executeAsync: updateRole } = useAction(updateAppUserRole, {
       onSuccess: () => {
          toast.success("Role byla aktualizována.");
          router.refresh();

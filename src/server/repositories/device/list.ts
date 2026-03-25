@@ -1,13 +1,16 @@
 "use server";
 
 import { authActionClient } from "@/lib/safe-action";
-import { listDeviceSchema } from "@/server/actions-scheme/device/schema";
+import { actionResultSchema } from "@/server/actions-scheme/action-result";
 import { db } from "@/server/db/db";
 import { device } from "@/server/db/schema/device";
 import { count, ilike } from "drizzle-orm";
-import { actionResultSchema } from "../actions-scheme/action-result";
+import { listDeviceSchema } from "@/server/repositories/device/schema";
 
-export const listDeviceAction = authActionClient
+/**
+ * Stránkovaný seznam zařízení (admin).
+ */
+export const listDevice = authActionClient
    .inputSchema(listDeviceSchema)
    .outputSchema(actionResultSchema)
    .action(async ({ parsedInput: { itemsPerPage, page, search } }) => {

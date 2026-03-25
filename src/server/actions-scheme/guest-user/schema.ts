@@ -72,12 +72,6 @@ export const createDeviceSchema = z.object({
    macAddress: z.string().optional(),
 });
 
-export const listGuestSchema = z.object({
-   itemsPerPage: z.number(),
-   page: z.number(),
-   search: z.string(),
-});
-
 export const createConnectionSchema = z.object({
    deviceId: z.number().nonnegative(),
    networkId: z.number().nonnegative(),

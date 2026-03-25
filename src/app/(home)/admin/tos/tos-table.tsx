@@ -1,9 +1,7 @@
-"use server";
-
-import { Button } from "@/components/ui/button";
 import PagePagination from "@/components/admin/shared/page-pagination";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { listTosAction } from "@/server/actions/tos-actions";
+import { listTos } from "@/server/repositories/tos/list";
 import { Download, FileText } from "lucide-react";
 
 interface TosTableProps {
@@ -13,7 +11,7 @@ interface TosTableProps {
 }
 
 export async function TosTable({ itemsPerPage, page, search }: TosTableProps) {
-   const result = await listTosAction({ itemsPerPage, page, search });
+   const result = await listTos({ itemsPerPage, page, search });
 
    if (result.serverError) {
       return <div>Error: {result.serverError.message}</div>;

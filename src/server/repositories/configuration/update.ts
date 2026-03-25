@@ -1,11 +1,14 @@
 "use server";
 
 import { authActionClient } from "@/lib/safe-action";
-import { smtpConfigurationSchema } from "../actions-scheme/configuration/smtp-schema";
+import { EmailService } from "@/server/services/email-service";
 import { readFileSync, writeFileSync } from "fs";
-import { EmailService } from "../services/email-service";
+import { smtpConfigurationSchema } from "@/server/repositories/configuration/schema";
 
-export const updateSmtpConfigurationAction = authActionClient
+/**
+ * Uložení SMTP konfigurace a ověření připojení k serveru.
+ */
+export const updateSmtpConfiguration = authActionClient
    .inputSchema(smtpConfigurationSchema)
    .action(async ({ parsedInput: { host, port, secure, from, auth } }) => {
       const config = JSON.parse(readFileSync("src/server/configuration/config.json", "utf8"));
@@ -13,7 +16,7 @@ export const updateSmtpConfigurationAction = authActionClient
       writeFileSync("src/server/configuration/config.json", JSON.stringify(config, null, 2));
 
       const emailService = new EmailService(config.smtp);
-      var result = await emailService.verifyConnection();
+      const result = await emailService.verifyConnection();
 
       if (result !== true) {
          throw new Error("Failed to verify email service connection");
@@ -21,8 +24,3 @@ export const updateSmtpConfigurationAction = authActionClient
 
       return result;
    });
-
-export const getSmtpConfigurationAction = authActionClient.action(async () => {
-   const config = JSON.parse(readFileSync("src/server/configuration/config.json", "utf8"));
-   return smtpConfigurationSchema.parse(config.smtp);
-});

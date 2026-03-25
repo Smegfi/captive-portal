@@ -8,8 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Loader2, Save, Send } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { smtpConfigurationSchema, smtpConfigurationSchemaType } from "@/server/actions-scheme/configuration/smtp-schema";
-import { updateSmtpConfigurationAction } from "@/server/actions/config-actions";
+import { smtpConfigurationSchema, smtpConfigurationSchemaType } from "@/server/repositories/configuration/schema";
+import { updateSmtpConfiguration } from "@/server/repositories/configuration/update";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 
@@ -18,7 +18,7 @@ interface SmtpSettingsProps {
 }
 
 export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
-   const { execute, isExecuting } = useAction(updateSmtpConfigurationAction, {
+   const { execute, isExecuting } = useAction(updateSmtpConfiguration, {
       onSuccess: () => {
          toast.success("SMTP konfigurace byla úspěšně aktualizována");
       },

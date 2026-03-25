@@ -1,10 +1,10 @@
 "use client";
 
 import { useAction } from "next-safe-action/hooks";
-import { sendTestEmailAction } from "@/server/actions/email-actions";
+import { sendTestEmail } from "@/server/repositories/email/send-test";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { sendTestEmailSchema, sendTestEmailSchemaType } from "@/server/actions-scheme/email/email-schema";
+import { sendTestEmailSchema, sendTestEmailSchemaType } from "@/server/repositories/email/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { FieldError, Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -12,7 +12,7 @@ import { Loader2, Send } from "lucide-react";
 import { Card, CardContent, CardHeader, CardDescription, CardTitle, CardFooter } from "@/components/ui/card";
 
 export default function TestEmail() {
-   const { execute, isExecuting } = useAction(sendTestEmailAction);
+   const { execute, isExecuting } = useAction(sendTestEmail);
 
    const form = useForm<sendTestEmailSchemaType>({
       resolver: zodResolver(sendTestEmailSchema),

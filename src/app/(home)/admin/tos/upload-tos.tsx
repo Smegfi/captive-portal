@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { uploadTosSchema, uploadTosSchemaType } from "@/server/actions-scheme/tos/schema";
-import { uploadTosAction } from "@/server/actions/tos-actions";
+import { uploadTos } from "@/server/repositories/tos/create";
+import { uploadTosSchema, uploadTosSchemaType } from "@/server/repositories/tos/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, Upload } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
@@ -17,7 +17,7 @@ export default function UploadTos() {
    const [error, setError] = useState<string | null>(null);
    const [file, setFile] = useState<File | null>(null);
 
-   const { execute, isExecuting } = useAction(uploadTosAction, {
+   const { execute, isExecuting } = useAction(uploadTos, {
       onExecute: () => {
          setError(null);
       },

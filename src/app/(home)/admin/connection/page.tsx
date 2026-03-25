@@ -2,7 +2,7 @@ import Filtration from "@/app/(home)/admin/connection/filtration";
 import PagePagination from "@/components/admin/shared/page-pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
-import { getLatestConnectionsAction } from "@/server/actions/connection-actions";
+import { listConnection } from "@/server/repositories/connection/list";
 
 interface PageProps {
    searchParams: Promise<{
@@ -17,7 +17,7 @@ export default async function Page({ searchParams }: PageProps) {
 
    const { page = "1", items = "25", search = "" } = await searchParams;
 
-   const { data: connections, serverError } = await getLatestConnectionsAction({
+   const { data: connections, serverError } = await listConnection({
       itemsPerPage: parseInt(items),
       page: parseInt(page),
       search: search,

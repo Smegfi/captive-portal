@@ -1,4 +1,4 @@
-import { getLatestConnectionsAction } from "@/server/actions/connection-actions";
+import { listConnection } from "@/server/repositories/connection/list";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -7,7 +7,7 @@ export async function GET(request: Request) {
    const page = searchParams.get("page") || "1";
    const search = searchParams.get("search") || "";
 
-   const result = await getLatestConnectionsAction({ itemsPerPage: parseInt(itemsPerPage), page: parseInt(page), search: search });
+   const result = await listConnection({ itemsPerPage: parseInt(itemsPerPage), page: parseInt(page), search: search });
 
    if (result.serverError !== undefined) {
       return NextResponse.json(result.serverError, { status: result.serverError.status });

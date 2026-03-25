@@ -2,14 +2,14 @@ import AccountManagement from "@/app/(home)/admin/settings/account-management";
 import SmtpSettings from "@/app/(home)/admin/settings/smtp-settings";
 import TestEmail from "@/app/(home)/admin/settings/test-email";
 import { requireAdminRole } from "@/lib/authorization";
-import { listAppUsersAction } from "@/server/actions/app-user-actions";
-import { getSmtpConfigurationAction } from "@/server/actions/config-actions";
+import { getSmtpConfiguration } from "@/server/repositories/configuration/get";
+import { listAppUser } from "@/server/repositories/app-user/list";
 
 export default async function SettingsPage() {
    await requireAdminRole();
 
-   const smtpConfiguration = await getSmtpConfigurationAction();
-   const usersResult = await listAppUsersAction();
+   const smtpConfiguration = await getSmtpConfiguration();
+   const usersResult = await listAppUser();
 
    if (smtpConfiguration.serverError) {
       return <div>Error: {smtpConfiguration.serverError.message}</div>;

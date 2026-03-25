@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requirePortalRole } from "@/lib/authorization";
-import { listGuestUserAction } from "@/server/actions/guest-actions";
+import { listGuestUser } from "@/server/repositories/guest-user/list";
 import { FileDown } from "lucide-react";
 import Link from "next/link";
 
@@ -21,7 +21,7 @@ export default async function Page({ searchParams }: PageProps) {
    await requirePortalRole();
 
    const { items = "25", page = "1", search = "" } = await searchParams;
-   const { data: guestUsers, serverError } = await listGuestUserAction({
+   const { data: guestUsers, serverError } = await listGuestUser({
       itemsPerPage: parseInt(items),
       page: parseInt(page),
       search: search,
