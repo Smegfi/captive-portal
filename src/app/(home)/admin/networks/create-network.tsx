@@ -6,20 +6,21 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { newNetworkSchema } from "@/server/actions-scheme/network/schema";
-import { newNetworkAction } from "@/server/actions/network-actions";
+import { createNetwork } from "@/server/repositories/network/create";
+import { createNetworkSchema } from "@/server/repositories/network/schema";
 import { useAction } from "next-safe-action/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus } from "lucide-react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 
-export default function NewNetwork() {
+export default function CreateNetwork() {
    const [isOpen, setIsOpen] = useState(false);
    const [error, setError] = useState<string | null>(null);
 
-   const { execute, isExecuting } = useAction(newNetworkAction, {
+   const { execute, isExecuting } = useAction(createNetwork, {
       onExecute: () => {
          setError(null);
       },
@@ -28,14 +29,14 @@ export default function NewNetwork() {
          setIsOpen(false);
       },
       onError: (error) => {
-         setError(error.error.validationErrors?._errors?.join(", ") ?? null);
+         setError(error.error.serverError?.message ?? "Nastala chyba při vytváření sítě");
       },
    });
 
-   type FormValues = z.infer<typeof newNetworkSchema>;
+   type FormValues = z.infer<typeof createNetworkSchema>;
 
    const form = useForm<FormValues>({
-      resolver: zodResolver(newNetworkSchema),
+      resolver: zodResolver(createNetworkSchema),
       defaultValues: {
          name: "",
          ssid: "",
@@ -50,9 +51,12 @@ export default function NewNetwork() {
    return (
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
          <DialogTrigger asChild>
-            <Button>
-               <Plus />
-               <span>Přidat síť</span>
+            <Button variant={"outline"} asChild>
+               <Card className="h-full w-full border-2 border-dashed">
+                  <CardContent className="flex items-center justify-center gap-1">
+                     <Plus /> Přidat síť
+                  </CardContent>
+               </Card>
             </Button>
          </DialogTrigger>
          <DialogContent>

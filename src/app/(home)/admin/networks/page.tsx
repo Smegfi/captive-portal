@@ -1,56 +1,26 @@
-import NewNetwork from "@/components/admin/networks/new-network";
-import RemoveNetwork from "@/components/admin/networks/remove-network";
-import UpdateNetwork from "@/components/admin/networks/update-network";
-import PagePagination from "@/components/admin/shared/page-pagination";
-import { Button } from "@/components/ui/button";
+import CreateNetwork from "@/app/(home)/admin/networks/create-network";
+import RemoveNetwork from "@/app/(home)/admin/networks/remove-network";
+import UpdateNetwork from "@/app/(home)/admin/networks/update-network";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { requireAdminRole } from "@/lib/authorization";
-import { listNetworkAction } from "@/server/actions/network-actions";
-import { Search, Wifi, WifiOff } from "lucide-react";
+import { listNetwork } from "@/server/repositories/network/list";
+import { Wifi, WifiOff } from "lucide-react";
 
-interface PageProps {
-   searchParams: Promise<{
-      items?: string;
-      page?: string;
-      search?: string;
-   }>;
-}
-
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page() {
    await requireAdminRole();
 
-   const { items = "25", page = "1", search = "" } = await searchParams;
-
-   const networks = await listNetworkAction({
-      itemsPerPage: parseInt(items),
-      page: parseInt(page),
-      search: search,
-   });
+   const networks = await listNetwork();
 
    if (networks.serverError) {
       return <div>Error: {networks.serverError.message}</div>;
    }
 
-   const totalPages = networks.data?.totalPages || 0;
-
    return (
       <div className="space-y-4">
          <h1 className="text-3xl font-bold">Sítě</h1>
-         <div>
-            <div className="flex gap-4">
-               <div className="flex-1 flex items-center">
-                  <Input placeholder="Hledat síť" className="rounded-r-none" />
-                  <Button className="rounded-l-none" variant="outline">
-                     <Search />
-                  </Button>
-               </div>
-               <NewNetwork />
-            </div>
-         </div>
 
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {networks.data?.data?.map((network) => (
+            {networks.data?.map((network) => (
                <Card key={network.id}>
                   <CardHeader>
                      <CardTitle>{network.name}</CardTitle>
@@ -63,8 +33,9 @@ export default async function Page({ searchParams }: PageProps) {
                   </CardFooter>
                </Card>
             ))}
+
+            <CreateNetwork />
          </div>
-         <PagePagination totalPages={totalPages} />
       </div>
    );
 }

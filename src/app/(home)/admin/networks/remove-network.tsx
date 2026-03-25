@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { removeNetworkSchema } from "@/server/actions-scheme/network/schema";
-import { removeNetworkAction } from "@/server/actions/network-actions";
+import { removeNetwork } from "@/server/repositories/network/remove";
+import { removeNetworkSchema } from "@/server/repositories/network/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
@@ -19,7 +19,7 @@ export default function RemoveNetwork({ id }: RemoveNetworkProps) {
    const [isOpen, setIsOpen] = useState(false);
    const [error, setError] = useState<string | null>(null);
 
-   const { execute, isExecuting } = useAction(removeNetworkAction, {
+   const { execute, isExecuting } = useAction(removeNetwork, {
       onExecute: () => {
          setError(null);
       },
@@ -28,7 +28,7 @@ export default function RemoveNetwork({ id }: RemoveNetworkProps) {
          setIsOpen(false);
       },
       onError: (error) => {
-         setError(error.error.validationErrors?._errors?.join(", ") ?? null);
+         setError(error.error.serverError?.message ?? "Nastala chyba při mazání sítě");
       },
    });
 

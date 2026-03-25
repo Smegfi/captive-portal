@@ -6,8 +6,9 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { updateNetworkSchema } from "@/server/actions-scheme/network/schema";
-import { getNetworkAction, updateNetworkAction } from "@/server/actions/network-actions";
+import { updateNetwork } from "@/server/repositories/network/update";
+import { updateNetworkSchema } from "@/server/repositories/network/schema";
+import { getNetwork } from "@/server/repositories/network/get";
 import { useAction } from "next-safe-action/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ControllerRenderProps, useForm } from "react-hook-form";
@@ -25,7 +26,7 @@ export default function UpdateNetwork({ id }: UpdateNetworkProps) {
    const [error, setError] = useState<string | null>(null);
    const [isLoading, setIsLoading] = useState(false);
 
-   const { execute: loadNetwork } = useAction(getNetworkAction, {
+   const { execute: loadNetwork } = useAction(getNetwork, {
       onSuccess: (response) => {
          form.reset({
             id,
@@ -37,7 +38,7 @@ export default function UpdateNetwork({ id }: UpdateNetworkProps) {
       },
    });
 
-   const { execute, isPending } = useAction(updateNetworkAction, {
+   const { execute, isPending } = useAction(updateNetwork, {
       onExecute: () => {
          setError(null);
       },
