@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Filtration() {
    const searchParams = useSearchParams();
    const router = useRouter();
+   const pathname = usePathname();
    const [searchValue, setSearchValue] = useState("");
    const [isLoading, setIsLoading] = useState(false);
 
@@ -23,7 +23,7 @@ export default function Filtration() {
          params.delete("search");
       }
       params.set("page", "1");
-      router.push(`?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`);
    }
 
    function handleKeyPress(e: React.KeyboardEvent) {
@@ -37,7 +37,7 @@ export default function Filtration() {
       const params = new URLSearchParams(searchParams.toString());
       params.delete("search");
       params.set("page", "1");
-      router.push(`?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`);
       setSearchValue("");
    }
 
@@ -49,7 +49,7 @@ export default function Filtration() {
    return (
       <div className="flex-1 flex items-center">
          <Input
-            placeholder="Hledat uživatele"
+            placeholder="Hledat připojení"
             className="rounded-r-none"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -57,7 +57,7 @@ export default function Filtration() {
             disabled={isLoading}
          />
          {searchValue && (
-            <Button className="rounded-l-none rounded-r-none" variant="outline" onClick={handleReset}>
+            <Button className="rounded-l-none rounded-r-none" variant="outline" onClick={handleReset} disabled={isLoading}>
                <X />
             </Button>
          )}

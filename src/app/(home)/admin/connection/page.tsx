@@ -1,4 +1,6 @@
 import Filtration from "@/app/(home)/admin/connection/filtration";
+import ConnectionFilterDialog from "@/app/(home)/admin/connection/filter";
+import ConnectionExportButton from "@/app/(home)/admin/connection/export";
 import PagePagination from "@/components/admin/shared/page-pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
@@ -6,21 +8,37 @@ import { listConnection } from "@/server/repositories/connection/list";
 
 interface PageProps {
    searchParams: Promise<{
-      items?: string;
       page?: string;
+      pageSize?: string;
+      items?: string;
       search?: string;
+      mac?: string;
+      network?: string;
+      user?: string;
+      updatedFrom?: string;
+      updatedTo?: string;
    }>;
 }
 
 export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
 
-   const { page = "1", items = "25", search = "" } = await searchParams;
+   const resolvedSearchParams = await searchParams;
+   const { page = "1", pageSize = "25", items, search = "", mac = "", network = "", user = "", updatedFrom, updatedTo } =
+      resolvedSearchParams;
+   const effectivePageSize = pageSize || items || "25";
+   const parsedUpdatedFrom = updatedFrom ? new Date(updatedFrom) : undefined;
+   const parsedUpdatedTo = updatedTo ? new Date(updatedTo) : undefined;
 
    const { data: connections, serverError } = await listConnection({
-      itemsPerPage: parseInt(items),
+      itemsPerPage: parseInt(effectivePageSize),
       page: parseInt(page),
       search: search,
+      mac,
+      network,
+      user,
+      updatedFrom: parsedUpdatedFrom && !Number.isNaN(parsedUpdatedFrom.getTime()) ? parsedUpdatedFrom : undefined,
+      updatedTo: parsedUpdatedTo && !Number.isNaN(parsedUpdatedTo.getTime()) ? parsedUpdatedTo : undefined,
    });
 
    if (serverError) {
@@ -32,7 +50,11 @@ export default async function Page({ searchParams }: PageProps) {
    return (
       <div className="space-y-4">
          <h1 className="text-3xl font-bold flex items-center gap-4">Připojení</h1>
-         <Filtration />
+         <div className="flex gap-4">
+            <Filtration />
+            <ConnectionFilterDialog />
+            <ConnectionExportButton searchParams={resolvedSearchParams} />
+         </div>
 
          <Table>
             <TableHeader>
