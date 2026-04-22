@@ -1,37 +1,45 @@
 import PagePagination from "@/components/admin/shared/page-pagination";
 import Filter from "@/components/admin/users/filter";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requirePortalRole } from "@/lib/authorization";
 import { listGuestUser } from "@/server/repositories/guest-user/list";
-import { FileDown } from "lucide-react";
-import Link from "next/link";
+import UserFilterDialog from "@/app/(home)/admin/users/filter";
+import UsersExportButton from "@/app/(home)/admin/users/export";
 
 interface PageProps {
    searchParams: Promise<{
-      items?: string;
       page?: string;
+      pageSize?: string;
+      items?: string;
       search?: string;
+      email?: string;
+      marketing?: string;
+      createdFrom?: string;
+      createdTo?: string;
    }>;
 }
 
 export default async function Page({ searchParams }: PageProps) {
    await requirePortalRole();
 
-   const { items = "25", page = "1", search = "" } = await searchParams;
+   const resolvedSearchParams = await searchParams;
+   const { page = "1", pageSize = "25", items, search = "", email = "", marketing = "all", createdFrom, createdTo } =
+      resolvedSearchParams;
+   const effectivePageSize = pageSize || items || "25";
+   const parsedCreatedFrom = createdFrom ? new Date(createdFrom) : undefined;
+   const parsedCreatedTo = createdTo ? new Date(createdTo) : undefined;
+
    const { data: guestUsers, serverError } = await listGuestUser({
-      itemsPerPage: parseInt(items),
+      itemsPerPage: parseInt(effectivePageSize),
       page: parseInt(page),
       search: search,
+      email,
+      marketing,
+      createdFrom: parsedCreatedFrom && !Number.isNaN(parsedCreatedFrom.getTime()) ? parsedCreatedFrom : undefined,
+      createdTo: parsedCreatedTo && !Number.isNaN(parsedCreatedTo.getTime()) ? parsedCreatedTo : undefined,
    });
-
-   const exportParams = new URLSearchParams();
-   if (search) {
-      exportParams.set("search", search);
-   }
-   const exportUrl = exportParams.toString() ? `/api/admin/users/export?${exportParams.toString()}` : "/api/admin/users/export";
 
    if (serverError) {
       return <div>Error: {serverError.message}</div>;
@@ -45,13 +53,8 @@ export default async function Page({ searchParams }: PageProps) {
          <div>
             <div className="flex gap-4">
                <Filter />
-
-               <Button asChild>
-                  <Link href={exportUrl} target="_blank" rel="noopener noreferrer">
-                     <FileDown />
-                     <span>Exportovat</span>
-                  </Link>
-               </Button>
+               <UserFilterDialog />
+               <UsersExportButton searchParams={resolvedSearchParams} />
             </div>
          </div>
 
