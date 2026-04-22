@@ -18,7 +18,7 @@ export default function PagePagination({ totalPages }: PagePaginationProps) {
    const searchParams = useSearchParams();
 
    const currentPage = parsePositiveInt(searchParams.get("page") || undefined, DEFAULT_PAGE);
-   const itemsPerPage = parsePositiveInt(searchParams.get("items") || undefined, DEFAULT_ITEMS_PER_PAGE);
+   const itemsPerPage = parsePositiveInt(searchParams.get("pageSize") || searchParams.get("items") || undefined, DEFAULT_ITEMS_PER_PAGE);
 
    const maxPage = totalPages > 0 ? totalPages : 1;
    const normalizedPage = Math.min(Math.max(currentPage, 1), maxPage);
@@ -48,7 +48,8 @@ export default function PagePagination({ totalPages }: PagePaginationProps) {
 
    function handleItemsPerPageChange(value: string) {
       updateSearchParams((params) => {
-         params.set("items", value);
+         params.set("pageSize", value);
+         params.delete("items");
          params.set("page", DEFAULT_PAGE.toString());
       });
    }

@@ -2,30 +2,46 @@ import { BrowserIcons } from "@/components/admin/devices/browser-icons";
 import Filter from "@/components/admin/devices/filter";
 import { OsIcon } from "@/components/admin/devices/os-icon";
 import PagePagination from "@/components/admin/shared/page-pagination";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
 import { listDevice } from "@/server/repositories/device/list";
-import { FileDown } from "lucide-react";
+import FilerDialog from "@/app/(home)/admin/devices/filter";
+import DevicesExportButton from "@/app/(home)/admin/devices/export";
 
 interface PageProps {
    searchParams: Promise<{
-      items?: string;
       page?: string;
+      pageSize?: string;
+      items?: string;
       search?: string;
+      mac?: string;
+      user?: string;
+      device?: string;
+      connectedFrom?: string;
+      connectedTo?: string;
    }>;
 }
 
 export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
 
-   const { items = "25", page = "1", search = "" } = await searchParams;
+   const resolvedSearchParams = await searchParams;
+   const { page = "1", pageSize = "25", items, search = "", mac = "", user = "", device = "all", connectedFrom, connectedTo } =
+      resolvedSearchParams;
+   const effectivePageSize = pageSize || items || "25";
+   const parsedConnectedFrom = connectedFrom ? new Date(connectedFrom) : undefined;
+   const parsedConnectedTo = connectedTo ? new Date(connectedTo) : undefined;
 
    const { data: devices, serverError } = await listDevice({
-      itemsPerPage: parseInt(items),
+      itemsPerPage: parseInt(effectivePageSize),
       page: parseInt(page),
       search: search,
+      mac,
+      user,
+      device,
+      connectedFrom: parsedConnectedFrom && !Number.isNaN(parsedConnectedFrom.getTime()) ? parsedConnectedFrom : undefined,
+      connectedTo: parsedConnectedTo && !Number.isNaN(parsedConnectedTo.getTime()) ? parsedConnectedTo : undefined,
    });
 
    if (serverError) {
@@ -41,10 +57,9 @@ export default async function Page({ searchParams }: PageProps) {
             <div className="flex gap-4">
                <Filter />
 
-               <Button>
-                  <FileDown />
-                  <span>Exportovat</span>
-               </Button>
+               <FilerDialog />
+
+               <DevicesExportButton searchParams={resolvedSearchParams} />
             </div>
          </div>
 
