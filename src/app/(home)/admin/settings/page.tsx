@@ -2,15 +2,17 @@ import AccountManagement from "@/app/(home)/admin/settings/account-management";
 import GuestUserCleanupSettings from "@/app/(home)/admin/settings/guest-user-cleanup-settings";
 import SmtpSettings from "@/app/(home)/admin/settings/smtp-settings";
 import TestEmail from "@/app/(home)/admin/settings/test-email";
+import WelcomeEmailSettings from "@/app/(home)/admin/settings/welcome-email-settings";
 import { requireAdminRole } from "@/lib/authorization";
 import { getGuestUserCleanupConfig } from "@/server/repositories/guest-user/cleanup-config";
-import { getSmtpConfiguration } from "@/server/repositories/configuration/get";
+import { getSmtpConfiguration, getWelcomeEmailConfiguration } from "@/server/repositories/configuration/get";
 import { listAppUser } from "@/server/repositories/app-user/list";
 
 export default async function SettingsPage() {
    await requireAdminRole();
 
    const smtpConfiguration = await getSmtpConfiguration();
+   const welcomeEmailConfiguration = await getWelcomeEmailConfiguration();
    const guestUserCleanupConfig = await getGuestUserCleanupConfig();
    const usersResult = await listAppUser();
 
@@ -29,6 +31,11 @@ export default async function SettingsPage() {
                <TestEmail />
             </div>
          </div>
+         {welcomeEmailConfiguration.serverError ? (
+            <div className="text-red-500">{welcomeEmailConfiguration.serverError.message}</div>
+         ) : (
+            <WelcomeEmailSettings welcomeEmailConfiguration={welcomeEmailConfiguration.data!} />
+         )}
          {guestUserCleanupConfig.serverError ? (
             <div className="text-red-500">{guestUserCleanupConfig.serverError.message}</div>
          ) : (

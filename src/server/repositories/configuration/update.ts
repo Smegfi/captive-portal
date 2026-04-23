@@ -2,8 +2,9 @@
 
 import { authActionClient } from "@/lib/safe-action";
 import { EmailService } from "@/server/services/email-service";
-import { readFileSync, writeFileSync } from "fs";
-import { smtpConfigurationSchema } from "@/server/repositories/configuration/schema";
+import { readStoredConfig, writeStoredConfig } from "@/server/repositories/configuration/config-store";
+import { updateStoredWelcomeEmailConfiguration } from "@/server/repositories/configuration/welcome-email-config-store";
+import { smtpConfigurationSchema, welcomeEmailConfigurationSchema } from "@/server/repositories/configuration/schema";
 
 /**
  * Uložení SMTP konfigurace a ověření připojení k serveru.
@@ -11,11 +12,12 @@ import { smtpConfigurationSchema } from "@/server/repositories/configuration/sch
 export const updateSmtpConfiguration = authActionClient
    .inputSchema(smtpConfigurationSchema)
    .action(async ({ parsedInput: { host, port, secure, from, auth } }) => {
-      const config = JSON.parse(readFileSync("src/server/configuration/config.json", "utf8"));
-      config.smtp = { host, port, secure, from, auth };
-      writeFileSync("src/server/configuration/config.json", JSON.stringify(config, null, 2));
+      const config = readStoredConfig();
+      const smtpConfiguration = { host, port, secure, from, auth };
+      config.smtp = smtpConfiguration;
+      writeStoredConfig(config);
 
-      const emailService = new EmailService(config.smtp);
+      const emailService = new EmailService(smtpConfiguration);
       const result = await emailService.verifyConnection();
 
       if (result !== true) {
@@ -23,4 +25,13 @@ export const updateSmtpConfiguration = authActionClient
       }
 
       return result;
+   });
+
+/**
+ * Uložení konfigurace uvítacího emailu.
+ */
+export const updateWelcomeEmailConfiguration = authActionClient
+   .inputSchema(welcomeEmailConfigurationSchema)
+   .action(async ({ parsedInput: { subject, bodyTemplate } }) => {
+      return await updateStoredWelcomeEmailConfiguration(subject, bodyTemplate);
    });

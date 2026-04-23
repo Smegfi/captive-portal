@@ -3,10 +3,13 @@
 import { actionClient } from "@/lib/safe-action";
 import { DeviceSchema, createConnectionSchema, guestLoginSchema } from "@/server/actions-scheme/guest-user/schema";
 import { db } from "@/server/db/db";
+import { getStoredSmtpConfiguration } from "@/server/repositories/configuration/config-store";
+import { getStoredWelcomeEmailConfiguration } from "@/server/repositories/configuration/welcome-email-config-store";
 import { connection as connectionTable } from "@/server/db/schema/connection";
 import { device } from "@/server/db/schema/device";
 import { guestUser } from "@/server/db/schema/guest-user";
 import { network } from "@/server/db/schema/network";
+import { EmailService } from "@/server/services/email-service";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -56,6 +59,10 @@ export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).actio
       connection: connection,
    });
 
+   if (marketingApproved) {
+      await sendWelcomeEmailToNewGuestUser(email);
+   }
+
    revalidatePath("/admin/devices");
    revalidatePath("/admin/users");
 
@@ -70,6 +77,27 @@ export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).actio
       password: "", // TODO: Generate password
    };
 });
+
+async function sendWelcomeEmailToNewGuestUser(email: string) {
+   try {
+      const smtpConfiguration = getStoredSmtpConfiguration();
+      const welcomeEmailConfiguration = await getStoredWelcomeEmailConfiguration();
+      const emailService = new EmailService(smtpConfiguration);
+
+      const termsUrl = process.env.WELCOME_EMAIL_TERMS_URL ?? "https://praha10.cz";
+      const contactEmail = process.env.WELCOME_EMAIL_CONTACT_EMAIL ?? smtpConfiguration.from;
+
+      const body = welcomeEmailConfiguration.bodyTemplate
+         .replaceAll("[ODKAZ_NA_PODMINKY_A_OCHRANU_OSOBNICH_UDAJU]", termsUrl)
+         .replaceAll("[KONTAKTNI_EMAIL]", contactEmail);
+
+      const html = body.replaceAll("\n", "<br />");
+
+      await emailService.sendEmail(email, welcomeEmailConfiguration.subject, html);
+   } catch (error) {
+      console.error(`[welcome-email] Failed to send welcome email to ${email}`, error);
+   }
+}
 
 /**
  * Vytvoří nové připojení mezi zařízením a sítí

@@ -18,10 +18,6 @@ export class EmailService {
 
    async sendEmail(to: string, subject: string, html: string) {
       try {
-         console.log("Sending email to", to);
-         await this.transporter.verify();
-         console.log("Email service is ready to send emails");
-
          await this.transporter.sendMail({
             from: this.smtpConfiguration.from,
             to,
@@ -29,7 +25,7 @@ export class EmailService {
             html,
          });
       } catch (error) {
-         throw new Error("Failed to send email");
+         throw new Error(`Failed to send email: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
    }
 

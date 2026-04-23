@@ -1,13 +1,19 @@
 "use server";
 
 import { authActionClient } from "@/lib/safe-action";
-import { readFileSync } from "fs";
-import { smtpConfigurationSchema } from "@/server/repositories/configuration/schema";
+import { getStoredSmtpConfiguration } from "@/server/repositories/configuration/config-store";
+import { getStoredWelcomeEmailConfiguration } from "@/server/repositories/configuration/welcome-email-config-store";
 
 /**
  * Načtení SMTP konfigurace z lokálního config souboru.
  */
 export const getSmtpConfiguration = authActionClient.action(async () => {
-   const config = JSON.parse(readFileSync("src/server/configuration/config.json", "utf8"));
-   return smtpConfigurationSchema.parse(config.smtp);
+   return getStoredSmtpConfiguration();
+});
+
+/**
+ * Načtení konfigurace uvítacího emailu.
+ */
+export const getWelcomeEmailConfiguration = authActionClient.action(async () => {
+   return await getStoredWelcomeEmailConfiguration();
 });

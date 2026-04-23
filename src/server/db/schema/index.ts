@@ -8,3 +8,4 @@ export { session } from "@/server/db/schema/session";
 export { tos } from "@/server/db/schema/tos";
 export { user } from "@/server/db/schema/user";
 export { verification } from "@/server/db/schema/verification";
+export { welcomeEmailConfig } from "@/server/db/schema/welcome-email-config";

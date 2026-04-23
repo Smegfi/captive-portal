@@ -35,8 +35,8 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
          secure: smtpConfiguration.secure,
          from: smtpConfiguration.from,
          auth: {
-            user: smtpConfiguration.auth?.user || "",
-            pass: smtpConfiguration.auth?.pass || "",
+            user: smtpConfiguration.auth.user,
+            pass: smtpConfiguration.auth.pass,
          },
       },
    });
@@ -48,8 +48,8 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
          secure: data.secure,
          from: data.from,
          auth: {
-            user: data.auth?.user || "",
-            pass: data.auth?.pass || "",
+            user: data.auth.user,
+            pass: data.auth.pass,
          },
       });
    }

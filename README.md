@@ -70,3 +70,14 @@ Základní rozdělení uživatelských rolí v rámci captive-portál apliakce
 - Automatické mazání guest uživatelů běží jako in-app background interval (Node.js runtime) a pravidelně maže uživatele podle `updatedAt`.
 - Retence se nastavuje v měsících v Admin Settings (jen role `admin`).
 - Ve více instancích aplikace běží cleanup v každé instanci; doporučeno provozovat s jednou instancí nebo doplnit distribuovaný lock.
+
+## Welcome Email Template
+
+- Uvítací email se odesílá pouze nově vytvořenému guest uživateli s `marketingApproved=true`.
+- Obsah emailu je konfigurovatelný v Admin Settings (předmět + šablona těla).
+- Podporované placeholdery v těle zprávy:
+  - `[ODKAZ_NA_PODMINKY_A_OCHRANU_OSOBNICH_UDAJU]`
+  - `[KONTAKTNI_EMAIL]`
+- Volitelné ENV pro nahrazení placeholderů:
+  - `WELCOME_EMAIL_TERMS_URL` (default `https://praha10.cz`)
+  - `WELCOME_EMAIL_CONTACT_EMAIL` (default SMTP `from`)
