@@ -9,3 +9,7 @@ export const listGuestSchema = z.object({
    createdFrom: z.date().optional(),
    createdTo: z.date().optional(),
 });
+
+export const removeGuestUserSchema = z.object({
+   id: z.number().int().positive(),
+});

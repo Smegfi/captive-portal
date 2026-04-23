@@ -1,12 +1,17 @@
+import UsersExportButton from "@/app/(home)/admin/users/export";
+import UserFilterDialog from "@/app/(home)/admin/users/filter";
 import PagePagination from "@/components/admin/shared/page-pagination";
 import Filter from "@/components/admin/users/filter";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { requirePortalRole } from "@/lib/authorization";
+import { isAdminRole, requirePortalRole } from "@/lib/authorization";
 import { listGuestUser } from "@/server/repositories/guest-user/list";
-import UserFilterDialog from "@/app/(home)/admin/users/filter";
-import UsersExportButton from "@/app/(home)/admin/users/export";
+import { format } from "date-fns";
+import { EllipsisVertical } from "lucide-react";
+import RemoveUser from "./remove";
 
 interface PageProps {
    searchParams: Promise<{
@@ -22,11 +27,11 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-   await requirePortalRole();
+   const session = await requirePortalRole();
+   const isAdmin = isAdminRole(session.user.role);
 
    const resolvedSearchParams = await searchParams;
-   const { page = "1", pageSize = "25", items, search = "", email = "", marketing = "all", createdFrom, createdTo } =
-      resolvedSearchParams;
+   const { page = "1", pageSize = "25", items, search = "", email = "", marketing = "all", createdFrom, createdTo } = resolvedSearchParams;
    const effectivePageSize = pageSize || items || "25";
    const parsedCreatedFrom = createdFrom ? new Date(createdFrom) : undefined;
    const parsedCreatedTo = createdTo ? new Date(createdTo) : undefined;
@@ -61,12 +66,13 @@ export default async function Page({ searchParams }: PageProps) {
          <Table>
             <TableHeader>
                <TableRow>
-                  <TableHead className="w-[100px]">ID</TableHead>
+                  <TableHead className="w-[1%] text-center">ID</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead className="w-[150px]">Marketing</TableHead>
+                  <TableHead className="w-[1%] text-center">Marketing</TableHead>
                   <TableHead className="w-[200px]">Vytvořen</TableHead>
                   <TableHead className="w-[200px]">Upraven</TableHead>
-                  <TableHead className="w-[100px]">Zařízení</TableHead>
+                  <TableHead className="w-[100px] text-center">Zařízení</TableHead>
+                  {isAdmin ? <TableHead className="w-[1%]"></TableHead> : null}
                </TableRow>
             </TableHeader>
             <TableBody>
@@ -74,14 +80,30 @@ export default async function Page({ searchParams }: PageProps) {
                   <TableRow key={guestUser.id}>
                      <TableCell>{guestUser.id}</TableCell>
                      <TableCell>{guestUser.email}</TableCell>
-                     <TableCell>
+                     <TableCell className="text-center">
                         <Checkbox defaultChecked={guestUser.marketingApproved} disabled />
                      </TableCell>
-                     <TableCell>{guestUser.createdAt.toLocaleString("cs-CZ")}</TableCell>
-                     <TableCell>{guestUser.updatedAt.toLocaleString("cs-CZ")}</TableCell>
-                     <TableCell>
+                     <TableCell className="text-xs">{format(guestUser.createdAt, "dd.MM.yyyy HH:mm")}</TableCell>
+                     <TableCell className="text-xs">{format(guestUser.updatedAt, "dd.MM.yyyy HH:mm")}</TableCell>
+                     <TableCell className="text-center">
                         <Badge>{guestUser.devices.length}</Badge>
                      </TableCell>
+                     {isAdmin ? (
+                        <TableCell className="text-center">
+                           <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                 <Button variant="ghost" size="icon">
+                                    <EllipsisVertical />
+                                 </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                 <DropdownMenuGroup>
+                                    <RemoveUser id={guestUser.id} />
+                                 </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                           </DropdownMenu>
+                        </TableCell>
+                     ) : null}
                   </TableRow>
                ))}
             </TableBody>
