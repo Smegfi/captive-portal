@@ -1,7 +1,9 @@
 import AccountManagement from "@/app/(home)/admin/settings/account-management";
+import GuestUserCleanupSettings from "@/app/(home)/admin/settings/guest-user-cleanup-settings";
 import SmtpSettings from "@/app/(home)/admin/settings/smtp-settings";
 import TestEmail from "@/app/(home)/admin/settings/test-email";
 import { requireAdminRole } from "@/lib/authorization";
+import { getGuestUserCleanupConfig } from "@/server/repositories/guest-user/cleanup-config";
 import { getSmtpConfiguration } from "@/server/repositories/configuration/get";
 import { listAppUser } from "@/server/repositories/app-user/list";
 
@@ -9,6 +11,7 @@ export default async function SettingsPage() {
    await requireAdminRole();
 
    const smtpConfiguration = await getSmtpConfiguration();
+   const guestUserCleanupConfig = await getGuestUserCleanupConfig();
    const usersResult = await listAppUser();
 
    if (smtpConfiguration.serverError) {
@@ -26,6 +29,11 @@ export default async function SettingsPage() {
                <TestEmail />
             </div>
          </div>
+         {guestUserCleanupConfig.serverError ? (
+            <div className="text-red-500">{guestUserCleanupConfig.serverError.message}</div>
+         ) : (
+            <GuestUserCleanupSettings retentionMonths={guestUserCleanupConfig.data?.retentionMonths ?? 6} />
+         )}
          {usersResult.serverError ? (
             <div className="text-red-500">{usersResult.serverError.message}</div>
          ) : (

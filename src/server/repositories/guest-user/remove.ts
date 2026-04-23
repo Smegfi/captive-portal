@@ -12,8 +12,8 @@ import { revalidatePath } from "next/cache";
 /**
  * Odstranění guest uživatele včetně jeho zařízení a připojení.
  */
-export const removeGuestUser = adminActionClient.inputSchema(removeGuestUserSchema).action(async ({ parsedInput: { id } }) => {
-   const deletedUser = await db.transaction(async (tx) => {
+export async function removeGuestUserCascade(id: number) {
+   return db.transaction(async (tx) => {
       const userDevices = await tx
          .select({
             id: device.id,
@@ -30,6 +30,10 @@ export const removeGuestUser = adminActionClient.inputSchema(removeGuestUserSche
       const removedUsers = await tx.delete(guestUser).where(eq(guestUser.id, id)).returning();
       return removedUsers[0] ?? null;
    });
+}
+
+export const removeGuestUser = adminActionClient.inputSchema(removeGuestUserSchema).action(async ({ parsedInput: { id } }) => {
+   const deletedUser = await removeGuestUserCascade(id);
 
    revalidatePath("/admin/users");
    revalidatePath("/admin/devices");

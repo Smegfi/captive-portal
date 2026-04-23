@@ -13,3 +13,9 @@ export const listGuestSchema = z.object({
 export const removeGuestUserSchema = z.object({
    id: z.number().int().positive(),
 });
+
+export const updateGuestUserCleanupConfigSchema = z.object({
+   retentionMonths: z.number().int().min(1, "Minimální hodnota je 1 měsíc").max(60, "Maximální hodnota je 60 měsíců"),
+});
+
+export type UpdateGuestUserCleanupConfigSchemaType = z.infer<typeof updateGuestUserCleanupConfigSchema>;

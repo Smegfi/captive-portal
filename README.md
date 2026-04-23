@@ -64,3 +64,9 @@ Základní rozdělení uživatelských rolí v rámci captive-portál apliakce
 | Admin  | Plné práva v systému ke všem činnostem                                                                      | `admin`  |
 | Viewer | Uživatel má právo zobrazovat všechny tabulky a provádět export, avšak nemá oprávnění měnit data v tabulkách | `viewer` |
 | User   | Uživatel, kteří přistupuje k veřejné wifi síti, má právo pouze zobrazit vstupní formulář                    | `user`   |
+
+## Guest User Auto-Cleanup
+
+- Automatické mazání guest uživatelů běží jako in-app background interval (Node.js runtime) a pravidelně maže uživatele podle `updatedAt`.
+- Retence se nastavuje v měsících v Admin Settings (jen role `admin`).
+- Ve více instancích aplikace běží cleanup v každé instanci; doporučeno provozovat s jednou instancí nebo doplnit distribuovaný lock.
