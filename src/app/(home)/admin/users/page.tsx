@@ -71,6 +71,7 @@ export default async function Page({ searchParams }: PageProps) {
                   <TableHead className="w-[1%] text-center">Marketing</TableHead>
                   <TableHead className="w-[200px]">Vytvořen</TableHead>
                   <TableHead className="w-[200px]">Upraven</TableHead>
+                  <TableHead className="w-[200px]">Akceptovaný TOS</TableHead>
                   <TableHead className="w-[100px] text-center">Zařízení</TableHead>
                   {isAdmin ? <TableHead className="w-[1%]"></TableHead> : null}
                </TableRow>
@@ -85,6 +86,7 @@ export default async function Page({ searchParams }: PageProps) {
                      </TableCell>
                      <TableCell className="text-xs">{format(guestUser.createdAt, "dd.MM.yyyy HH:mm")}</TableCell>
                      <TableCell className="text-xs">{format(guestUser.updatedAt, "dd.MM.yyyy HH:mm")}</TableCell>
+                     <TableCell className="text-xs">{guestUser.acceptedTos ? `#${guestUser.acceptedTos.id} - ${guestUser.acceptedTos.name}` : "-"}</TableCell>
                      <TableCell className="text-center">
                         <Badge>{guestUser.devices.length}</Badge>
                      </TableCell>

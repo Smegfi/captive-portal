@@ -4,7 +4,7 @@ import { authActionClient } from "@/lib/safe-action";
 import { actionResultSchema } from "@/server/actions-scheme/action-result";
 import { db } from "@/server/db/db";
 import { tos } from "@/server/db/schema/tos";
-import { count, ilike, or } from "drizzle-orm";
+import { count, desc, eq, ilike, or } from "drizzle-orm";
 import { listTosSchema } from "@/server/repositories/tos/schema";
 
 /**
@@ -29,3 +29,21 @@ export const listTos = authActionClient
          totalPages: Math.ceil(total[0].value / itemsPerPage),
       };
    });
+
+/**
+ * Vrátí aktivní TOS dokument, případně nejnovější jako fallback.
+ */
+export async function getActiveTosForGuest() {
+   const activeTos = await db.query.tos.findFirst({
+      where: eq(tos.isActive, true),
+      orderBy: [desc(tos.uploadedAt)],
+   });
+
+   if (activeTos) {
+      return activeTos;
+   }
+
+   return db.query.tos.findFirst({
+      orderBy: [desc(tos.uploadedAt)],
+   });
+}

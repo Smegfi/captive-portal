@@ -1,72 +1,80 @@
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+import RegisteredGuestsTrendChart from "@/components/admin/dashboard/registered-guests-trend-chart";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { requirePortalRole } from "@/lib/authorization";
+import { getDashboardStats } from "@/server/repositories/dashboard-stats/get";
 
 export default async function Page() {
    await requirePortalRole();
+   const stats = await getDashboardStats();
+
+   if (stats.serverError) {
+      return <div>Error: {stats.serverError.message}</div>;
+   }
+
+   const data = stats.data;
+
+   if (!data) {
+      return <div>Error: Unable to load dashboard statistics.</div>;
+   }
 
    return (
       <div className="space-y-4">
          <h1 className="text-3xl font-bold">Dashboard</h1>
 
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <AspectRatio ratio={16 / 9} className="bg-muted rounded-lg">
-               <div className="flex flex-col gap-2 items-center justify-center p-4">
-                  <div className="w-full h-full relative">
-                     <svg className="h-full w-full blur-sm opacity-60" viewBox="0 0 100 60">
-                        <polyline fill="none" stroke="hsl(var(--primary))" strokeWidth="2" points="10,50 20,45 30,35 40,40 50,25 60,30 70,20 80,15 90,10" />
-                        <circle cx="10" cy="50" r="1.5" fill="hsl(var(--primary))" />
-                        <circle cx="20" cy="45" r="1.5" fill="hsl(var(--primary))" />
-                        <circle cx="30" cy="35" r="1.5" fill="hsl(var(--primary))" />
-                        <circle cx="40" cy="40" r="1.5" fill="hsl(var(--primary))" />
-                        <circle cx="50" cy="25" r="1.5" fill="hsl(var(--primary))" />
-                        <circle cx="60" cy="30" r="1.5" fill="hsl(var(--primary))" />
-                        <circle cx="70" cy="20" r="1.5" fill="hsl(var(--primary))" />
-                        <circle cx="80" cy="15" r="1.5" fill="hsl(var(--primary))" />
-                        <circle cx="90" cy="10" r="1.5" fill="hsl(var(--primary))" />
-                     </svg>
-                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-sm text-muted-foreground">Již brzy...</div>
-                     </div>
-                  </div>
-               </div>
-            </AspectRatio>
+            <Card>
+               <CardHeader>
+                  <CardTitle>Daily registered / connected guests</CardTitle>
+                  <CardDescription>Successful guest form submissions today</CardDescription>
+               </CardHeader>
+               <CardContent>
+                  <p className="text-3xl font-bold">{data.dailyRegisteredGuests.toLocaleString()}</p>
+               </CardContent>
+            </Card>
 
-            <AspectRatio ratio={16 / 9} className="bg-muted rounded-lg">
-               <div className="flex flex-col gap-2 items-center justify-center p-4">
-                  <div className="w-full h-full relative">
-                     <svg className="w-full h-full blur-sm opacity-30" viewBox="0 0 100 50">
-                        <rect x="10" y="40" width="8" height="20" fill="hsl(var(--primary))" />
-                        <rect x="22" y="35" width="8" height="25" fill="hsl(var(--primary))" />
-                        <rect x="34" y="30" width="8" height="30" fill="hsl(var(--primary))" />
-                        <rect x="46" y="25" width="8" height="35" fill="hsl(var(--primary))" />
-                        <rect x="58" y="20" width="8" height="40" fill="hsl(var(--primary))" />
-                        <rect x="70" y="15" width="8" height="45" fill="hsl(var(--primary))" />
-                        <rect x="82" y="10" width="8" height="50" fill="hsl(var(--primary))" />
-                     </svg>
-                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-sm text-muted-foreground">Již brzy...</div>
-                     </div>
-                  </div>
-               </div>
-            </AspectRatio>
+            <Card>
+               <CardHeader>
+                  <CardTitle>Total guest users</CardTitle>
+                  <CardDescription>All-time registered users from portal forms</CardDescription>
+               </CardHeader>
+               <CardContent>
+                  <p className="text-3xl font-bold">{data.totalGuestUsers.toLocaleString()}</p>
+               </CardContent>
+            </Card>
 
-            <AspectRatio ratio={16 / 9} className="bg-muted rounded-lg">
-               <div className="flex flex-col gap-2 items-center justify-center p-4">
-                  <div className="w-full h-full relative">
-                     {/* Mock pie chart */}
-                     <svg className="w-full h-full blur-sm opacity-30" viewBox="0 0 100 60">
-                        <circle cx="50" cy="30" r="20" fill="none" stroke="hsl(var(--primary))" strokeWidth="2" />
-                        <path d="M 50 30 L 50 10 A 20 20 0 0 1 70 30 Z" fill="hsl(var(--primary))" opacity="0.3" />
-                        <path d="M 50 30 L 70 30 A 20 20 0 0 1 50 50 Z" fill="hsl(var(--primary))" opacity="0.5" />
-                        <path d="M 50 30 L 50 50 A 20 20 0 0 1 30 30 Z" fill="hsl(var(--primary))" opacity="0.7" />
-                        <path d="M 50 30 L 30 30 A 20 20 0 0 1 50 10 Z" fill="hsl(var(--primary))" opacity="0.9" />
-                     </svg>
-                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-sm text-muted-foreground">Již brzy...</div>
-                     </div>
-                  </div>
-               </div>
-            </AspectRatio>
+            <Card>
+               <CardHeader>
+                  <CardTitle>Total active networks</CardTitle>
+                  <CardDescription>Networks with active status flag</CardDescription>
+               </CardHeader>
+               <CardContent>
+                  <p className="text-3xl font-bold">{data.totalActiveNetworks.toLocaleString()}</p>
+               </CardContent>
+            </Card>
+         </div>
+
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <Card className="lg:col-span-2">
+               <CardHeader>
+                  <CardTitle>Historical comparison</CardTitle>
+                  <CardDescription>Daily registered / connected guests (last 30 days)</CardDescription>
+               </CardHeader>
+               <CardContent>
+                  <RegisteredGuestsTrendChart data={data.dailyTrend} />
+               </CardContent>
+            </Card>
+
+            <Card>
+               <CardHeader>
+                  <CardTitle>Captive Portal</CardTitle>
+                  <CardDescription>Basic information</CardDescription>
+               </CardHeader>
+               <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                     Captive Portal helps onboard guest users, captures consent, and provides administrators with visibility into registrations and network availability.
+                  </p>
+               </CardContent>
+            </Card>
          </div>
       </div>
    );

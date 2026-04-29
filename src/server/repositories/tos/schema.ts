@@ -7,11 +7,20 @@ export const listTosSchema = z.object({
 });
 
 export const uploadTosSchema = z.object({
-   name: z.string().nonempty(),
-   fileName: z.string().nonempty(),
+   name: z.string().nonempty("Název dokumentu je povinný"),
+   fileName: z
+      .string()
+      .nonempty("Název souboru je povinný")
+      .refine((value) => value.toLowerCase().endsWith(".docx"), "Soubor musí mít rozšíření .docx"),
    fileSize: z.number().int().positive(),
    file: z.instanceof(File),
    uploadedAt: z.date(),
+   isActive: z.boolean().default(true),
+   htmlContent: z.string().optional(),
+});
+
+export const setActiveTosSchema = z.object({
+   id: z.number().int().positive(),
 });
 
 export type uploadTosSchemaType = z.infer<typeof uploadTosSchema>;

@@ -5,19 +5,31 @@ import { db } from "@/server/db/db";
 import { tos } from "@/server/db/schema/tos";
 import { randomUUID } from "crypto";
 import fs from "fs";
+import mammoth from "mammoth";
 import { returnValidationErrors } from "next-safe-action";
 import { revalidatePath } from "next/cache";
 import path from "path";
 import { uploadTosSchema } from "@/server/repositories/tos/schema";
+import { eq } from "drizzle-orm";
 
 /**
- * Nahrání nového TOS dokumentu (PDF).
+ * Nahrání nového TOS dokumentu (DOCX).
  */
 export const uploadTos = authActionClient.inputSchema(uploadTosSchema).action(async ({ parsedInput: { name, fileName, fileSize, file, uploadedAt } }) => {
    try {
-      const fileUrl = await uploadFileToLocalStorage(file, fileName);
-      const result = await db.insert(tos).values({ name, fileName, fileSize, fileUrl, uploadedAt }).returning();
+      const { fileUrl, htmlOutput } = await convertAndUploadDocx(file, fileName);
+
+      const result = await db.transaction(async (tx) => {
+         await tx.update(tos).set({ isActive: false }).where(eq(tos.isActive, true));
+         const inserted = await tx
+            .insert(tos)
+            .values({ name, fileName, fileSize, fileUrl, uploadedAt, isActive: true, htmlContent: htmlOutput })
+            .returning();
+         return inserted;
+      });
+
       revalidatePath("/admin/tos");
+      revalidatePath("/");
       return result[0];
    } catch (error) {
       console.log(error);
@@ -27,15 +39,15 @@ export const uploadTos = authActionClient.inputSchema(uploadTosSchema).action(as
    }
 });
 
-async function uploadFileToLocalStorage(file: File, fileName: string) {
+async function convertAndUploadDocx(file: File, fileName: string) {
    const now = new Date();
    const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
    const uniqueId = randomUUID();
 
    const fileExtension = path.extname(fileName);
-   if (!fileExtension || fileExtension !== ".pdf") {
-      throw new Error("Soubor musí mít rozšíření .pdf");
+   if (!fileExtension || fileExtension.toLowerCase() !== ".docx") {
+      throw new Error("Soubor musí mít rozšíření .docx");
    }
 
    const uniqueFileName = `${uniqueId}${fileExtension}`;
@@ -50,7 +62,11 @@ async function uploadFileToLocalStorage(file: File, fileName: string) {
 
    const arrayBuffer = await file.arrayBuffer();
    const buffer = Buffer.from(arrayBuffer);
+   const { value: htmlOutput } = await mammoth.convertToHtml({ buffer });
    await fs.promises.writeFile(filePath, buffer);
 
-   return path.join("/tos", yearMonth, uniqueFileName).replace(/\\/g, "/");
+   return {
+      fileUrl: path.join("/tos", yearMonth, uniqueFileName).replace(/\\/g, "/"),
+      htmlOutput,
+   };
 }

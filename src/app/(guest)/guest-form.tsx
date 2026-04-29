@@ -19,7 +19,12 @@ import { UAParser } from "ua-parser-js";
 import { z } from "zod";
 import FortiForm from "../../components/guest-portal/forti-form";
 
-export function GuestForm() {
+interface GuestFormProps {
+   tosHtmlContent?: string | null;
+   tosFileUrl?: string | null;
+}
+
+export function GuestForm({ tosHtmlContent, tosFileUrl }: GuestFormProps) {
    const [loading, setLoading] = useState(false);
    const { ua, browser, cpu, device, engine, os } = UAParser(navigator.userAgent);
    const [data, setData] = useState<{ postUrl: string; username: string | undefined; password: string | undefined; magic: string } | null>(null);
@@ -129,7 +134,7 @@ export function GuestForm() {
             </Button>
          </CardFooter>
          <CardFooter>
-            <TosDisclaimer />
+            <TosDisclaimer htmlContent={tosHtmlContent} fileUrl={tosFileUrl} />
          </CardFooter>
          <FortiForm username={data?.username || ""} password={data?.password || ""} magic={data?.magic || ""} />
       </Card>

@@ -38,6 +38,12 @@ export const listGuestUser = reviewerActionClient
          offset,
          where: whereCondition,
          with: {
+            acceptedTos: {
+               columns: {
+                  id: true,
+                  name: true,
+               },
+            },
             devices: {
                columns: {
                   id: true,

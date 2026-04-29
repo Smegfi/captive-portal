@@ -5,6 +5,7 @@ import { DeviceSchema, createConnectionSchema, guestLoginSchema } from "@/server
 import { db } from "@/server/db/db";
 import { getStoredSmtpConfiguration } from "@/server/repositories/configuration/config-store";
 import { getStoredWelcomeEmailConfiguration } from "@/server/repositories/configuration/welcome-email-config-store";
+import { getActiveTosForGuest } from "@/server/repositories/tos/list";
 import { connection as connectionTable } from "@/server/db/schema/connection";
 import { device } from "@/server/db/schema/device";
 import { guestUser } from "@/server/db/schema/guest-user";
@@ -15,10 +16,20 @@ import { revalidatePath } from "next/cache";
 
 export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).action(async ({ parsedInput: { email, marketingApproved, device, connection } }) => {
    const existingGuest = await db.select().from(guestUser).where(eq(guestUser.email, email));
+   const activeTos = await getActiveTosForGuest();
+   const acceptedTosId = activeTos?.id ?? null;
 
    const networkResult = await findNetworkBySSID(connection.ssid);
 
    if (existingGuest.length > 0) {
+      await db
+         .update(guestUser)
+         .set({
+            acceptedTosId,
+            updatedAt: new Date(),
+         })
+         .where(eq(guestUser.id, existingGuest[0].id!));
+
       const deviceResult = await findOrCreateDevice(existingGuest[0].id!, connection.usermac, device);
 
       await createConnectionAction({
@@ -45,6 +56,7 @@ export const guestLoginAction = actionClient.inputSchema(guestLoginSchema).actio
       .values({
          email,
          marketingApproved,
+         acceptedTosId,
          createdAt: new Date(),
          updatedAt: new Date(),
       })
