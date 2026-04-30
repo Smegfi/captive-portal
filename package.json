@@ -39,7 +39,7 @@
       "@tanstack/react-table": "^8.21.3",
       "@types/nodemailer": "^7.0.11",
       "@uidotdev/usehooks": "^2.4.1",
-      "better-auth": "^1.4.19",
+      "better-auth": "^1.4.3",
       "class-variance-authority": "^0.7.1",
       "clsx": "^2.1.1",
       "date-fns": "^4.1.0",
