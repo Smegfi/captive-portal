@@ -3,6 +3,8 @@ import { GuestFormDynamic } from "@/app/(guest)/guest-form";
 import { getActiveTosForGuest } from "@/server/repositories/tos/list";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
    const activeTos = await getActiveTosForGuest();
 
