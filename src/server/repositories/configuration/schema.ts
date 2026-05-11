@@ -1,15 +1,40 @@
 import { z } from "zod";
 
-export const smtpConfigurationSchema = z.object({
-   host: z.string().min(1, { message: "Host je povinný" }),
-   port: z.number().min(1, { message: "Port je povinný" }),
-   secure: z.boolean(),
-   from: z.string().email({ message: "Email musí být ve správném formátu" }),
-   auth: z.object({
-      user: z.string().min(1, { message: "User je povinný" }),
-      pass: z.string().min(1, { message: "Pass je povinný" }),
-   }),
+const smtpAuthSchema = z.object({
+   user: z.string(),
+   pass: z.string(),
 });
+
+export const smtpConfigurationSchema = z
+   .object({
+      host: z.string().min(1, { message: "Host je povinný" }),
+      port: z.number().min(1, { message: "Port je povinný" }),
+      secure: z.boolean(),
+      from: z.string().email({ message: "Email musí být ve správném formátu" }),
+      anonymousAuth: z.boolean(),
+      auth: smtpAuthSchema,
+   })
+   .superRefine((data, ctx) => {
+      if (data.anonymousAuth) {
+         return;
+      }
+
+      if (!data.auth.user.trim()) {
+         ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "User je povinný",
+            path: ["auth", "user"],
+         });
+      }
+
+      if (!data.auth.pass.trim()) {
+         ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Pass je povinný",
+            path: ["auth", "pass"],
+         });
+      }
+   });
 
 export type smtpConfigurationSchemaType = z.infer<typeof smtpConfigurationSchema>;
 

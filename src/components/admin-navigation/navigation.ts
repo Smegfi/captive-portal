@@ -3,7 +3,7 @@ import { FileText, LayoutDashboard, Monitor, Network, Radio, Settings, Users } f
 export const data = {
    navMain: [
       {
-         title: "Dashboard",
+         title: "Přehled",
          url: "/admin",
          icon: LayoutDashboard,
          roles: ["admin", "reviewer"],

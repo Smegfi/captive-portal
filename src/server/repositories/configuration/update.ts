@@ -11,9 +11,16 @@ import { smtpConfigurationSchema, welcomeEmailConfigurationSchema } from "@/serv
  */
 export const updateSmtpConfiguration = authActionClient
    .inputSchema(smtpConfigurationSchema)
-   .action(async ({ parsedInput: { host, port, secure, from, auth } }) => {
+   .action(async ({ parsedInput: { host, port, secure, from, anonymousAuth, auth } }) => {
       const config = readStoredConfig();
-      const smtpConfiguration = { host, port, secure, from, auth };
+      const smtpConfiguration = {
+         host,
+         port,
+         secure,
+         from,
+         anonymousAuth,
+         auth: anonymousAuth ? { user: "", pass: "" } : auth,
+      };
       config.smtp = smtpConfiguration;
       writeStoredConfig(config);
 

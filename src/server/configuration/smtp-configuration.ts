@@ -24,10 +24,15 @@ export interface SmtpConfiguration {
    from: string;
 
    /**
+    * Whether SMTP server uses anonymous authentication.
+    */
+   anonymousAuth: boolean;
+
+   /**
     * SMTP authentication credentials
     * @example { user: "your-email@example.com", pass: "your-password" }
     */
-   auth: {
+   auth?: {
       /**
        * SMTP authentication username
        */

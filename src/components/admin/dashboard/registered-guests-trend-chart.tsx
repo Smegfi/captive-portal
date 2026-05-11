@@ -11,7 +11,7 @@ type TrendPoint = {
 
 const chartConfig = {
    registeredGuests: {
-      label: "Registered guests",
+      label: "Registrovaní hosté",
       color: "hsl(var(--primary))",
    },
 } satisfies ChartConfig;

@@ -1,12 +1,12 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Loader2, Save, Send } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { smtpConfigurationSchema, smtpConfigurationSchemaType } from "@/server/repositories/configuration/schema";
 import { updateSmtpConfiguration } from "@/server/repositories/configuration/update";
@@ -34,11 +34,17 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
          port: smtpConfiguration.port,
          secure: smtpConfiguration.secure,
          from: smtpConfiguration.from,
+         anonymousAuth: smtpConfiguration.anonymousAuth,
          auth: {
             user: smtpConfiguration.auth.user,
             pass: smtpConfiguration.auth.pass,
          },
       },
+   });
+
+   const anonymousAuth = useWatch({
+      control: form.control,
+      name: "anonymousAuth",
    });
 
    async function onSubmit(data: smtpConfigurationSchemaType) {
@@ -47,10 +53,13 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
          port: data.port,
          secure: data.secure,
          from: data.from,
-         auth: {
-            user: data.auth.user,
-            pass: data.auth.pass,
-         },
+         anonymousAuth: data.anonymousAuth,
+         auth: data.anonymousAuth
+            ? { user: "", pass: "" }
+            : {
+                 user: data.auth.user,
+                 pass: data.auth.pass,
+              },
       });
    }
 
@@ -97,27 +106,55 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
                      )}
                   />
                   <Controller
-                     name="auth.user"
+                     name="anonymousAuth"
                      control={form.control}
                      render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                           <FieldLabel htmlFor={field.name}>SMTP email</FieldLabel>
-                           <Input {...field} id={field.name} placeholder="your-email@example.com" type="email" />
+                        <Field orientation="horizontal" data-invalid={fieldState.invalid}>
+                           <Checkbox
+                              id={field.name}
+                              checked={field.value}
+                              onCheckedChange={(checked) => {
+                                 const enabled = checked === true;
+                                 field.onChange(enabled);
+
+                                 if (enabled) {
+                                    form.setValue("auth.user", "");
+                                    form.setValue("auth.pass", "");
+                                    form.clearErrors(["auth.user", "auth.pass"]);
+                                 }
+                              }}
+                           />
+                           <FieldLabel htmlFor={field.name}>Anonymní autentizace</FieldLabel>
                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
                      )}
                   />
-                  <Controller
-                     name="auth.pass"
-                     control={form.control}
-                     render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                           <FieldLabel htmlFor={field.name}>SMTP heslo</FieldLabel>
-                           <Input {...field} id={field.name} placeholder="********" type="password" />
-                           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                        </Field>
-                     )}
-                  />
+                  {!anonymousAuth && (
+                     <>
+                        <Controller
+                           name="auth.user"
+                           control={form.control}
+                           render={({ field, fieldState }) => (
+                              <Field data-invalid={fieldState.invalid}>
+                                 <FieldLabel htmlFor={field.name}>SMTP email</FieldLabel>
+                                 <Input {...field} id={field.name} placeholder="your-email@example.com" type="email" />
+                                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                              </Field>
+                           )}
+                        />
+                        <Controller
+                           name="auth.pass"
+                           control={form.control}
+                           render={({ field, fieldState }) => (
+                              <Field data-invalid={fieldState.invalid}>
+                                 <FieldLabel htmlFor={field.name}>SMTP heslo</FieldLabel>
+                                 <Input {...field} id={field.name} placeholder="********" type="password" />
+                                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                              </Field>
+                           )}
+                        />
+                     </>
+                  )}
 
                   <Controller
                      name="from"

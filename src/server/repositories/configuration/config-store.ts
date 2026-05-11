@@ -15,5 +15,10 @@ export function writeStoredConfig(config: StoredConfigFile) {
 
 export function getStoredSmtpConfiguration() {
    const config = readStoredConfig();
-   return smtpConfigurationSchema.parse(config.smtp);
+   const smtp = {
+      ...(config.smtp as Record<string, unknown>),
+      anonymousAuth: (config.smtp as { anonymousAuth?: boolean }).anonymousAuth ?? false,
+   };
+
+   return smtpConfigurationSchema.parse(smtp);
 }

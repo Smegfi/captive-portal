@@ -12,7 +12,7 @@ export class EmailService {
          host: this.smtpConfiguration.host,
          port: this.smtpConfiguration.port,
          secure: this.smtpConfiguration.secure,
-         auth: this.smtpConfiguration.auth,
+         ...(this.smtpConfiguration.anonymousAuth ? {} : { auth: this.smtpConfiguration.auth }),
       });
    }
 
