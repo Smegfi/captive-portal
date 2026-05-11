@@ -8,24 +8,24 @@ export default async function Page() {
    const stats = await getDashboardStats();
 
    if (stats.serverError) {
-      return <div>Error: {stats.serverError.message}</div>;
+      return <div>Chyba: {stats.serverError.message}</div>;
    }
 
    const data = stats.data;
 
    if (!data) {
-      return <div>Error: Unable to load dashboard statistics.</div>;
+      return <div>Chyba: Nepodařilo se načíst statistiky přehledu.</div>;
    }
 
    return (
       <div className="space-y-4">
-         <h1 className="text-3xl font-bold">Dashboard</h1>
+         <h1 className="text-3xl font-bold">Přehled</h1>
 
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Card>
                <CardHeader>
-                  <CardTitle>Daily registered / connected guests</CardTitle>
-                  <CardDescription>Successful guest form submissions today</CardDescription>
+                  <CardTitle>Denní registrace / připojení hostů</CardTitle>
+                  <CardDescription>Úspěšně odeslané formuláře hostů za dnešní den</CardDescription>
                </CardHeader>
                <CardContent>
                   <p className="text-3xl font-bold">{data.dailyRegisteredGuests.toLocaleString()}</p>
@@ -34,8 +34,8 @@ export default async function Page() {
 
             <Card>
                <CardHeader>
-                  <CardTitle>Total guest users</CardTitle>
-                  <CardDescription>All-time registered users from portal forms</CardDescription>
+                  <CardTitle>Celkem hostů</CardTitle>
+                  <CardDescription>Všichni uživatelé registrovaní přes portálový formulář</CardDescription>
                </CardHeader>
                <CardContent>
                   <p className="text-3xl font-bold">{data.totalGuestUsers.toLocaleString()}</p>
@@ -44,8 +44,8 @@ export default async function Page() {
 
             <Card>
                <CardHeader>
-                  <CardTitle>Total active networks</CardTitle>
-                  <CardDescription>Networks with active status flag</CardDescription>
+                  <CardTitle>Aktivní sítě celkem</CardTitle>
+                  <CardDescription>Sítě označené jako aktivní</CardDescription>
                </CardHeader>
                <CardContent>
                   <p className="text-3xl font-bold">{data.totalActiveNetworks.toLocaleString()}</p>
@@ -56,8 +56,8 @@ export default async function Page() {
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <Card className="lg:col-span-2">
                <CardHeader>
-                  <CardTitle>Historical comparison</CardTitle>
-                  <CardDescription>Daily registered / connected guests (last 30 days)</CardDescription>
+                  <CardTitle>Historické srovnání</CardTitle>
+                  <CardDescription>Denní registrace / připojení hostů (posledních 30 dní)</CardDescription>
                </CardHeader>
                <CardContent>
                   <RegisteredGuestsTrendChart data={data.dailyTrend} />
@@ -67,11 +67,11 @@ export default async function Page() {
             <Card>
                <CardHeader>
                   <CardTitle>Captive Portal</CardTitle>
-                  <CardDescription>Basic information</CardDescription>
+                  <CardDescription>Základní informace</CardDescription>
                </CardHeader>
                <CardContent>
                   <p className="text-sm text-muted-foreground">
-                     Captive Portal helps onboard guest users, captures consent, and provides administrators with visibility into registrations and network availability.
+                     Captive portál slouží k registraci hostů, evidenci souhlasů a poskytuje správcům přehled o registracích a dostupnosti sítí.
                   </p>
                </CardContent>
             </Card>
