@@ -22,18 +22,18 @@ export function ThemeToggle({ className, variant = "outline", size = "icon" }: T
             <Button variant={variant} size={size} className={className}>
                <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
                <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-               <span className="sr-only">Toggle theme</span>
+               <span className="sr-only">Přepnout motiv</span>
             </Button>
          </DropdownMenuTrigger>
          <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => setTheme("light")}>
-               <Sun /> Light
+               <Sun /> Svetlý
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setTheme("dark")}>
-               <Moon /> Dark
+               <Moon /> Tmavý
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setTheme("system")}>
-               <Monitor /> System
+               <Monitor /> Systém
             </DropdownMenuItem>
          </DropdownMenuContent>
       </DropdownMenu>
