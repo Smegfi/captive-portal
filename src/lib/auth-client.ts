@@ -17,7 +17,7 @@ export function useAuth({ redirectTo }: UseAuthProps) {
 
    if (session === null) {
       if (redirectTo) {
-         redirect(`/login?redirectTo=${redirectTo}`);
+         redirect(`/login?redirectTo=${encodeURIComponent(redirectTo)}`);
       } else {
          redirect("/login");
       }

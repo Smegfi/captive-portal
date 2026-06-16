@@ -1,13 +1,11 @@
-"use server";
-
 import { NavMain } from "@/components/admin-navigation/nav-main";
 import { NavUser } from "@/components/admin-navigation/nav-user";
 import { data } from "@/components/admin-navigation/navigation";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { getRequiredSession, normalizeRole } from "@/lib/authorization";
+import { getRequiredSession, normalizeRole, redirectToLogin } from "@/lib/authorization";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { ComponentProps } from "react";
 
 export async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
@@ -15,7 +13,8 @@ export async function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
    const normalizedRole = normalizeRole(session.user.role);
 
    if (normalizedRole === null) {
-      redirect("/login");
+      const requestPath = (await headers()).get("x-pathname");
+      redirectToLogin(requestPath);
    }
 
    const user = {

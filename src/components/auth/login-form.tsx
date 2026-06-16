@@ -18,7 +18,9 @@ export function LoginForm() {
    const [isLoading, setIsLoading] = useState(false);
 
    const params = useSearchParams();
-   const redirectTo = params.get("redirectTo");
+   const redirectToParam = params.get("redirectTo");
+   const redirectTo =
+      redirectToParam?.startsWith("/") && !redirectToParam.startsWith("//") ? redirectToParam : null;
 
    const form = useForm<LoginSchemaType>({
       resolver: zodResolver(LoginSchema),

@@ -1,9 +1,8 @@
 import { auth } from "@/lib/auth";
-import { isAdminRole, normalizeRole } from "@/lib/authorization";
+import { isAdminRole, normalizeRole, redirectToLogin } from "@/lib/authorization";
 import { HttpStatus } from "@/lib/status-codes";
 import { createSafeActionClient } from "next-safe-action";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 export class ActionError extends Error {}
 export class UnauthorizedError extends Error {}
@@ -43,7 +42,7 @@ export const authenticatedActionClient = actionClient.use(async ({ next }) => {
    });
 
    if (session === null) {
-      redirect("/login");
+      redirectToLogin((await headers()).get("x-pathname"));
    }
 
    return next();
@@ -55,7 +54,7 @@ export const adminActionClient = authenticatedActionClient.use(async ({ next }) 
    });
 
    if (session === null) {
-      redirect("/login");
+      redirectToLogin((await headers()).get("x-pathname"));
    }
 
    if (!isAdminRole(session.user.role)) {
@@ -71,7 +70,7 @@ export const reviewerActionClient = authenticatedActionClient.use(async ({ next 
    });
 
    if (session === null) {
-      redirect("/login");
+      redirectToLogin((await headers()).get("x-pathname"));
    }
 
    if (normalizeRole(session.user.role) === null) {

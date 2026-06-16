@@ -2,6 +2,21 @@ import { auth, Session } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+const LOGIN_PATH = "/login";
+
+async function getRequestPath(): Promise<string | null> {
+   const headersList = await headers();
+   return headersList.get("x-pathname");
+}
+
+export function redirectToLogin(path?: string | null): never {
+   if (path && path !== LOGIN_PATH && !path.startsWith(`${LOGIN_PATH}?`)) {
+      redirect(`${LOGIN_PATH}?redirectTo=${encodeURIComponent(path)}`);
+   }
+
+   redirect(LOGIN_PATH);
+}
+
 export const ROLE_ADMIN = "admin";
 export const ROLE_REVIEWER = "reviewer";
 
@@ -49,7 +64,7 @@ export async function getRequiredSession(): Promise<Session> {
    });
 
    if (session === null) {
-      redirect("/login");
+      redirectToLogin(await getRequestPath());
    }
 
    return session;
@@ -59,7 +74,7 @@ export async function requirePortalRole(): Promise<Session> {
    const session = await getRequiredSession();
 
    if (!canAccessPortal(session.user.role)) {
-      redirect("/login");
+      redirectToLogin(await getRequestPath());
    }
 
    return session;

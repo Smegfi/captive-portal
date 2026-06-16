@@ -5,13 +5,22 @@ import { headers } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-export default async function Page() {
+interface PageProps {
+   searchParams: Promise<{
+      redirectTo?: string;
+   }>;
+}
+
+export default async function Page({ searchParams }: PageProps) {
    const session = await auth.api.getSession({
       headers: await headers(),
    });
 
+   const { redirectTo } = await searchParams;
+
    if (session !== null) {
-      redirect("/admin");
+      const safeRedirect = redirectTo?.startsWith("/") && !redirectTo.startsWith("//") ? redirectTo : "/admin";
+      redirect(safeRedirect);
    }
 
    return (
