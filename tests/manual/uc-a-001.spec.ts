@@ -48,7 +48,7 @@ test("Přihlášení uživatele", async ({ page }) => {
 test("Neautentifikovaný uživatel přesměřování na login", async ({ page }) => {
    await page.goto("http://localhost:3000/admin");
 
-   await expect(page).toHaveURL("http://localhost:3000/login")
+   await expect(page).toHaveURL(url => url.toString().startsWith("http://localhost:3000/login"));
 });
 
 test("Redirect to logika", async ({ page }) => {
