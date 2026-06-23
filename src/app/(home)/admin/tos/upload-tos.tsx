@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -40,6 +41,7 @@ export default function UploadTos() {
       defaultValues: {
          name: "",
          uploadedAt: new Date(),
+         setActive: false,
       },
    });
 
@@ -124,6 +126,21 @@ export default function UploadTos() {
                            </FormControl>
                            <span className="text-sm text-muted-foreground">Povolené formáty: .docx</span>
                            <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name="setActive"
+                     render={({ field }) => (
+                        <FormItem className="flex flex-row items-start gap-3 rounded-md border p-3">
+                           <FormControl>
+                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                           </FormControl>
+                           <div className="space-y-1 leading-none">
+                              <FormLabel>Aktivovat ihned po nahrání</FormLabel>
+                              <p className="text-sm text-muted-foreground">Dokument se zobrazí hostům, přiřadí se mu verze a stane se neměnným. Tuto akci nelze vrátit zpět.</p>
+                           </div>
                         </FormItem>
                      )}
                   />

@@ -21,6 +21,10 @@
 /build
 /public/tos
 
+# runtime uploads (served via /api/files)
+/uploads/*
+!/uploads/.gitkeep
+
 # misc
 .DS_Store
 *.pem

@@ -3,6 +3,7 @@
 import { authActionClient } from "@/lib/safe-action";
 import { db } from "@/server/db/db";
 import { tos } from "@/server/db/schema/tos";
+import { activateTosWithinTx } from "@/server/repositories/tos/activate-helper";
 import { randomUUID } from "crypto";
 import fs from "fs";
 import mammoth from "mammoth";
@@ -10,27 +11,33 @@ import { returnValidationErrors } from "next-safe-action";
 import { revalidatePath } from "next/cache";
 import path from "path";
 import { uploadTosSchema } from "@/server/repositories/tos/schema";
-import { eq } from "drizzle-orm";
 
 /**
- * Nahrání nového TOS dokumentu (DOCX).
+ * Nahrání nového TOS dokumentu (DOCX). Dokument se ve výchozím stavu nahraje
+ * jako neaktivní koncept; pokud je `setActive` zaškrtnuto, rovnou se aktivuje.
  */
-export const uploadTos = authActionClient.inputSchema(uploadTosSchema).action(async ({ parsedInput: { name, fileName, fileSize, file, uploadedAt } }) => {
+export const uploadTos = authActionClient.inputSchema(uploadTosSchema).action(async ({ parsedInput: { name, fileName, fileSize, file, uploadedAt, setActive } }) => {
    try {
-      const { fileUrl, htmlOutput } = await convertAndUploadDocx(file, fileName);
+      const { fileUUID, storagePath, htmlOutput } = await convertAndUploadDocx(file, fileName);
 
       const result = await db.transaction(async (tx) => {
-         await tx.update(tos).set({ isActive: false }).where(eq(tos.isActive, true));
          const inserted = await tx
             .insert(tos)
-            .values({ name, fileName, fileSize, fileUrl, uploadedAt, isActive: true, htmlContent: htmlOutput })
+            .values({ name, fileName, fileSize, fileUUID, storagePath, uploadedAt, isActive: false, htmlContent: htmlOutput })
             .returning();
-         return inserted;
+
+         const row = inserted[0];
+
+         if (setActive) {
+            return activateTosWithinTx(tx, row.id, new Date());
+         }
+
+         return row;
       });
 
       revalidatePath("/admin/tos");
       revalidatePath("/");
-      return result[0];
+      return result;
    } catch (error) {
       console.log(error);
       returnValidationErrors(uploadTosSchema, {
@@ -43,16 +50,18 @@ async function convertAndUploadDocx(file: File, fileName: string) {
    const now = new Date();
    const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-   const uniqueId = randomUUID();
+   const fileUUID = randomUUID();
 
    const fileExtension = path.extname(fileName);
    if (!fileExtension || fileExtension.toLowerCase() !== ".docx") {
       throw new Error("Soubor musí mít rozšíření .docx");
    }
 
-   const uniqueFileName = `${uniqueId}${fileExtension}`;
+   const uniqueFileName = `${fileUUID}${fileExtension}`;
 
-   const folderPath = path.join(process.cwd(), "public", "tos", yearMonth);
+   // Stored outside of public/ because Next.js snapshots public/ at build time
+   // and would not serve files written at runtime. Files are served via /api/files.
+   const folderPath = path.join(process.cwd(), "uploads", "tos", yearMonth);
 
    if (!fs.existsSync(folderPath)) {
       await fs.promises.mkdir(folderPath, { recursive: true });
@@ -66,7 +75,8 @@ async function convertAndUploadDocx(file: File, fileName: string) {
    await fs.promises.writeFile(filePath, buffer);
 
    return {
-      fileUrl: path.join("/tos", yearMonth, uniqueFileName).replace(/\\/g, "/"),
+      fileUUID,
+      storagePath: path.posix.join("tos", yearMonth, uniqueFileName),
       htmlOutput,
    };
 }

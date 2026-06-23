@@ -15,11 +15,24 @@ export const uploadTosSchema = z.object({
    fileSize: z.number().int().positive(),
    file: z.instanceof(File),
    uploadedAt: z.date(),
-   isActive: z.boolean().default(true),
+   setActive: z.boolean().default(false),
    htmlContent: z.string().optional(),
 });
 
 export const setActiveTosSchema = z.object({
+   id: z.number().int().positive(),
+});
+
+export const cloneTosSchema = z.object({
+   id: z.number().int().positive(),
+});
+
+export const renameTosSchema = z.object({
+   id: z.number().int().positive(),
+   name: z.string().nonempty("Název dokumentu je povinný"),
+});
+
+export const deleteTosSchema = z.object({
    id: z.number().int().positive(),
 });
 

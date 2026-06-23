@@ -14,7 +14,7 @@ export default async function Page() {
             <AuthHeader />
             <div className="flex flex-1 items-center justify-center">
                <div className="w-full max-w-lg">
-                  <GuestFormDynamic tosHtmlContent={activeTos?.htmlContent} tosFileUrl={activeTos?.fileUrl} />
+                  <GuestFormDynamic tosHtmlContent={activeTos?.htmlContent} tosFileUrl={activeTos ? `/api/files/${activeTos.fileUUID}` : null} />
                </div>
             </div>
          </div>
