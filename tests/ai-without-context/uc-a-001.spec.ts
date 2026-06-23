@@ -1,4 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
+import dotenv from 'dotenv';
+dotenv.config();
 
 /**
  * E2E tests for UC-A-001: Přihlášení uživatele (User login)
@@ -15,8 +17,8 @@ const BASE_URL = process.env.BASE_URL ?? 'http://localhost:3000';
 const LOGIN_URL = `${BASE_URL}/login`;
 
 // Credentials are configurable via env so the suite can run against any environment.
-const VALID_EMAIL = process.env.E2E_EMAIL ?? 'tomas@jedno.cz';
-const VALID_PASSWORD = process.env.E2E_PASSWORD ?? 'Heslo.01';
+const VALID_EMAIL = process.env.E2E_EMAIL ?? '';
+const VALID_PASSWORD = process.env.E2E_PASSWORD ?? '';
 
 const emailField = (page: Page) =>
   page.getByRole('textbox', { name: /e-?mail/i }).or(page.locator('input[type="email"]')).first();

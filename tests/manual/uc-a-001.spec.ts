@@ -1,4 +1,6 @@
 import { test, expect } from "@playwright/test";
+import dotenv from 'dotenv';
+dotenv.config();
 
 test.beforeEach(async ({ page }) => {
    await page.goto("http://localhost:3000/login");
@@ -56,8 +58,8 @@ test("Redirect to logika", async ({ page }) => {
 
    await expect(page).toHaveURL("http://localhost:3000/login?redirectTo=%2Fadmin%2Fsettings")
 
-   const email = "tomas@jedno.cz";
-   const password = "Heslo.01";
+   const email = process.env.E2E_EMAIL ?? '';
+   const password = process.env.E2E_PASSWORD ?? '';
    const authCookieName = "better-auth.session_token";
 
    await page.getByRole("textbox", { name: "Email" }).fill(email);
