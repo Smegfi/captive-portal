@@ -5,6 +5,6 @@ export const network = pgTable("network", {
    name: text("name").notNull(),
    ssid: text("ssid").notNull(),
    isActive: boolean("is_active").notNull().default(true),
-   createdAt: timestamp("created_at").notNull(),
-   updatedAt: timestamp("updated_at").notNull(),
+   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull(),
 });

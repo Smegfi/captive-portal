@@ -5,6 +5,7 @@ import PagePagination from "@/components/admin/shared/page-pagination";
 import SortableHeader from "@/components/admin/shared/sortable-header";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
+import { formatDateTime } from "@/lib/date";
 import { listConnection } from "@/server/repositories/connection/list";
 import { connectionSortColumns, sortOrders } from "@/server/repositories/connection/schema";
 
@@ -79,7 +80,7 @@ export default async function Page({ searchParams }: PageProps) {
                      <TableCell>{connection.connection.id}</TableCell>
                      <TableCell>{connection.device?.macAddress}</TableCell>
                      <TableCell>{connection.network?.name}</TableCell>
-                     <TableCell>{connection.guest_user?.updatedAt.toLocaleString("cs-CZ")}</TableCell>
+                     <TableCell>{formatDateTime(connection.guest_user?.updatedAt)}</TableCell>
                   </TableRow>
                ))}
             </TableBody>

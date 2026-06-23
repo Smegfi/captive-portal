@@ -8,8 +8,8 @@ export const guestUser = pgTable("guest_user", {
    email: text("email").notNull().unique(),
    marketingApproved: boolean("marketing_approved").notNull().default(false),
    acceptedTosId: integer("accepted_tos_id").references(() => tos.id),
-   createdAt: timestamp("created_at").notNull(),
-   updatedAt: timestamp("updated_at").notNull(),
+   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull(),
 });
 
 export const guestUserRelations = relations(guestUser, ({ many, one }) => ({

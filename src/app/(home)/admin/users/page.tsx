@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { isAdminRole, requirePortalRole } from "@/lib/authorization";
 import { listGuestUser } from "@/server/repositories/guest-user/list";
 import { guestUserSortColumns, sortOrders } from "@/server/repositories/guest-user/schema";
-import { format } from "date-fns";
+import { formatDateTime } from "@/lib/date";
 import { EllipsisVertical } from "lucide-react";
 import RemoveUser from "./remove";
 
@@ -93,8 +93,8 @@ export default async function Page({ searchParams }: PageProps) {
                      <TableCell className="text-center">
                         <Checkbox defaultChecked={guestUser.marketingApproved} disabled />
                      </TableCell>
-                     <TableCell className="text-xs">{format(guestUser.createdAt, "dd.MM.yyyy HH:mm")}</TableCell>
-                     <TableCell className="text-xs">{format(guestUser.updatedAt, "dd.MM.yyyy HH:mm")}</TableCell>
+                     <TableCell className="text-xs">{formatDateTime(guestUser.createdAt)}</TableCell>
+                     <TableCell className="text-xs">{formatDateTime(guestUser.updatedAt)}</TableCell>
                      <TableCell className="text-xs">{guestUser.acceptedTos ? `#${guestUser.acceptedTos.id} - ${guestUser.acceptedTos.name}` : "-"}</TableCell>
                      <TableCell className="text-center">
                         <Badge>{guestUser.devices.length}</Badge>

@@ -6,6 +6,7 @@ import SortableHeader from "@/components/admin/shared/sortable-header";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
+import { formatDateTime } from "@/lib/date";
 import { listDevice } from "@/server/repositories/device/list";
 import { deviceSortColumns, sortOrders } from "@/server/repositories/device/schema";
 import FilerDialog from "@/app/(home)/admin/devices/filter";
@@ -105,7 +106,7 @@ export default async function Page({ searchParams }: PageProps) {
                            </DialogContent>
                         </Dialog>
                      </TableCell>
-                     <TableCell>{device.firstSeenAt?.toLocaleString("cs-CZ")}</TableCell>
+                     <TableCell>{formatDateTime(device.firstSeenAt)}</TableCell>
                   </TableRow>
                ))}
             </TableBody>

@@ -9,7 +9,7 @@ export const device = pgTable("device", {
    userId: integer("user_id").references(() => guestUser.id),
    macAddress: text("mac_address").notNull(),
    device: jsonb("device").$type<DeviceSchema>().notNull(),
-   firstSeenAt: timestamp("first_seen").notNull(),
+   firstSeenAt: timestamp("first_seen", { withTimezone: true }).notNull(),
 });
 
 export const deviceRelations = relations(device, ({ one, many }) => ({

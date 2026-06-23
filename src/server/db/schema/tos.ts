@@ -8,5 +8,5 @@ export const tos = pgTable("tos", {
    fileUrl: text("file_url").notNull(),
    isActive: boolean("is_active").notNull().default(true),
    htmlContent: text("html_content"),
-   uploadedAt: timestamp("uploaded_at").notNull(),
+   uploadedAt: timestamp("uploaded_at", { withTimezone: true }).notNull(),
 });
