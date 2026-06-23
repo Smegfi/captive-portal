@@ -2,13 +2,30 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+   Dialog,
+   DialogContent,
+   DialogDescription,
+   DialogHeader,
+   DialogTitle,
+   DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createAppUser } from "@/server/repositories/app-user/create";
-import { createAppUserSchema, CreateAppUserSchemaType } from "@/server/repositories/app-user/schema";
-import { updateAppUserRole } from "@/server/repositories/app-user/update-role";
+import { resetAppUserPassword } from "@/server/repositories/app-user/reset-password";
+import {
+   createAppUserSchema,
+   CreateAppUserSchemaType,
+   resetAppUserPasswordSchema,
+   ResetAppUserPasswordSchemaType,
+   updateAppUserSchema,
+   UpdateAppUserSchemaType,
+} from "@/server/repositories/app-user/schema";
+import { updateAppUser } from "@/server/repositories/app-user/update";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Save, UserPlus } from "lucide-react";
+import { KeyRound, Loader2, Pencil, Save, UserPlus } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,12 +41,8 @@ interface AppUser {
 
 interface AccountManagementProps {
    users: AppUser[];
+   currentUserId: string;
 }
-
-const roleLabel: Record<"admin" | "reviewer", string> = {
-   admin: "Admin",
-   reviewer: "Reviewer",
-};
 
 function normalizeRole(role: string | null | undefined): "admin" | "reviewer" {
    if (role === "admin") {
@@ -39,10 +52,152 @@ function normalizeRole(role: string | null | undefined): "admin" | "reviewer" {
    return "reviewer";
 }
 
-export default function AccountManagement({ users }: AccountManagementProps) {
+function FormErrors({ messages }: { messages: (string | undefined)[] }) {
+   const filtered = messages.filter(Boolean);
+
+   if (filtered.length === 0) {
+      return null;
+   }
+
+   return <div className="text-sm text-red-500">{filtered.join(" ")}</div>;
+}
+
+function EditUserDialog({ user, isSelf }: { user: AppUser; isSelf: boolean }) {
    const router = useRouter();
-   const [roles, setRoles] = useState<Record<string, "admin" | "reviewer">>(Object.fromEntries(users.map((user) => [user.id, normalizeRole(user.role)])));
-   const [savingRoleUserId, setSavingRoleUserId] = useState<string | null>(null);
+   const [open, setOpen] = useState(false);
+
+   const detailsForm = useForm<UpdateAppUserSchemaType>({
+      resolver: zodResolver(updateAppUserSchema),
+      defaultValues: {
+         userId: user.id,
+         name: user.name,
+         email: user.email,
+         role: normalizeRole(user.role),
+      },
+   });
+
+   const passwordForm = useForm<ResetAppUserPasswordSchemaType>({
+      resolver: zodResolver(resetAppUserPasswordSchema),
+      defaultValues: {
+         userId: user.id,
+         password: "",
+      },
+   });
+
+   const { execute: saveUser, isExecuting: isSavingUser } = useAction(updateAppUser, {
+      onSuccess: () => {
+         toast.success("Uživatel byl uložen.");
+         router.refresh();
+         setOpen(false);
+      },
+      onError: (error) => {
+         toast.error(error.error.serverError?.message ?? "Nepodařilo se uložit uživatele.");
+      },
+   });
+
+   const { execute: resetPassword, isExecuting: isResettingPassword } = useAction(resetAppUserPassword, {
+      onSuccess: () => {
+         toast.success("Heslo bylo změněno.");
+         passwordForm.reset({ userId: user.id, password: "" });
+      },
+      onError: (error) => {
+         toast.error(error.error.serverError?.message ?? "Nepodařilo se změnit heslo.");
+      },
+   });
+
+   function onOpenChange(next: boolean) {
+      setOpen(next);
+
+      if (!next) {
+         detailsForm.reset({
+            userId: user.id,
+            name: user.name,
+            email: user.email,
+            role: normalizeRole(user.role),
+         });
+         passwordForm.reset({ userId: user.id, password: "" });
+      }
+   }
+
+   return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+         <DialogTrigger asChild>
+            <Button variant="outline">
+               <Pencil />
+               Upravit
+            </Button>
+         </DialogTrigger>
+         <DialogContent>
+            <DialogHeader>
+               <DialogTitle>Úprava účtu</DialogTitle>
+               <DialogDescription>Úprava údajů a hesla aplikačního účtu.</DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={detailsForm.handleSubmit((values) => saveUser(values))} className="space-y-3">
+               <div className="space-y-1.5">
+                  <Label htmlFor={`name-${user.id}`}>Jméno a příjmení</Label>
+                  <Input id={`name-${user.id}`} {...detailsForm.register("name")} />
+               </div>
+               <div className="space-y-1.5">
+                  <Label htmlFor={`email-${user.id}`}>Email</Label>
+                  <Input id={`email-${user.id}`} type="email" {...detailsForm.register("email")} />
+               </div>
+               <div className="space-y-1.5">
+                  <Label htmlFor={`role-${user.id}`}>Role</Label>
+                  <Controller
+                     control={detailsForm.control}
+                     name="role"
+                     render={({ field }) => (
+                        <Select value={field.value} onValueChange={field.onChange} disabled={isSelf}>
+                           <SelectTrigger id={`role-${user.id}`} className="w-full">
+                              <SelectValue placeholder="Role" />
+                           </SelectTrigger>
+                           <SelectContent>
+                              <SelectItem value="admin">Admin</SelectItem>
+                              <SelectItem value="reviewer">Reviewer</SelectItem>
+                           </SelectContent>
+                        </Select>
+                     )}
+                  />
+                  {isSelf ? <p className="text-xs text-muted-foreground">Vlastní roli nelze změnit.</p> : null}
+               </div>
+               <FormErrors
+                  messages={[
+                     detailsForm.formState.errors.name?.message,
+                     detailsForm.formState.errors.email?.message,
+                     detailsForm.formState.errors.role?.message,
+                  ]}
+               />
+               <div className="flex justify-end">
+                  <Button type="submit" disabled={isSavingUser}>
+                     {isSavingUser ? <Loader2 className="animate-spin" /> : <Save />}
+                     Uložit
+                  </Button>
+               </div>
+            </form>
+
+            <div className="border-t pt-4">
+               <form onSubmit={passwordForm.handleSubmit((values) => resetPassword(values))} className="space-y-3">
+                  <div className="space-y-1.5">
+                     <Label htmlFor={`password-${user.id}`}>Reset hesla</Label>
+                     <Input id={`password-${user.id}`} type="password" placeholder="Nové heslo" {...passwordForm.register("password")} />
+                  </div>
+                  <FormErrors messages={[passwordForm.formState.errors.password?.message]} />
+                  <div className="flex justify-end">
+                     <Button type="submit" variant="secondary" disabled={isResettingPassword}>
+                        {isResettingPassword ? <Loader2 className="animate-spin" /> : <KeyRound />}
+                        Změnit heslo
+                     </Button>
+                  </div>
+               </form>
+            </div>
+         </DialogContent>
+      </Dialog>
+   );
+}
+
+export default function AccountManagement({ users, currentUserId }: AccountManagementProps) {
+   const router = useRouter();
 
    const form = useForm<CreateAppUserSchemaType>({
       resolver: zodResolver(createAppUserSchema),
@@ -70,27 +225,8 @@ export default function AccountManagement({ users }: AccountManagementProps) {
       },
    });
 
-   const { executeAsync: updateRole } = useAction(updateAppUserRole, {
-      onSuccess: () => {
-         toast.success("Role byla aktualizována.");
-         router.refresh();
-      },
-      onError: (error) => {
-         toast.error(error.error.serverError?.message ?? "Nepodařilo se uložit roli.");
-      },
-   });
-
    function onCreateUser(values: CreateAppUserSchemaType) {
       createUser(values);
-   }
-
-   async function onSaveRole(userId: string) {
-      setSavingRoleUserId(userId);
-      await updateRole({
-         userId,
-         role: roles[userId] ?? "reviewer",
-      });
-      setSavingRoleUserId(null);
    }
 
    return (
@@ -127,14 +263,7 @@ export default function AccountManagement({ users }: AccountManagementProps) {
                </div>
             </form>
 
-            {Object.keys(form.formState.errors).length > 0 ? (
-               <div className="text-sm text-red-500">
-                  {Object.values(form.formState.errors)
-                     .map((error) => error?.message)
-                     .filter(Boolean)
-                     .join(" ")}
-               </div>
-            ) : null}
+            <FormErrors messages={Object.values(form.formState.errors).map((error) => error?.message)} />
 
             <div className="space-y-3">
                {users.map((user) => (
@@ -144,22 +273,7 @@ export default function AccountManagement({ users }: AccountManagementProps) {
                         <div className="text-sm text-muted-foreground">{user.email}</div>
                      </div>
                      <div className="flex items-center gap-2">
-                        <Select
-                           value={roles[user.id] ?? "reviewer"}
-                           onValueChange={(value: "admin" | "reviewer") => setRoles((prev) => ({ ...prev, [user.id]: value }))}
-                        >
-                           <SelectTrigger className="w-[140px]">
-                              <SelectValue placeholder="Role" />
-                           </SelectTrigger>
-                           <SelectContent>
-                              <SelectItem value="admin">{roleLabel.admin}</SelectItem>
-                              <SelectItem value="reviewer">{roleLabel.reviewer}</SelectItem>
-                           </SelectContent>
-                        </Select>
-                        <Button onClick={() => onSaveRole(user.id)} disabled={savingRoleUserId === user.id}>
-                           {savingRoleUserId === user.id ? <Loader2 className="animate-spin" /> : <Save />}
-                           Uložit
-                        </Button>
+                        <EditUserDialog user={user} isSelf={user.id === currentUserId} />
                      </div>
                   </div>
                ))}

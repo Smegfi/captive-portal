@@ -9,7 +9,7 @@ import { getSmtpConfiguration, getWelcomeEmailConfiguration } from "@/server/rep
 import { listAppUser } from "@/server/repositories/app-user/list";
 
 export default async function SettingsPage() {
-   await requireAdminRole();
+   const session = await requireAdminRole();
 
    const smtpConfiguration = await getSmtpConfiguration();
    const welcomeEmailConfiguration = await getWelcomeEmailConfiguration();
@@ -44,7 +44,7 @@ export default async function SettingsPage() {
          {usersResult.serverError ? (
             <div className="text-red-500">{usersResult.serverError.message}</div>
          ) : (
-            <AccountManagement users={usersResult.data ?? []} />
+            <AccountManagement users={usersResult.data ?? []} currentUserId={session.user.id} />
          )}
       </div>
    );
