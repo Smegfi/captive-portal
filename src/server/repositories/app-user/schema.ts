@@ -21,6 +21,11 @@ export const resetAppUserPasswordSchema = z.object({
    password: z.string().min(8, "Heslo musí mít alespoň 8 znaků"),
 });
 
+export const removeAppUserSchema = z.object({
+   userId: z.string().min(1, "Uživatel není platný"),
+});
+
 export type CreateAppUserSchemaType = z.infer<typeof createAppUserSchema>;
 export type UpdateAppUserSchemaType = z.infer<typeof updateAppUserSchema>;
 export type ResetAppUserPasswordSchemaType = z.infer<typeof resetAppUserPasswordSchema>;
+export type RemoveAppUserSchemaType = z.infer<typeof removeAppUserSchema>;

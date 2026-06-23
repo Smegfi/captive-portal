@@ -1,5 +1,16 @@
 "use client";
 
+import {
+   AlertDialog,
+   AlertDialogAction,
+   AlertDialogCancel,
+   AlertDialogContent,
+   AlertDialogDescription,
+   AlertDialogFooter,
+   AlertDialogHeader,
+   AlertDialogTitle,
+   AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -14,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createAppUser } from "@/server/repositories/app-user/create";
+import { removeAppUser } from "@/server/repositories/app-user/remove";
 import { resetAppUserPassword } from "@/server/repositories/app-user/reset-password";
 import {
    createAppUserSchema,
@@ -25,7 +37,7 @@ import {
 } from "@/server/repositories/app-user/schema";
 import { updateAppUser } from "@/server/repositories/app-user/update";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { KeyRound, Loader2, Pencil, Save, UserPlus } from "lucide-react";
+import { KeyRound, Loader2, Pencil, Save, Trash2, UserPlus } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -60,6 +72,55 @@ function FormErrors({ messages }: { messages: (string | undefined)[] }) {
    }
 
    return <div className="text-sm text-red-500">{filtered.join(" ")}</div>;
+}
+
+function DeleteUserDialog({ user }: { user: AppUser }) {
+   const router = useRouter();
+   const [open, setOpen] = useState(false);
+
+   const { execute: deleteUser, isExecuting: isDeletingUser } = useAction(removeAppUser, {
+      onSuccess: () => {
+         toast.success("Uživatel byl smazán.");
+         router.refresh();
+         setOpen(false);
+      },
+      onError: (error) => {
+         toast.error(error.error.serverError?.message ?? "Nepodařilo se smazat uživatele.");
+      },
+   });
+
+   return (
+      <AlertDialog open={open} onOpenChange={setOpen}>
+         <AlertDialogTrigger asChild>
+            <Button variant="destructive">
+               <Trash2 />
+               Smazat
+            </Button>
+         </AlertDialogTrigger>
+         <AlertDialogContent>
+            <AlertDialogHeader>
+               <AlertDialogTitle>Opravdu smazat účet?</AlertDialogTitle>
+               <AlertDialogDescription>
+                  Účet {user.name} ({user.email}) bude trvale smazán včetně přihlášení. Tuto akci nelze vrátit zpět.
+               </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+               <AlertDialogCancel disabled={isDeletingUser}>Zrušit</AlertDialogCancel>
+               <AlertDialogAction
+                  variant="destructive"
+                  disabled={isDeletingUser}
+                  onClick={(event) => {
+                     event.preventDefault();
+                     deleteUser({ userId: user.id });
+                  }}
+               >
+                  {isDeletingUser ? <Loader2 className="animate-spin" /> : <Trash2 />}
+                  Smazat
+               </AlertDialogAction>
+            </AlertDialogFooter>
+         </AlertDialogContent>
+      </AlertDialog>
+   );
 }
 
 function EditUserDialog({ user, isSelf }: { user: AppUser; isSelf: boolean }) {
@@ -274,6 +335,7 @@ export default function AccountManagement({ users, currentUserId }: AccountManag
                      </div>
                      <div className="flex items-center gap-2">
                         <EditUserDialog user={user} isSelf={user.id === currentUserId} />
+                        {user.id === currentUserId ? null : <DeleteUserDialog user={user} />}
                      </div>
                   </div>
                ))}
