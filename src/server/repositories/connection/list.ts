@@ -4,8 +4,15 @@ import { authActionClient } from "@/lib/safe-action";
 import { actionResultSchema } from "@/server/actions-scheme/action-result";
 import { db } from "@/server/db/db";
 import { connection, device, guestUser, network } from "@/server/db/schema";
-import { and, count, eq, gte, ilike, lte, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
 import { listConnectionSchema } from "@/server/repositories/connection/schema";
+
+const sortColumns = {
+   id: connection.id,
+   mac: device.macAddress,
+   network: network.name,
+   updatedAt: guestUser.updatedAt,
+} as const;
 
 /**
  * Stránkovaný seznam připojení (admin).
@@ -13,7 +20,7 @@ import { listConnectionSchema } from "@/server/repositories/connection/schema";
 export const listConnection = authActionClient
    .outputSchema(actionResultSchema)
    .inputSchema(listConnectionSchema)
-   .action(async ({ parsedInput: { itemsPerPage, page, search, mac, network: networkName, user, updatedFrom, updatedTo } }) => {
+   .action(async ({ parsedInput: { itemsPerPage, page, search, mac, network: networkName, user, updatedFrom, updatedTo, sortBy, sortOrder } }) => {
       const offset = (page - 1) * itemsPerPage;
       const searchValue = search.trim();
       const macValue = mac.trim();
@@ -33,6 +40,9 @@ export const listConnection = authActionClient
 
       const whereCondition = filters.length > 0 ? and(...filters) : undefined;
 
+      const sortColumn = sortBy ? sortColumns[sortBy] : connection.id;
+      const orderBy = sortOrder === "desc" ? desc(sortColumn) : asc(sortColumn);
+
       const connections = await db
          .select()
          .from(connection)
@@ -42,7 +52,7 @@ export const listConnection = authActionClient
          .where(whereCondition)
          .limit(itemsPerPage)
          .offset(offset)
-         .orderBy(connection.id);
+         .orderBy(orderBy);
 
       const total = await db
          .select({ value: count() })

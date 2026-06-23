@@ -1,6 +1,7 @@
 import UsersExportButton from "@/app/(home)/admin/users/export";
 import UserFilterDialog from "@/app/(home)/admin/users/filter";
 import PagePagination from "@/components/admin/shared/page-pagination";
+import SortableHeader from "@/components/admin/shared/sortable-header";
 import Filter from "@/components/admin/users/filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigg
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { isAdminRole, requirePortalRole } from "@/lib/authorization";
 import { listGuestUser } from "@/server/repositories/guest-user/list";
+import { guestUserSortColumns, sortOrders } from "@/server/repositories/guest-user/schema";
 import { format } from "date-fns";
 import { EllipsisVertical } from "lucide-react";
 import RemoveUser from "./remove";
@@ -23,6 +25,8 @@ interface PageProps {
       marketing?: string;
       createdFrom?: string;
       createdTo?: string;
+      sortBy?: string;
+      sortOrder?: string;
    }>;
 }
 
@@ -31,10 +35,13 @@ export default async function Page({ searchParams }: PageProps) {
    const isAdmin = isAdminRole(session.user.role);
 
    const resolvedSearchParams = await searchParams;
-   const { page = "1", pageSize = "25", items, search = "", email = "", marketing = "all", createdFrom, createdTo } = resolvedSearchParams;
+   const { page = "1", pageSize = "25", items, search = "", email = "", marketing = "all", createdFrom, createdTo, sortBy, sortOrder } =
+      resolvedSearchParams;
    const effectivePageSize = pageSize || items || "25";
    const parsedCreatedFrom = createdFrom ? new Date(createdFrom) : undefined;
    const parsedCreatedTo = createdTo ? new Date(createdTo) : undefined;
+   const parsedSortBy = guestUserSortColumns.find((column) => column === sortBy);
+   const parsedSortOrder = sortOrders.find((order) => order === sortOrder);
 
    const { data: guestUsers, serverError } = await listGuestUser({
       itemsPerPage: parseInt(effectivePageSize),
@@ -44,6 +51,8 @@ export default async function Page({ searchParams }: PageProps) {
       marketing,
       createdFrom: parsedCreatedFrom && !Number.isNaN(parsedCreatedFrom.getTime()) ? parsedCreatedFrom : undefined,
       createdTo: parsedCreatedTo && !Number.isNaN(parsedCreatedTo.getTime()) ? parsedCreatedTo : undefined,
+      sortBy: parsedSortBy,
+      sortOrder: parsedSortOrder,
    });
 
    if (serverError) {
@@ -66,11 +75,11 @@ export default async function Page({ searchParams }: PageProps) {
          <Table>
             <TableHeader>
                <TableRow>
-                  <TableHead className="w-[1%] text-center">ID</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead className="w-[1%] text-center">Marketing</TableHead>
-                  <TableHead className="w-[200px]">Vytvořen</TableHead>
-                  <TableHead className="w-[200px]">Upraven</TableHead>
+                  <SortableHeader column="id" label="ID" className="w-[1%] text-center" />
+                  <SortableHeader column="email" label="Email" />
+                  <SortableHeader column="marketing" label="Marketing" className="w-[1%] text-center" />
+                  <SortableHeader column="createdAt" label="Vytvořen" className="w-[200px]" />
+                  <SortableHeader column="updatedAt" label="Upraven" className="w-[200px]" />
                   <TableHead className="w-[200px]">Akceptovaný TOS</TableHead>
                   <TableHead className="w-[100px] text-center">Zařízení</TableHead>
                   {isAdmin ? <TableHead className="w-[1%]"></TableHead> : null}

@@ -2,9 +2,11 @@ import Filtration from "@/app/(home)/admin/connection/filtration";
 import ConnectionFilterDialog from "@/app/(home)/admin/connection/filter";
 import ConnectionExportButton from "@/app/(home)/admin/connection/export";
 import PagePagination from "@/components/admin/shared/page-pagination";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import SortableHeader from "@/components/admin/shared/sortable-header";
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { requireAdminRole } from "@/lib/authorization";
 import { listConnection } from "@/server/repositories/connection/list";
+import { connectionSortColumns, sortOrders } from "@/server/repositories/connection/schema";
 
 interface PageProps {
    searchParams: Promise<{
@@ -17,6 +19,8 @@ interface PageProps {
       user?: string;
       updatedFrom?: string;
       updatedTo?: string;
+      sortBy?: string;
+      sortOrder?: string;
    }>;
 }
 
@@ -24,11 +28,13 @@ export default async function Page({ searchParams }: PageProps) {
    await requireAdminRole();
 
    const resolvedSearchParams = await searchParams;
-   const { page = "1", pageSize = "25", items, search = "", mac = "", network = "", user = "", updatedFrom, updatedTo } =
+   const { page = "1", pageSize = "25", items, search = "", mac = "", network = "", user = "", updatedFrom, updatedTo, sortBy, sortOrder } =
       resolvedSearchParams;
    const effectivePageSize = pageSize || items || "25";
    const parsedUpdatedFrom = updatedFrom ? new Date(updatedFrom) : undefined;
    const parsedUpdatedTo = updatedTo ? new Date(updatedTo) : undefined;
+   const parsedSortBy = connectionSortColumns.find((column) => column === sortBy);
+   const parsedSortOrder = sortOrders.find((order) => order === sortOrder);
 
    const { data: connections, serverError } = await listConnection({
       itemsPerPage: parseInt(effectivePageSize),
@@ -39,6 +45,8 @@ export default async function Page({ searchParams }: PageProps) {
       user,
       updatedFrom: parsedUpdatedFrom && !Number.isNaN(parsedUpdatedFrom.getTime()) ? parsedUpdatedFrom : undefined,
       updatedTo: parsedUpdatedTo && !Number.isNaN(parsedUpdatedTo.getTime()) ? parsedUpdatedTo : undefined,
+      sortBy: parsedSortBy,
+      sortOrder: parsedSortOrder,
    });
 
    if (serverError) {
@@ -59,10 +67,10 @@ export default async function Page({ searchParams }: PageProps) {
          <Table>
             <TableHeader>
                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Zařízení</TableHead>
-                  <TableHead>Síť</TableHead>
-                  <TableHead>Vytvořeno</TableHead>
+                  <SortableHeader column="id" label="ID" />
+                  <SortableHeader column="mac" label="Zařízení" />
+                  <SortableHeader column="network" label="Síť" />
+                  <SortableHeader column="updatedAt" label="Vytvořeno" />
                </TableRow>
             </TableHeader>
             <TableBody>

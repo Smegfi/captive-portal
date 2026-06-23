@@ -13,7 +13,7 @@ import { listGuestSchema } from "@/server/repositories/guest-user/schema";
 export const listGuestUser = reviewerActionClient
    .inputSchema(listGuestSchema)
    .outputSchema(actionResultSchema)
-   .action(async ({ parsedInput: { itemsPerPage, page, search, email, marketing, createdFrom, createdTo } }) => {
+   .action(async ({ parsedInput: { itemsPerPage, page, search, email, marketing, createdFrom, createdTo, sortBy, sortOrder } }) => {
       const offset = (page - 1) * itemsPerPage;
       const searchValue = search.trim();
       const emailValue = email.trim();
@@ -33,10 +33,13 @@ export const listGuestUser = reviewerActionClient
 
       const whereCondition = filters.length > 0 ? and(...filters) : undefined;
 
+      const sortColumnName = sortBy === "marketing" ? "marketingApproved" : (sortBy ?? "id");
+
       const guestUsers = await db.query.guestUser.findMany({
          limit: itemsPerPage,
          offset,
          where: whereCondition,
+         orderBy: (columns, operators) => [operators[sortOrder === "desc" ? "desc" : "asc"](columns[sortColumnName])],
          with: {
             acceptedTos: {
                columns: {

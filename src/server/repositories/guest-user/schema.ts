@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const guestUserSortColumns = ["id", "email", "marketing", "createdAt", "updatedAt"] as const;
+export const sortOrders = ["asc", "desc"] as const;
+
+export type GuestUserSortColumn = (typeof guestUserSortColumns)[number];
+export type SortOrder = (typeof sortOrders)[number];
+
 export const listGuestSchema = z.object({
    itemsPerPage: z.number(),
    page: z.number(),
@@ -8,6 +14,8 @@ export const listGuestSchema = z.object({
    marketing: z.string().optional(),
    createdFrom: z.date().optional(),
    createdTo: z.date().optional(),
+   sortBy: z.enum(guestUserSortColumns).optional(),
+   sortOrder: z.enum(sortOrders).optional(),
 });
 
 export const removeGuestUserSchema = z.object({

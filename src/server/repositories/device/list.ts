@@ -5,8 +5,15 @@ import { actionResultSchema } from "@/server/actions-scheme/action-result";
 import { db } from "@/server/db/db";
 import { device } from "@/server/db/schema/device";
 import { guestUser } from "@/server/db/schema/guest-user";
-import { and, count, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { listDeviceSchema } from "@/server/repositories/device/schema";
+
+const sortColumns = {
+   id: device.id,
+   mac: device.macAddress,
+   user: guestUser.email,
+   firstSeenAt: device.firstSeenAt,
+} as const;
 
 /**
  * Stránkovaný seznam zařízení (admin).
@@ -14,7 +21,7 @@ import { listDeviceSchema } from "@/server/repositories/device/schema";
 export const listDevice = authActionClient
    .inputSchema(listDeviceSchema)
    .outputSchema(actionResultSchema)
-   .action(async ({ parsedInput: { itemsPerPage, page, search, mac, user, device: os, connectedFrom, connectedTo } }) => {
+   .action(async ({ parsedInput: { itemsPerPage, page, search, mac, user, device: os, connectedFrom, connectedTo, sortBy, sortOrder } }) => {
       const offset = (page - 1) * itemsPerPage;
       const searchValue = search.trim();
       const macValue = mac.trim();
@@ -37,6 +44,9 @@ export const listDevice = authActionClient
 
       const whereCondition = filters.length > 0 ? and(...filters) : undefined;
 
+      const sortColumn = sortBy ? sortColumns[sortBy] : device.id;
+      const orderBy = sortOrder === "desc" ? desc(sortColumn) : asc(sortColumn);
+
       const devices = await db
          .select({ data: device, guestUser })
          .from(device)
@@ -44,7 +54,7 @@ export const listDevice = authActionClient
          .where(whereCondition)
          .limit(itemsPerPage)
          .offset(offset)
-         .orderBy(device.id);
+         .orderBy(orderBy);
 
       const total = await db
          .select({ value: count() })
