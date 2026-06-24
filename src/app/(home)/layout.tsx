@@ -2,6 +2,7 @@ import { AppSidebar } from "@/components/admin-navigation/app-sidebar";
 import { SiteHeader } from "@/components/admin-navigation/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "@public/globals.css";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
@@ -33,7 +34,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                      <AppSidebar variant="inset" />
                      <SidebarInset>
                         <SiteHeader />
-                        <div className="p-4">{children}</div>
+                        <div className="p-4">
+                           <TooltipProvider>{children}</TooltipProvider>
+                        </div>
                      </SidebarInset>
                   </SidebarProvider>
                   <Toaster richColors />

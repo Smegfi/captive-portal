@@ -32,6 +32,11 @@ export const renameTosSchema = z.object({
    name: z.string().nonempty("Název dokumentu je povinný"),
 });
 
+export const updateTosHtmlSchema = z.object({
+   id: z.number().int().positive(),
+   htmlContent: z.string(),
+});
+
 export const deleteTosSchema = z.object({
    id: z.number().int().positive(),
 });

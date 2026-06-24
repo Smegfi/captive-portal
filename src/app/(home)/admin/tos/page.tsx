@@ -85,7 +85,7 @@ export default async function Page({ searchParams }: PageProps) {
                               </a>
                            </Button>
                            <SetActiveTosButton tosId={tos.id} isActive={tos.isActive} isImmutable={isTosImmutable(tos)} nextVersionLabel={nextVersionLabel} />
-                           <TosRowActions tosId={tos.id} name={tos.name} isImmutable={isTosImmutable(tos)} />
+                           <TosRowActions tosId={tos.id} name={tos.name} isImmutable={isTosImmutable(tos)} htmlContent={tos.htmlContent} />
                         </div>
                      </TableCell>
                   </TableRow>

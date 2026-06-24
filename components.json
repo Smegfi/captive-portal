@@ -1,21 +1,25 @@
 {
-   "$schema": "https://ui.shadcn.com/schema.json",
-   "style": "new-york",
-   "rsc": true,
-   "tsx": true,
-   "tailwind": {
-      "config": "",
-      "css": "public/globals.css",
-      "baseColor": "neutral",
-      "cssVariables": true,
-      "prefix": ""
-   },
-   "aliases": {
-      "components": "@/components",
-      "utils": "@/lib/utils",
-      "ui": "@/components/ui",
-      "lib": "@/lib",
-      "hooks": "@/hooks"
-   },
-   "iconLibrary": "lucide"
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "public/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {
+    "@shadcn-editor": "https://raw.githubusercontent.com/htmujahid/shadcn-editor/refs/heads/main/public/r/{name}.json",
+    "@prosekit": "https://prosekit.dev/r/{name}.json"
+  }
 }

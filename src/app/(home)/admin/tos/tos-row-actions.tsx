@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import TosEditor from "@/app/(home)/admin/tos/tos-editor";
 import { cloneTos } from "@/server/repositories/tos/clone";
 import { deleteTos } from "@/server/repositories/tos/delete";
 import { renameTos } from "@/server/repositories/tos/rename";
@@ -26,9 +27,10 @@ interface TosRowActionsProps {
    tosId: number;
    name: string;
    isImmutable: boolean;
+   htmlContent: string | null;
 }
 
-export default function TosRowActions({ tosId, name, isImmutable }: TosRowActionsProps) {
+export default function TosRowActions({ tosId, name, isImmutable, htmlContent }: TosRowActionsProps) {
    const [isRenameOpen, setIsRenameOpen] = useState(false);
    const [renameValue, setRenameValue] = useState(name);
 
@@ -55,6 +57,8 @@ export default function TosRowActions({ tosId, name, isImmutable }: TosRowAction
          <Button variant="outline" size="icon" title="Vytvořit kopii" disabled={cloneAction.isExecuting} onClick={() => cloneAction.execute({ id: tosId })}>
             {cloneAction.isExecuting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Copy className="h-4 w-4" />}
          </Button>
+
+         {!isImmutable && <TosEditor tosId={tosId} htmlContent={htmlContent} />}
 
          {!isImmutable && (
             <Dialog open={isRenameOpen} onOpenChange={setIsRenameOpen}>
