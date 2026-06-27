@@ -1,3 +1,4 @@
+import Filter from "@/app/(home)/admin/tos/filter";
 import UploadTos from "@/app/(home)/admin/tos/upload-tos";
 import SetActiveTosButton from "@/app/(home)/admin/tos/set-active-button";
 import TosRowActions from "@/app/(home)/admin/tos/tos-row-actions";
@@ -42,7 +43,8 @@ export default async function Page({ searchParams }: PageProps) {
       <div className="space-y-4">
          <h1 className="text-3xl font-bold">TOS Dokumenty</h1>
          <div>
-            <div className="flex gap-4 justify-end">
+            <div className="flex gap-4">
+               <Filter />
                <UploadTos />
             </div>
          </div>
@@ -50,12 +52,12 @@ export default async function Page({ searchParams }: PageProps) {
          <Table>
             <TableHeader>
                <TableRow>
-                  <TableHead className="w-[100px]">ID</TableHead>
+                  <TableHead className="w-[1%]">ID</TableHead>
                   <TableHead>Název</TableHead>
                   <TableHead className="w-[140px]">Stav</TableHead>
                   <TableHead className="w-[140px]">Verze</TableHead>
                   <TableHead className="w-[220px]">Platnost</TableHead>
-                  <TableHead>Soubor</TableHead>
+                  <TableHead className="max-w-[180px]">Soubor</TableHead>
                   <TableHead className="w-[120px]">Velikost</TableHead>
                   <TableHead className="w-[160px]">Nahráno</TableHead>
                   <TableHead className="w-[220px]">Akce</TableHead>
@@ -64,15 +66,15 @@ export default async function Page({ searchParams }: PageProps) {
             <TableBody>
                {tos?.data?.map((tos) => (
                   <TableRow key={tos.id}>
-                     <TableCell>{tos.id}</TableCell>
+                     <TableCell className="w-[1%]">{tos.id}</TableCell>
                      <TableCell className="font-medium">{tos.name}</TableCell>
                      <TableCell>{tos.isActive ? <Badge>Aktivní</Badge> : <Badge variant="secondary">Neaktivní</Badge>}</TableCell>
                      <TableCell>{formatTosVersion(tos.activeFrom, tos.versionNumber) ?? "—"}</TableCell>
                      <TableCell className="text-sm text-muted-foreground">{formatTosValidity(tos.activeFrom, tos.activeTo)}</TableCell>
-                     <TableCell>
+                     <TableCell className="max-w-[180px]">
                         <div className="flex items-center gap-2">
                            <FileText className="h-4 w-4 text-muted-foreground" />
-                           <span className="text-sm text-muted-foreground">{tos.fileName}</span>
+                           <span className="text-sm text-muted-foreground truncate">{tos.fileName}</span>
                         </div>
                      </TableCell>
                      <TableCell>{formatToMegabytes(tos.fileSize)} MB</TableCell>
