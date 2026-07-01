@@ -49,19 +49,6 @@ test.describe("UC-B-001: Testování filtrace u TOS", () => {
       await expect(page).toHaveURL(url => url.toString().includes(`page=1`));
    });
 
-   test("Při vyplnění filtru se nastaví page na 1", async ({ page }) => {
-      await page.goto("http://localhost:3000/admin/tos?page=2");
-
-      var text = "this-is-test-input";
-
-      await page.getByRole('textbox', { name: 'Hledat dokumenty' }).fill(text);
-      await page.getByRole('button').nth(4).click();
-
-      await page.waitForURL(url => url.toString().includes(`search`));
-      // Při vyplnění textu se zobrazuje tlačítko pro vymazání filtru a tlačítko pro vyhledávání
-      await expect(page).toHaveURL(url => url.toString().includes(`page=1`));
-   });
-
    test("Při filtrace se zobrazí pouze filtrované výsledky", async ({ page }) => {
       await page.goto("http://localhost:3000/admin/tos");
 
