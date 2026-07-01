@@ -70,17 +70,44 @@ Use-case je kompletní na první dobrou není potřeba žádný zásah.
 # Implementace testu
 
 ## Manuální implementace
-> Počet puštění                 []
-> Počet chybových puštění       []
-> Počet manuálních zásahů       []
-> Délka implementace            []
+> Počet puštění                 [17]
+> Počet chybových puštění       [4]
+> Počet manuálních zásahů       [0]
+> Délka implementace            [35 min]
+
+Implemetováno bylo celkem 10 testů, které kompletně pokrývají každý definovaný scénář.
 
 
 ## AI - Context implementace
-> Počet puštění                 []
-> Počet chybových puštění       []
-> Počet manuálních zásahů       []
-> Délka implementace            []
+> Počet puštění                 [14]
+> Počet chybových puštění       [9]
+> Počet manuálních zásahů       [7]
+> Délka implementace            [27 min]
+
+V rámci implementace byl popužit tento prompt
+``` prompt
+Based on this use case @.github/docs/use-cases/UC-B-001-filtrace-dokumentu-tos.md 
+create new us-b-001.spec.ts playwright test file. Cover each scenario taht is 
+specified in use-case.
+
+Do not implement authentication, it will be implemented manually.
+```
+umělá inteligence nejříve začala kontrolovat use-case a na základě toho implementovala první fázy. V této jsem musel ručně nejdříve odstranit zmíňku o nastavení autentikaci, jelikož se nastavuje globálně. Dále byl problém při hledání, jelikož po zadání textu je potřeba odkliknout tlačítko v hlavní nabídce. Toto jsem doplnit do nového promptu. 
+
+``` prompt
+Good. I need you to add button click after filling seach field. 
+Button can be found by this role: 
+page.getByRole('button').nth(4).click();
+```
+
+Poté jsem musel ještě upravit parametr page, který AI nastavila špatně na null, kdežto po filtraci by měl být == 1
+
+V další iteraci jsem musel opravit název hledané polžoky, jelikož byla špatně nastavená na text smlouva - upravil jsem na "TOS-"
+Dále AI očekávala zobrazení informací o chybjících položkách, toto jsem musel také opravit
+
+Dále bylo potřeba upravit klikání na tlačítka, která neexistovala. Nakonec bylo potřeba ještě upravit poslední test, ve kterém se také validovala hláška.
+
+Po této úpravě všechny testy proběhly v pořádku. Je pozitivní že AI opět bez větších znalostí dokázala doplnit test, který s většími úpravy bylo možné zprovoznit v menším časovém rámci než u manuální implementace.
 
 
 ## AI + Context implementace
