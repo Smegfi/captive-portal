@@ -111,7 +111,34 @@ Po této úpravě všechny testy proběhly v pořádku. Je pozitivní že AI op�
 
 
 ## AI + Context implementace
-> Počet puštění                 []
-> Počet chybových puštění       []
-> Počet manuálních zásahů       []
-> Délka implementace            []
+> Počet puštění                 [1]
+> Počet chybových puštění       [0]
+> Počet manuálních zásahů       [0]
+> Délka implementace            [9 min]
+
+Pro implementaci byl použit stejný prompt jako u předešlé implementace. Jediný rozdíl bylo použití dovednost /grilling
+
+Otázka 1: How should the tests pick search terms for assertions?
+> A) Hard-code "TOS-" for the success path and a guaranteed non-match string (e.g. "zzz-no-tos-match-xyz") for AP-2 — assumes your seed/dev DB always has TOS rows with that substring.
+
+Otázka 2: How should the tests handle authentication?
+> A) Rely only on global storageState — each test starts with page.goto('/admin/tos') and no login steps in the spec (same idea as skipping auth in the ai-without-context run after manual cleanup).
+
+Otázka 3: Question 3 — Should we add a separate test for opening /admin/tos?search=… directly?
+> A) Yes — add a test like page.goto('/admin/tos?search=TOS-') and assert filtered rows, the term in the input, and search in the URL (covers the trigger explicitly).
+
+Otázka 4: How should tests submit the search after filling the input?
+> A) Always press Enter after fill() — one consistent interaction, no brittle nth() button selectors.
+
+Otázka 5: How should we verify that search resets pagination to page=1?
+> A) Dedicated pagination test — go to /admin/tos?page=2, search for TOS-, assert URL has page=1 (and search=TOS-). Repeat pattern for clear (AP-3): filter first, go to page 2 if possible, clear, assert page=1 and no search.
+
+Otázka 6: How should we assert that filtered rows actually match the search term?
+> A) Per-row check — for each visible tbody tr, assert the row text contains TOS- (case-insensitive). Simple, doesn’t pin exact column indices.
+
+Otázka 7: Should we add a dedicated test for case-insensitive matching?
+A) Yes — search for tos- (lowercase) and assert filtered rows still appear (same as TOS- success path, different casing).
+
+AI v rámci implementace také rovnou ověřila zda testy fungují a opravila sama chybu.
+
+AI Implementovala celkem 9 testů. AI obsáhla všechny scénaře definované v use-case a jedním zátahem splnila všechny požadavky.
