@@ -1,7 +1,7 @@
 import type { Extension } from 'prosekit/core'
 import { defineReactNodeView, type ReactNodeViewComponent } from 'prosekit/react'
 
-import ImageView from './image-view.tsx'
+import ImageView from './image-view'
 
 export function defineImageView(): Extension {
   return defineReactNodeView({

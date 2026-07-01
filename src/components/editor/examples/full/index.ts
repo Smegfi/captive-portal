@@ -1,2 +1,2 @@
-export { default as ExampleEditor } from './editor.tsx'
-export { renderHTML } from './html.ts'
+export { default as ExampleEditor } from '@/components/editor/examples/full/editor'
+export { renderHTML } from '@/components/editor/examples/full/html'

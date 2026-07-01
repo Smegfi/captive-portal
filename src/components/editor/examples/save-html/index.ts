@@ -1,1 +1,1 @@
-export { default as ExampleEditor } from './editor.tsx'
+export { default as ExampleEditor } from '@/components/editor/examples/save-html/editor'

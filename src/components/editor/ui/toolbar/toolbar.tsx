@@ -5,8 +5,8 @@ import type { Editor } from 'prosekit/core'
 import type { Uploader } from 'prosekit/extensions/file'
 import { useEditorDerivedValue } from 'prosekit/react'
 
-import { Button } from '../button/index.ts'
-import { ImageUploadPopover } from '../image-upload-popover/index.ts'
+import { Button } from '../button/index'
+import { ImageUploadPopover } from '../image-upload-popover/index'
 
 function getToolbarItems(editor: Editor<BasicExtension>) {
   return {

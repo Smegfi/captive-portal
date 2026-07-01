@@ -1,8 +1,8 @@
 import { createEditor, type NodeJSON } from 'prosekit/core'
 
-import { sampleContent } from '../../sample/sample-doc-full.ts'
+import { sampleContent } from '@/components/editor/sample/sample-doc-full'
 
-import { defineExtension } from './extension.ts'
+import { defineExtension } from '@/components/editor/examples/full/extension'
 
 /**
  * Renders a ProseMirror document JSON object to an HTML string.

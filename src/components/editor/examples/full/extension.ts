@@ -7,10 +7,10 @@ import { defineMath } from 'prosekit/extensions/math'
 import { defineMention } from 'prosekit/extensions/mention'
 import { definePlaceholder } from 'prosekit/extensions/placeholder'
 
-import { renderKaTeXMathBlock, renderKaTeXMathInline } from '../../sample/katex.ts'
-import { sampleUploader } from '../../sample/sample-uploader.ts'
-import { defineCodeBlockView } from '../../ui/code-block-view/index.ts'
-import { defineImageView } from '../../ui/image-view/index.ts'
+import { renderKaTeXMathBlock, renderKaTeXMathInline } from '@/components/editor/sample/katex'
+import { sampleUploader } from '@/components/editor/sample/sample-uploader'
+import { defineCodeBlockView } from '@/components/editor/ui/code-block-view/index'
+import { defineImageView } from '@/components/editor/ui/image-view/index'
 
 export function defineExtension() {
   return union(
