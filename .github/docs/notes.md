@@ -243,16 +243,66 @@ Nebylo nutné manuálního zásahu.
 
 ## Implementace
 ### Manuální
-> Počet puštění                 []
-> Počet chybových puštění       []
+> Počet puštění                 [17]
+> Počet chybových puštění       [4]
 > Počet manuálních zásahů       []
-> Délka implementace            []
+> Délka implementace            [54 min]
+
+Tak po skoro hodině jsem implementoval všechny testy. Implementace byla již náročnější kvůli složitým selectům v tabulce, aby bylo skutečně ověřeno že se uživateli zobrazuje to co je potřeba.
+
+Implementováno bylo celkem 7 testů.
 
 ### AI - Context
-> Počet puštění                 []
-> Počet chybových puštění       []
-> Počet manuálních zásahů       []
-> Délka implementace            []
+> Počet puštění                 [10]
+> Počet chybových puštění       [7]
+> Počet manuálních zásahů       [7]
+> Délka implementace            [20:17 - 22:57]
+
+Prompt byl na začátek použit:
+``` prompt
+Based on this use-case @.github/docs/use-cases/UC-C-001-vytvoreni-dokumentu-tos.md 
+implement create new uc-c-001.spec.ts playwright test file. 
+Cover each scenario specified in use-case.
+
+Do not implement authentication it is implemented in configuration 
+automatically for each test.
+```
+
+Ai začala hnedka pracovat na testech a za malou chvilku bylo ipmlementováno.
+
+Po vygenerování testů jsem musel ručně doplnit názvy testovacích souborů.
+Dále jsem musel odstranit test číslo AP-4, který byl specifikovaný v dokumentaci proto to nebudu počítat jako manuální úpravu.
+
+Byla potřeba velká úprava jelikož AI špatně ipmlemetnovala vytváření nového TOS dokumentu (mysela si že to je /tos/new)
+``` prompt
+There is nothing like TOS_NEW_URL. We only support dialog window that can be displayed after clicking button with "Přidat dokument" text. Please fix this.
+```
+
+Dále bylo potřeba trochu usměrnit AI jelikož s dobrou myšlenkou implemetovala naprosto zbytečnou zátěž. Upravil jsem tímto promptem
+``` prompt
+You are checking if "Název dokumentu" field is visible before every test. This is not necessary. Create only single test-case taht will check if Dialog is visible and if "Název dokumentu" and "Soubor" fields are visible.
+```
+
+Toto již opravilo chyby s neustálím testováním, nyní nastal ještě problém s uploadováním souboru. Toto jsem opět musel pomocí AI pomocí promptu:
+
+``` prompt
+Now about file uploading. There i button "Soubor" visible on site. I want you to implement page.waitForEvent("filechooser");. First of all test will click on button (Soubor) and then playwright will setFile.
+```
+
+Poté jsem musel ještě manuálně upravit selector pro "je aktivní"
+
+Dále bylo potřeba upravit také selector pro tlačítko.
+
+Další úpravou byla správná kontrola zobrazení TOS pomocí selectoru řádku
+
+``` prompt
+I need you to fix tests after user upload file. We need to check if new table row with text appeared (is visible). Apply getByRole("row") with filter hasText. This row is the new added document.
+```
+
+Toto následně vyřešilo všechny problémy. Testy proběhly v pořádku.
+
+Testy jsou dobře strukturované. Na můj vkus je v testech až moc abstrakce, pokud se dostanu do nějakého testovacího scénaře, chtěl bych vidět jaké jsou aktuálně kroky, na co se klikno a na co se klikat bude. Přílišná abstrakce zajistí akorát neustálé překlikávání mezi referencemi. Při programování dává abstrakce smysl, ale pokud se k testu vrátím za 3 dny už nevím co metoda submit form reálně znamená. Vyplňuje to pole? Nebo to jenom kliká na tlačítko?.
+
 
 ### AI + Context
 > Počet puštění                 []
