@@ -7,7 +7,7 @@ export const listTosSchema = z.object({
 });
 
 export const uploadTosSchema = z.object({
-   name: z.string().nonempty("Název dokumentu je povinný"),
+   name: z.string().trim().nonempty("Název dokumentu je povinný"),
    fileName: z
       .string()
       .nonempty("Název souboru je povinný")
