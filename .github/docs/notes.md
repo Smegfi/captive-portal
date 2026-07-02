@@ -305,7 +305,45 @@ Testy jsou dobře strukturované. Na můj vkus je v testech až moc abstrakce, p
 
 
 ### AI + Context
-> Počet puštění                 []
-> Počet chybových puštění       []
+> Počet puštění                 [1]
+> Počet chybových puštění       [0]
 > Počet manuálních zásahů       []
-> Délka implementace            []
+> Délka implementace            [23:05 - 23:17]
+
+Pro první implemetaci byl použit stejný prompt akorát opět s použitím dovednost /grilling.
+
+```prompt
+Based on this use-case @.github/docs/use-cases/ai-with-context/uc-c-001.md
+implement create new uc-c-001.spec.ts (inside @tests/ai-with-context/)playwright test file. 
+Cover each scenario specified in use-case.
+
+/grilling 
+```
+
+Ai opět začala načítáním struktury, zkontrolovala doménové definice TOS dokumentu a začala dotazování - tentokrát zase v angličitně :D
+
+``` markdown
+# Question 1 — Test data isolation
+> A — unique names, no cleanup. It matches how your other ai-with-context tests work (they assume a running app + DB, not a pristine fixture), keeps each test self-contained, and avoids cleanup plumbing. The notes also favor explicit, readable steps over heavy helpers; unique names fit that style.
+
+# Question 2 — AP-4 and AP-5 (failure scenarios hard to trigger in E2E)
+> B — test AP-4 with an invalid file (you already have test.pdf in tests/ai-with-context/; uploading it as .docx or using a truncated file should hit Mammoth or extension validation). Skip AP-5 in E2E: simulating disk/DB failure from the browser is brittle and doesn't belong in this layer.
+
+# Question 3 — AP-3 (duplicitní název)
+> B — skip AP-3 for now with a short comment referencing the use case. The E2E test should reflect current behavior; adding a failing test for unimplemented logic creates noise. You can add AP-3 when uniqueness is implemented in create.ts.
+
+# Question 4 — AP-7 (nepřihlášený / neoprávněný uživatel)
+> Skip AP-7 — auth is already covered in uc-a-001; TOS upload auth is redundant
+
+# Question 5 — Success path: JeAktivní (setActive)
+>  B — two focused success tests. They map directly to the use case criteria without extra coupling to whatever happens to be active in the DB. Option C is fragile (depends on seeded state) and goes beyond what the other ai-with-context specs assert.
+
+# Question 6 — File upload interaction
+> B — waitForEvent('filechooser') + click on the file input, then setFiles. It matches what worked in your manual run and exercises the same path a user takes.
+```
+
+Opět se ukazuje že dotazování je důležitou součástí kvalitních testů, jelikož se jedná o naprosto relevatní otázky, na které by se ptal i programátor.
+
+AI okamžitě po dotvoření testu začala sama od sebe testovat a opravovala i chyby, které u testu našla.
+
+Všechny testy funguji napoprvé a není jim co vytknout. Zde AI nevyužívala tolik abstrakce jako u předešlé varianty a testy jsou čitelnější. Naprosto fámozní.
