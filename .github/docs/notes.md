@@ -1,7 +1,6 @@
 # Poznámky k testování UC-B-001
-
-# Tvoření dokumentace
-## Manuální implementace
+## Tvoření dokumentace
+### Manuální implementace
 > Počet puštění                 []
 > Počet chybových puštění       []
 > Počet manuálních zásahů       [1]
@@ -10,7 +9,7 @@
 Do implementace jsem v druhé iteraci musel doplnit ještě funkci odstranění hledání na kterou jsem při první imlementaci zapomněl.
 
 
-## AI - Context implementace
+### AI - Context implementace
 > Počet puštění                 []
 > Počet chybových puštění       []
 > Počet manuálních zásahů       [3]
@@ -41,7 +40,7 @@ One more thing. There is also pagination function and when user fills out filtra
 Následně již implementace proběhla v pořádku a všechny funkcionality byly doplněné.
 
 
-## AI + Context implementace
+### AI + Context implementace
 > Počet puštění                 []
 > Počet chybových puštění       []
 > Počet manuálních zásahů       [0]
@@ -67,9 +66,9 @@ Use-case je kompletní na první dobrou není potřeba žádný zásah.
 
 ---
 
-# Implementace testu
+## Implementace testu
 
-## Manuální implementace
+### Manuální implementace
 > Počet puštění                 [17]
 > Počet chybových puštění       [4]
 > Počet manuálních zásahů       [0]
@@ -78,7 +77,7 @@ Use-case je kompletní na první dobrou není potřeba žádný zásah.
 Implemetováno bylo celkem 10 testů, které kompletně pokrývají každý definovaný scénář.
 
 
-## AI - Context implementace
+### AI - Context implementace
 > Počet puštění                 [14]
 > Počet chybových puštění       [9]
 > Počet manuálních zásahů       [7]
@@ -110,7 +109,7 @@ Dále bylo potřeba upravit klikání na tlačítka, která neexistovala. Nakone
 Po této úpravě všechny testy proběhly v pořádku. Je pozitivní že AI opět bez větších znalostí dokázala doplnit test, který s většími úpravy bylo možné zprovoznit v menším časovém rámci než u manuální implementace.
 
 
-## AI + Context implementace
+### AI + Context implementace
 > Počet puštění                 [1]
 > Počet chybových puštění       [0]
 > Počet manuálních zásahů       [0]
@@ -142,3 +141,121 @@ A) Yes — search for tos- (lowercase) and assert filtered rows still appear (sa
 AI v rámci implementace také rovnou ověřila zda testy fungují a opravila sama chybu.
 
 AI Implementovala celkem 9 testů. AI obsáhla všechny scénaře definované v use-case a jedním zátahem splnila všechny požadavky.
+
+# Poznámky k testování UC-C-001
+
+## Dokumentace
+### Manuální
+> Počet puštění                 []
+> Počet chybových puštění       []
+> Počet manuálních zásahů       [0]
+> Délka implementace            [23 min]
+
+Imlementace dokumentu byla jednoduchá. Cílem celého use-case je umožnit administrátorovi nahrát 
+dokument a provést jeho konverzi. Zde bude obtížné implementovat správně nahrávání souboru a jeho následná validace.
+
+### AI - Context
+> Počet puštění                 []
+> Počet chybových puštění       []
+> Počet manuálních zásahů       [3]
+> Délka implementace            [16 min]
+
+V rámci implementace AI bez kontextu očekávám hodně úprav, jelikož se jedná o dosti specifický use-case, kdy je potřeba nejdříve dokument nahrát až poté je umožněna jedno další úprava.
+
+Pro první implementaci byl použit tento prompt
+``` prompt
+Based on this use-case template @template.md create new usecase. This use-case will have ID: UC-C-001. This new use-case will be about creating new entity. This entity will have Název, Soubor (attachement) and JeAktivní properties. When user uploads new file we should convert it into html text.
+
+Use best practises when crafting this use-case.
+```
+V promptu jsem se snažil specifikovat pro AI dostatek informací aby měla alespoň malé povědomí. Při prvvní implementaci mě překvapilo že AI správně rozpoznala TOS a jednotlivé stránky, poté při kontrole jsem přišel na to že si tyto informace zjistila z historie konverzace, kde načetla informace z předešlých dokumentů.
+
+První chyba se objevila v možnosti nahravaných dokuemntů, kde ai napsala i pdf přílohy, toto jsem upravil.
+V druhé opravě jsem musel opravit zmíňku o auditním záznamu, toto nepodporujeme
+Dále jsem musel odstranit zmíňku o velikosti soboru, byť se jendá o dobrou pripomínku v našem systému nemáme toto omezení.
+
+Na konci mě překvapily poslední 2 rádky, kdy AI napsala 2 otevřené otázky, které by bylo dobré zodpovědět:
+``` markdown
+- Otevřená otázka: má administrátor vidět náhled vygenerovaného HTML obsahu před finálním uložením?
+- Otevřená otázka: má být po úspěšném vytvoření přesměrování na seznam, nebo na detail nového dokumentu?
+```
+
+V agentním režimu by se na tyto otázky AI sama zeptala, ale je hezké že to zde alespoň uživateli zobrazí.
+Use case je jinak velmi kvalitní až na pár drobných odchylek. AI pokryla všechny scénaře a také přidala alternativní scénaře, které jsou určitě velmi vhodné:
+AP-5 Duplnicitní název - velmi dobrá připomínka
+AP-7 Zrušení akce - také velmi dobrý alternativní scénař
+
+### AI + Context
+> Počet puštění                 []
+> Počet chybových puštění       []
+> Počet manuálních zásahů       [0]
+> Délka implementace            [12 min]
+
+Pro implementaci v rámci AI + Context použiju stejný prompt jako u předešlé implementace ovšem s opět doplněnou dovedností /griling.
+
+``` prompt
+Based on this use-case template @.github/docs/use-cases/template.md create new usecase. This use-case will have ID: UC-C-001 (stored inside @.github/docs/use-cases/ai-with-context/. This new use-case will be about creating new entity. This entity will have Název, Soubor (attachement) and JeAktivní properties. When user uploads new file we should convert it into html text.
+
+Use best practises when crafting this use-case.
+
+/grilling 
+```
+
+AI nejdříve začala implementaci standartně prohlížením souborů v adresáři.
+
+Otázky:
+``` markdown
+# Otázka 1: O jakou entitu přesně jde?
+> Vázat use-case na TOS dokument.
+
+# Otázka 2: Co přesně znamená pole JeAktivní?
+> Zachovat stávající chování s checkboxem „Aktivovat ihned po nahrání“ a plnou aktivací v transakci. Odpovídá to implementaci i obchodnímu významu TOS — aktivní dokument je ten, který hosté vidí na portálu. Vedlejší efekty aktivace patří do obchodních pravidel use-case.
+
+# Otázka 3: Jaké formáty souboru jsou povolené?
+> Povolit jen .docx. Implementace to tak má (accept=".docx", validace v uploadTosSchema a create.ts), konverze do HTML probíhá přes Mammoth, které pracuje s DOCX. PDF ani jiné formáty nejsou v systému podporované — zahrnutí PDF do use-case by bylo chybné (to byla jedna z chyb z první AI implementace v poznámkách).
+
+# Otázka 4: Má administrátor vidět náhled vygenerovaného HTML před finálním uložením?
+> Uložit rovnou bez náhledu v rámci UC-C-001. Aktuální flow (upload-tos.tsx) funguje tak, že po odeslání formuláře systém konvertuje, uloží a zavře dialog. Úprava HTML je samostatná operace přes TosEditor u neaktivních dokumentů. Náhled před uložením by rozšířil rozsah use-case o nové UI a kroky, které v systému nejsou.
+
+# Otázka 5: Kam má systém přesměrovat administrátora po úspěšném vytvoření?
+> Zůstat na seznamu a zavřít dialog. To odpovídá stávající implementaci (onSuccess v upload-tos.tsx volá setIsOpen(false) a revalidatePath("/admin/tos")). Uživatel hned vidí nový řádek v tabulce. Samostatná detail stránka pro TOS v projektu neexistuje.
+
+# Otázka 6: Musí být Název TOS dokumentu unikátní?
+> Duplicity nejsou povolené.
+
+# Otázka 7: Kdo smí vytvořit nový TOS dokument?
+> Pouze administrátor.
+
+# Otázka 8: Co se stane, když konverze DOCX → HTML selže?
+> Zcela zrušit operaci. V create.ts konverze probíhá před zápisem do DB; při chybě se vyhodí výjimka, transakce se neprovede a administrátor vidí chybovou hlášku v dialogu. Žádný částečný stav.
+
+# Otázka 9: Jaká je priorita tohoto use-case?
+> Vysoká
+```
+
+Zvláštní je že se AI najendou rozhodla pokládat otázky v češtině i když až do této doby jsem komunikoval vždy v češtině. (Při aktualizaci systému se upravil můj primární jazyk na ČJ AI toto zaznamenala.)
+
+Vytvoření dokumentace proběhlo naprosto v pořádku. use-case obsahuej všechyn potřebané informace a obsáhl všechny alternativní cesty. Opět zafungovala dovednost grilling, která naprosto precizne provedla dotazování na důležité otázky.
+
+Nebylo nutné manuálního zásahu.
+
+--- 
+
+## Implementace
+### Manuální
+> Počet puštění                 []
+> Počet chybových puštění       []
+> Počet manuálních zásahů       []
+> Délka implementace            []
+
+### AI - Context
+> Počet puštění                 []
+> Počet chybových puštění       []
+> Počet manuálních zásahů       []
+> Délka implementace            []
+
+### AI + Context
+> Počet puštění                 []
+> Počet chybových puštění       []
+> Počet manuálních zásahů       []
+> Délka implementace            []
