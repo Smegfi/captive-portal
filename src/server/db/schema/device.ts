@@ -1,0 +1,18 @@
+import { DeviceSchema } from "@/server/actions-scheme/guest-user/schema";
+import { connection } from "@/server/db/schema/connection";
+import { guestUser } from "@/server/db/schema/guest-user";
+import { relations } from "drizzle-orm";
+import { integer, jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+
+export const device = pgTable("device", {
+   id: serial("id").primaryKey(),
+   userId: integer("user_id").references(() => guestUser.id),
+   macAddress: text("mac_address").notNull(),
+   device: jsonb("device").$type<DeviceSchema>().notNull(),
+   firstSeenAt: timestamp("first_seen", { withTimezone: true }).notNull(),
+});
+
+export const deviceRelations = relations(device, ({ one, many }) => ({
+   guestUser: one(guestUser, { fields: [device.userId], references: [guestUser.id] }),
+   connections: many(connection),
+}));
