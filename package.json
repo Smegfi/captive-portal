@@ -74,7 +74,7 @@
     "next": "^16.2.9",
     "next-safe-action": "^8.0.12",
     "next-themes": "^0.4.6",
-    "nodemailer": "^9.0.5",
+    "nodemailer": "^9.1.1",
     "pg": "^8.18.0",
     "postgres": "^3.4.8",
     "prosekit": "^0.21.4",
