@@ -32,7 +32,6 @@ export function RegisterForm() {
             email: data.email,
             password: data.password,
             name: data.name,
-            role: "user",
          },
          {
             onRequest: () => {

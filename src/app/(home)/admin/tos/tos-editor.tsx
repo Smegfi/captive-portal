@@ -5,22 +5,15 @@ import "prosekit/basic/typography.css";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { defineTosExtension, type TosExtension } from "@/components/tos/tos-extension";
 import { cn } from "@/lib/utils";
 import { updateTosHtml } from "@/server/repositories/tos/update-html";
-import { defineBasicExtension } from "prosekit/basic";
-import { createEditor, union, type Editor } from "prosekit/core";
-import { defineTextAlign } from "prosekit/extensions/text-align";
+import { createEditor, type Editor } from "prosekit/core";
 import { ProseKit, useEditor, useEditorDerivedValue } from "prosekit/react";
 import { AlignCenter, AlignLeft, AlignRight, Bold, FilePenLine, Italic, List, ListOrdered, Loader2, Save } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-
-function defineTosExtension() {
-   return union(defineBasicExtension(), defineTextAlign({ types: ["paragraph", "heading"] }));
-}
-
-type TosExtension = ReturnType<typeof defineTosExtension>;
 
 function getToolbarState(editor: Editor<TosExtension>) {
    const align = (editor.state.selection.$from.parent.attrs.textAlign as string | null) ?? "left";
