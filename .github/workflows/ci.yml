@@ -18,8 +18,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Next.js collects page data at build time and imports modules that read these.
+      # Dummy values are enough; nothing connects to a real DB during build.
       - name: Build
+        env:
+          DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci
+          BETTER_AUTH_SECRET: ci-build-secret
+          BETTER_AUTH_URL: http://localhost:3000
         run: npm run build
 
       - name: Docker build
-        run: docker build -t captive-portal:pr-${{ github.event.pull_request.number }} .
+        run: >
+          docker build
+          -t captive-portal:pr-${{ github.event.pull_request.number }}
+          --build-arg DATABASE_URL=postgresql://ci:ci@127.0.0.1:5432/ci
+          --build-arg BETTER_AUTH_SECRET=ci-build-secret
+          --build-arg BETTER_AUTH_URL=http://localhost:3000
+          .
