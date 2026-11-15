@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -100,7 +100,12 @@ export default function SmtpSettings({ smtpConfiguration }: SmtpSettingsProps) {
                      render={({ field, fieldState }) => (
                         <Field orientation="horizontal" data-invalid={fieldState.invalid}>
                            <Checkbox id={field.name} checked={field.value} onCheckedChange={field.onChange} />
-                           <FieldLabel htmlFor={field.name}>SSL/TLS zabezpečení</FieldLabel>
+                           <div className="flex flex-col gap-1">
+                              <FieldLabel htmlFor={field.name}>SSL/TLS zabezpečení</FieldLabel>
+                              <FieldDescription>
+                                 Na portu 587 se šifruje přes STARTTLS. Přímé TLS se použije na portu 465.
+                              </FieldDescription>
+                           </div>
                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
                      )}

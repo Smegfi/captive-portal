@@ -11,10 +11,16 @@ import { sendTestEmailSchema } from "@/server/repositories/email/schema";
  * Odeslání testovacího emailu (SMTP).
  */
 export const sendTestEmail = actionClient.inputSchema(sendTestEmailSchema).action(async ({ parsedInput: { email } }) => {
-   const smtpConfiguration = getStoredSmtpConfiguration();
-   const emailService = new EmailService(smtpConfiguration);
-   const htmlTemplate = readFileSync(path.join(process.cwd(), "src", "server", "email-templates", "test-email.html"), "utf8");
-   let html = htmlTemplate.replace("{{APP_URL_ADMIN}}", (process.env.BETTER_AUTH_URL || "https://localhost:3000") + "/admin/settings");
-   html = html.replace("{{YEAR}}", new Date().getFullYear().toString());
-   await emailService.sendEmail(email, "Captive portál - Praha 10", html);
+   try {
+      const smtpConfiguration = getStoredSmtpConfiguration();
+      const emailService = new EmailService(smtpConfiguration);
+      const htmlTemplate = readFileSync(path.join(process.cwd(), "src", "server", "email-templates", "test-email.html"), "utf8");
+      let html = htmlTemplate.replace("{{APP_URL_ADMIN}}", (process.env.BETTER_AUTH_URL || "https://localhost:3000") + "/admin/settings");
+      html = html.replace("{{YEAR}}", new Date().getFullYear().toString());
+      await emailService.sendEmail(email, "Captive portál - Praha 10", html);
+      return { ok: true as const };
+   } catch (error) {
+      console.error(`[test-email] Failed to send test email to ${email}`, error);
+      return { ok: false as const };
+   }
 });

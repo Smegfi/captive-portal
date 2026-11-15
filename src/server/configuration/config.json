@@ -2,12 +2,12 @@
   "smtp": {
     "host": "smtp.gmail.com",
     "port": 587,
-    "secure": false,
-    "from": "test@email.com",
-    "anonymousAuth": true,
+    "secure": true,
+    "from": "fila.smehyl@gmail.com",
+    "anonymousAuth": false,
     "auth": {
-      "user": "",
-      "pass": ""
+      "user": "fila.smehyl@gmail.com",
+      "pass": "sptb zdri wwcn yobk"
     }
   }
 }
