@@ -40,28 +40,15 @@ export type smtpConfigurationSchemaType = z.infer<typeof smtpConfigurationSchema
 
 export const DEFAULT_WELCOME_EMAIL_SUBJECT = "Dokončení registrace do odběru novinek MČ Praha 10";
 
-export const DEFAULT_WELCOME_EMAIL_BODY_TEMPLATE = `Dobrý den,
-
-děkujeme, že jste při připojení k bezplatné Wi-Fi síti MČ Praha 10 zvolil(a) možnost dostávat informace o novinkách a akcích Městské části Praha 10 e-mailem.
-
-Aby bylo možné odběr novinek dokončit, je nutné provést registraci v systému MUNIPOLIS na následujícím odkazu:
-https://praha10.munipolis.cz/registrace
-
-Pokud registraci nedokončíte, k odběru novinek Vás nepřihlásíme a žádné další informace Vám v této souvislosti zasílány nebudou.
-
-Tento e-mail Vám byl zaslán jednorázově na základě Vaší volby provedené v captive portálu při připojení k Wi-Fi síti MČ Praha 10. Další e-mail z tohoto procesu již zaslán nebude.
-
-Pokud jste o odběr novinek nežádal(a), považujte prosím tento e-mail za bezpředmětný a dále jej ignorujte.
-
-Více informací o podmínkách využívání Wi-Fi a zpracování osobních údajů naleznete zde:
-[ODKAZ_NA_PODMINKY_A_OCHRANU_OSOBNICH_UDAJU]
-
-V případě dotazů nás můžete kontaktovat na:
-[KONTAKTNI_EMAIL]
-
-S pozdravem,
-Úřad městské části Praha 10
-www.praha10.cz`;
+export const DEFAULT_WELCOME_EMAIL_BODY_TEMPLATE = `<p>Dobrý den,</p>
+<p>děkujeme, že jste při připojení k bezplatné Wi-Fi síti MČ Praha 10 zvolil(a) možnost dostávat informace o novinkách a akcích Městské části Praha 10 e-mailem.</p>
+<p>Aby bylo možné odběr novinek dokončit, je nutné provést registraci v systému MUNIPOLIS na následujícím odkazu:<br>https://praha10.munipolis.cz/registrace</p>
+<p>Pokud registraci nedokončíte, k odběru novinek Vás nepřihlásíme a žádné další informace Vám v této souvislosti zasílány nebudou.</p>
+<p>Tento e-mail Vám byl zaslán jednorázově na základě Vaší volby provedené v captive portálu při připojení k Wi-Fi síti MČ Praha 10. Další e-mail z tohoto procesu již zaslán nebude.</p>
+<p>Pokud jste o odběr novinek nežádal(a), považujte prosím tento e-mail za bezpředmětný a dále jej ignorujte.</p>
+<p>Více informací o podmínkách využívání Wi-Fi a zpracování osobních údajů naleznete zde:<br>[ODKAZ_NA_PODMINKY_A_OCHRANU_OSOBNICH_UDAJU]</p>
+<p>V případě dotazů nás můžete kontaktovat na:<br>[KONTAKTNI_EMAIL]</p>
+<p>S pozdravem,<br>Úřad městské části Praha 10<br>www.praha10.cz</p>`;
 
 export const welcomeEmailConfigurationSchema = z.object({
    subject: z.string().min(1, { message: "Předmět je povinný" }),

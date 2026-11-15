@@ -1,11 +1,12 @@
 "use client";
 
+import { HtmlRichTextEditor } from "@/components/editor/html-rich-text-editor";
 import { SendButton } from "@/components/send-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { toRichTextHtml } from "@/lib/html-content";
 import { updateWelcomeEmailConfiguration } from "@/server/repositories/configuration/update";
 import { welcomeEmailConfigurationSchema, WelcomeEmailConfigurationSchemaType } from "@/server/repositories/configuration/schema";
 import { sendWelcomeEmail } from "@/server/repositories/email/send-welcome";
@@ -13,6 +14,7 @@ import { sendWelcomeEmailSchema, sendWelcomeEmailSchemaType } from "@/server/rep
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Save } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
+import { useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -36,7 +38,7 @@ export default function WelcomeEmailSettings({ welcomeEmailConfiguration }: Welc
       resolver: zodResolver(welcomeEmailConfigurationSchema),
       defaultValues: {
          subject: welcomeEmailConfiguration.subject,
-         bodyTemplate: welcomeEmailConfiguration.bodyTemplate,
+         bodyTemplate: toRichTextHtml(welcomeEmailConfiguration.bodyTemplate),
       },
    });
 
@@ -46,6 +48,13 @@ export default function WelcomeEmailSettings({ welcomeEmailConfiguration }: Welc
          email: "",
       },
    });
+
+   const handleBodyChange = useCallback(
+      (html: string) => {
+         form.setValue("bodyTemplate", html, { shouldDirty: true, shouldValidate: true });
+      },
+      [form]
+   );
 
    function onSubmit(data: WelcomeEmailConfigurationSchemaType) {
       execute(data);
@@ -79,7 +88,8 @@ export default function WelcomeEmailSettings({ welcomeEmailConfiguration }: Welc
             <CardTitle>Uvítací email</CardTitle>
             <CardDescription>
                Nastavení předmětu a obsahu uvítacího emailu pro nové guest uživatele s marketingovým souhlasem. Podporované placeholdery:
-               `[ODKAZ_NA_PODMINKY_A_OCHRANU_OSOBNICH_UDAJU]` a `[KONTAKTNI_EMAIL]`.
+               `[ODKAZ_NA_PODMINKY_A_OCHRANU_OSOBNICH_UDAJU]` a `[KONTAKTNI_EMAIL]`. Text můžete formátovat pomocí editoru (tučné, kurzíva, zarovnání,
+               seznamy).
             </CardDescription>
          </CardHeader>
          <CardContent>
@@ -102,14 +112,14 @@ export default function WelcomeEmailSettings({ welcomeEmailConfiguration }: Welc
                      control={form.control}
                      render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                           <FieldLabel htmlFor={field.name}>Text emailu</FieldLabel>
-                           <textarea
-                              {...field}
-                              id={field.name}
-                              rows={16}
-                              className={cn(
-                                 "border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 w-full rounded-md border bg-transparent px-3 py-2 text-sm outline-none focus-visible:ring-[3px]"
-                              )}
+                           <FieldLabel htmlFor="welcome-email-body">Text emailu</FieldLabel>
+                           <HtmlRichTextEditor
+                              id="welcome-email-body"
+                              defaultContent={field.value}
+                              onChange={handleBodyChange}
+                              className="max-h-[28rem]"
+                              contentClassName="min-h-64"
+                              aria-label="Text uvítacího emailu"
                            />
                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
