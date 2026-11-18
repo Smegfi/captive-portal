@@ -9,7 +9,7 @@ import { Wifi, WifiOff } from "lucide-react";
 export default async function Page() {
    await requireAdminRole();
 
-   const networks = await listNetwork();
+   const networks = await listNetwork(undefined);
 
    if (networks.serverError) {
       return <div>Error: {networks.serverError.message}</div>;

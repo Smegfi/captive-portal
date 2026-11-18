@@ -32,7 +32,7 @@ export default function UploadTos() {
       },
       onError: (error) => {
          setUploadStatus("Nahrávání selhalo");
-         setError(error.error?.validationErrors?._errors?.join(", ") ?? "Chyba při nahrávání dokumentu");
+         setError(error.error?.validationErrors?.formErrors.join(", ") || "Chyba při nahrávání dokumentu");
       },
    });
 

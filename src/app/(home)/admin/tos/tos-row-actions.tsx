@@ -36,7 +36,7 @@ export default function TosRowActions({ tosId, name, isImmutable, htmlContent }:
 
    const cloneAction = useAction(cloneTos, {
       onSuccess: () => toast.success("Kopie dokumentu byla vytvořena"),
-      onError: (error) => toast.error(error.error?.validationErrors?._errors?.join(", ") ?? "Kopii se nepodařilo vytvořit"),
+      onError: (error) => toast.error(error.error?.validationErrors?.formErrors.join(", ") || "Kopii se nepodařilo vytvořit"),
    });
 
    const renameAction = useAction(renameTos, {
@@ -44,12 +44,12 @@ export default function TosRowActions({ tosId, name, isImmutable, htmlContent }:
          toast.success("Dokument byl přejmenován");
          setIsRenameOpen(false);
       },
-      onError: (error) => toast.error(error.error?.validationErrors?._errors?.join(", ") ?? "Dokument se nepodařilo přejmenovat"),
+      onError: (error) => toast.error(error.error?.validationErrors?.formErrors.join(", ") || "Dokument se nepodařilo přejmenovat"),
    });
 
    const deleteAction = useAction(deleteTos, {
       onSuccess: () => toast.success("Dokument byl odstraněn"),
-      onError: (error) => toast.error(error.error?.validationErrors?._errors?.join(", ") ?? "Dokument se nepodařilo odstranit"),
+      onError: (error) => toast.error(error.error?.validationErrors?.formErrors.join(", ") || "Dokument se nepodařilo odstranit"),
    });
 
    return (

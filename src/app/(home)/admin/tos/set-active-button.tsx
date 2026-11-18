@@ -27,7 +27,8 @@ interface SetActiveTosButtonProps {
 export default function SetActiveTosButton({ tosId, isActive, isImmutable, nextVersionLabel }: SetActiveTosButtonProps) {
    const { execute, isExecuting } = useAction(setActiveTos, {
       onSuccess: () => toast.success("Dokument byl aktivován"),
-      onError: (error) => toast.error(error.error?.validationErrors?._errors?.join(", ") ?? error.error?.serverError?.message ?? "Dokument se nepodařilo aktivovat"),
+      onError: (error) =>
+         toast.error(error.error?.validationErrors?.formErrors.join(", ") || error.error?.serverError?.message || "Dokument se nepodařilo aktivovat"),
    });
 
    // Aktivní dokument, nebo již dříve aktivovaný (a tedy neměnný) archivní dokument

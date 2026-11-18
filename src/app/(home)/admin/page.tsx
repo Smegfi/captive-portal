@@ -5,7 +5,7 @@ import { getDashboardStats } from "@/server/repositories/dashboard-stats/get";
 
 export default async function Page() {
    await requirePortalRole();
-   const stats = await getDashboardStats();
+   const stats = await getDashboardStats(undefined);
 
    if (stats.serverError) {
       return <div>Chyba: {stats.serverError.message}</div>;

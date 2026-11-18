@@ -47,7 +47,7 @@ export default function UpdateNetwork({ id }: UpdateNetworkProps) {
          setIsOpen(false);
       },
       onError: (error) => {
-         setError(error.error.validationErrors?._errors?.join(", ") ?? null);
+         setError(error.error.validationErrors?.formErrors.join(", ") || null);
       },
    });
 

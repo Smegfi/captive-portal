@@ -29,7 +29,7 @@ function TosEditorForm({ tosId, htmlContent, onSaved }: TosEditorFormProps) {
          toast.success("Obsah byl uložen");
          onSaved();
       },
-      onError: (error) => toast.error(error.error?.validationErrors?._errors?.join(", ") ?? "Obsah se nepodařilo uložit"),
+      onError: (error) => toast.error(error.error?.validationErrors?.formErrors.join(", ") || "Obsah se nepodařilo uložit"),
    });
 
    function handleSave() {

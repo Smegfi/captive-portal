@@ -11,10 +11,10 @@ import { listAppUser } from "@/server/repositories/app-user/list";
 export default async function SettingsPage() {
    const session = await requireAdminRole();
 
-   const smtpConfiguration = await getSmtpConfiguration();
-   const welcomeEmailConfiguration = await getWelcomeEmailConfiguration();
-   const guestUserCleanupConfig = await getGuestUserCleanupConfig();
-   const usersResult = await listAppUser();
+   const smtpConfiguration = await getSmtpConfiguration(undefined);
+   const welcomeEmailConfiguration = await getWelcomeEmailConfiguration(undefined);
+   const guestUserCleanupConfig = await getGuestUserCleanupConfig(undefined);
+   const usersResult = await listAppUser(undefined);
 
    if (smtpConfiguration.serverError) {
       return <div>Error: {smtpConfiguration.serverError.message}</div>;
@@ -44,7 +44,15 @@ export default async function SettingsPage() {
          {usersResult.serverError ? (
             <div className="text-red-500">{usersResult.serverError.message}</div>
          ) : (
-            <AccountManagement users={usersResult.data ?? []} currentUserId={session.user.id} />
+            <AccountManagement
+               users={(usersResult.data ?? []).map((user) => ({
+                  id: user.id,
+                  name: user.name,
+                  email: user.email ?? "",
+                  role: user.role,
+               }))}
+               currentUserId={session.user.id}
+            />
          )}
       </div>
    );
