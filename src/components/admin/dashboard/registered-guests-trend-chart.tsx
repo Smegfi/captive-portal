@@ -1,7 +1,8 @@
 "use client";
 
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { format, parseISO } from "date-fns";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { ChartArea } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 type TrendPoint = {
@@ -12,22 +13,46 @@ type TrendPoint = {
 const chartConfig = {
    registeredGuests: {
       label: "Registrovaní hosté",
-      color: "hsl(var(--primary))",
+      color: "var(--chart-1)",
    },
 } satisfies ChartConfig;
 
+function formatDayLabel(dateKey: string): string {
+   const [, month, day] = dateKey.split("-");
+   if (!month || !day) {
+      return dateKey;
+   }
+
+   return `${day}.${month}`;
+}
+
 interface RegisteredGuestsTrendChartProps {
-   data: TrendPoint[];
+   data?: TrendPoint[];
 }
 
 export default function RegisteredGuestsTrendChart({ data }: RegisteredGuestsTrendChartProps) {
-   const chartData = data.map((point) => ({
+
+   if (!data) {
+      return (
+         <Empty>
+            <EmptyHeader>
+               <EmptyMedia variant="icon">
+                  <ChartArea />
+               </EmptyMedia>
+               <EmptyTitle>Žádná data</EmptyTitle>
+               <EmptyDescription>Žádná data nebyla nalezena</EmptyDescription>
+            </EmptyHeader>
+         </Empty>
+      );
+   }
+
+   const chartData = data?.map((point) => ({
       ...point,
-      dateLabel: format(parseISO(point.date), "dd.MM"),
-   }));
+      dateLabel: formatDayLabel(point.date),
+   })) || [];
 
    return (
-      <ChartContainer config={chartConfig} className="h-[280px] w-full">
+      <ChartContainer config={chartConfig} className="aspect-auto h-[280px] w-full">
          <LineChart data={chartData} margin={{ left: 12, right: 12, top: 8, bottom: 8 }}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="dateLabel" tickLine={false} axisLine={false} tickMargin={8} minTickGap={20} />
@@ -38,8 +63,8 @@ export default function RegisteredGuestsTrendChart({ data }: RegisteredGuestsTre
                type="monotone"
                stroke="var(--color-registeredGuests)"
                strokeWidth={2}
-               dot={false}
-               activeDot={{ r: 4 }}
+               dot={{ r: 3, fill: "var(--color-registeredGuests)" }}
+               activeDot={{ r: 5 }}
             />
          </LineChart>
       </ChartContainer>

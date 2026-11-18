@@ -7,15 +7,18 @@ export default async function Page() {
    await requirePortalRole();
    const stats = await getDashboardStats(undefined);
 
-   if (stats.serverError) {
-      return <div>Chyba: {stats.serverError.message}</div>;
+   if (stats.serverError || !stats.data) {
+      const message = stats.serverError && typeof stats.serverError === "object" && "message" in stats.serverError ? stats.serverError.message : "Nepodařilo se načíst statistiky přehledu.";
+
+      return (
+         <div className="space-y-4">
+            <h1 className="text-3xl font-bold">Přehled</h1>
+            <p className="text-red-500">{message}</p>
+         </div>
+      );
    }
 
    const data = stats.data;
-
-   if (!data) {
-      return <div>Chyba: Nepodařilo se načíst statistiky přehledu.</div>;
-   }
 
    return (
       <div className="space-y-4">
@@ -54,7 +57,7 @@ export default async function Page() {
          </div>
 
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Card className="lg:col-span-2">
+            <Card className="min-w-0 lg:col-span-2">
                <CardHeader>
                   <CardTitle>Historické srovnání</CardTitle>
                   <CardDescription>Denní registrace / připojení hostů (posledních 30 dní)</CardDescription>

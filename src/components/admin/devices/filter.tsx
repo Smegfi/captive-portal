@@ -57,7 +57,7 @@ export default function Filter() {
             disabled={isLoading}
          />
          {searchValue && (
-            <Button className="rounded-l-none rounded-r-none" variant="outline" onClick={handleReset} disabled={isLoading}>
+            <Button className="rounded-l-none rounded-r-none" variant="outline" aria-label="Odebrat filtr" onClick={handleReset} disabled={isLoading}>
                <X />
             </Button>
          )}

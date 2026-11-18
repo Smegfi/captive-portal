@@ -33,7 +33,7 @@ export default function UsersExportButton({ searchParams }: UsersExportButtonPro
 
    return (
       <Button asChild>
-         <Link href={exportHref}>
+         <Link href={exportHref} target="_blank">
             <FileDown />
             <span>Exportovat</span>
          </Link>

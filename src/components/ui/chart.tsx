@@ -56,7 +56,9 @@ function ChartContainer({
             {...props}
          >
             <ChartStyle id={chartId} config={config} />
-            <RechartsPrimitive.ResponsiveContainer>{children}</RechartsPrimitive.ResponsiveContainer>
+            <RechartsPrimitive.ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 640, height: 280 }}>
+               {children}
+            </RechartsPrimitive.ResponsiveContainer>
          </div>
       </ChartContext.Provider>
    );
@@ -192,7 +194,9 @@ function ChartTooltipContent({
                                  {nestLabel ? tooltipLabel : null}
                                  <span className="text-muted-foreground">{itemConfig?.label || item.name}</span>
                               </div>
-                              {item.value && <span className="text-foreground font-mono font-medium tabular-nums">{item.value.toLocaleString()}</span>}
+                              {item.value != null && item.value !== "" && (
+                                 <span className="text-foreground font-mono font-medium tabular-nums">{item.value.toLocaleString()}</span>
+                              )}
                            </div>
                         </>
                      )}

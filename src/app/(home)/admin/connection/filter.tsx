@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronDownIcon, FilterIcon } from "lucide-react";
+import { ChevronDownIcon, FilterIcon, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -76,6 +76,25 @@ export default function ConnectionFilterDialog() {
       }
 
       params.set("page", "1");
+      router.push(`${pathname}?${params.toString()}`);
+      setIsOpen(false);
+   }
+
+   function handleClearFilters() {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("mac");
+      params.delete("network");
+      params.delete("user");
+      params.delete("updatedFrom");
+      params.delete("updatedTo");
+      params.set("page", "1");
+      form.reset({
+         mac: "",
+         network: "",
+         user: "",
+         updatedFrom: undefined,
+         updatedTo: undefined,
+      });
       router.push(`${pathname}?${params.toString()}`);
       setIsOpen(false);
    }
@@ -155,21 +174,34 @@ export default function ConnectionFilterDialog() {
                         <FormItem>
                            <FormLabel>Upraveno od</FormLabel>
                            <FormControl>
-                              <Popover>
-                                 <PopoverTrigger asChild>
-                                    <Button
-                                       variant="outline"
-                                       data-empty={!field.value}
-                                       className="justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
-                                    >
-                                       {field.value ? format(field.value, "dd.MM.yyyy") : <span>Zvolte datum</span>}
-                                       <ChevronDownIcon />
-                                    </Button>
-                                 </PopoverTrigger>
-                                 <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} defaultMonth={field.value} />
-                                 </PopoverContent>
-                              </Popover>
+                              <div className="flex gap-2">
+                                 <Popover>
+                                    <PopoverTrigger asChild>
+                                       <Button
+                                          type="button"
+                                          variant="outline"
+                                          data-empty={!field.value}
+                                          className="flex-1 justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                                       >
+                                          {field.value ? format(field.value, "dd.MM.yyyy") : <span>Zvolte datum</span>}
+                                          <ChevronDownIcon />
+                                       </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                       <Calendar mode="single" selected={field.value} onSelect={field.onChange} defaultMonth={field.value} />
+                                    </PopoverContent>
+                                 </Popover>
+                                 <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    aria-label="Odebrat datum"
+                                    disabled={!field.value}
+                                    onClick={() => field.onChange(undefined)}
+                                 >
+                                    <X />
+                                 </Button>
+                              </div>
                            </FormControl>
                            <FormMessage />
                         </FormItem>
@@ -182,21 +214,34 @@ export default function ConnectionFilterDialog() {
                         <FormItem>
                            <FormLabel>Upraveno do</FormLabel>
                            <FormControl>
-                              <Popover>
-                                 <PopoverTrigger asChild>
-                                    <Button
-                                       variant="outline"
-                                       data-empty={!field.value}
-                                       className="justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
-                                    >
-                                       {field.value ? format(field.value, "dd.MM.yyyy") : <span>Zvolte datum</span>}
-                                       <ChevronDownIcon />
-                                    </Button>
-                                 </PopoverTrigger>
-                                 <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} defaultMonth={field.value} />
-                                 </PopoverContent>
-                              </Popover>
+                              <div className="flex gap-2">
+                                 <Popover>
+                                    <PopoverTrigger asChild>
+                                       <Button
+                                          type="button"
+                                          variant="outline"
+                                          data-empty={!field.value}
+                                          className="flex-1 justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
+                                       >
+                                          {field.value ? format(field.value, "dd.MM.yyyy") : <span>Zvolte datum</span>}
+                                          <ChevronDownIcon />
+                                       </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                       <Calendar mode="single" selected={field.value} onSelect={field.onChange} defaultMonth={field.value} />
+                                    </PopoverContent>
+                                 </Popover>
+                                 <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    aria-label="Odebrat datum"
+                                    disabled={!field.value}
+                                    onClick={() => field.onChange(undefined)}
+                                 >
+                                    <X />
+                                 </Button>
+                              </div>
                            </FormControl>
                            <FormMessage />
                         </FormItem>
@@ -205,6 +250,9 @@ export default function ConnectionFilterDialog() {
                </form>
             </Form>
             <DialogFooter>
+               <Button type="button" variant="outline" onClick={handleClearFilters}>
+                  Odebrat filtry
+               </Button>
                <Button type="submit" form="connection-filter-form">
                   Filtrovat
                </Button>
